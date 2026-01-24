@@ -1,9 +1,8 @@
 package frc.robot;
 
 import frc.robot.subsystems.Swerve;
-//import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Shoodexer;
+import frc.robot.subsystems.Shootdexer;
 import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.Constants.Intake;
 import frc.robot.generated.TunerConstants;
@@ -28,10 +27,9 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve, new Pose3d(3.418, 3.987, 0, new Rotation3d(0, 0, Math.toRadians(0121.115))));
-  private final Shoodexer s_Shoodexer = new Shoodexer();
+  private final Shootdexer s_Shoodexer = new Shootdexer();
   private final Climber s_Climber = new Climber();
   private final Intake s_Intake = new Intake();
- // private final Indexer s_Indexer = new Indexer();
   private double translationMultiplier = 1.0;
   private double rotationMultiplier = 1.0;
 
