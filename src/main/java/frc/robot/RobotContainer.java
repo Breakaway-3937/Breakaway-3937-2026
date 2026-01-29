@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Shootdexer;
 import frc.robot.subsystems.QuestNavSubsystem;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,8 +28,10 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
-  private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve, new Pose3d(3.418, 3.987, 0, new Rotation3d(0, 0, Math.toRadians(0121.115))));
-  private final Shootdexer s_Shoodexer = new Shootdexer();
+  private final Vision s_Vision = new Vision(s_Swerve);
+  private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve,
+      new Pose3d(3.418, 3.987, 0, new Rotation3d(0, 0, Math.toRadians(0121.115))));
+  private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
   private final Climber s_Climber = new Climber();
   private final Intake s_Intake = new Intake();
   private double translationMultiplier = 1.0;
@@ -38,8 +42,10 @@ public class RobotContainer {
       .withRotationalDeadband(Constants.Swerve.MAX_ANGULAR_RATE * Constants.Controllers.STICK_DEADBAND)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  private final CommandXboxController driveController = new CommandXboxController(
-      Constants.Controllers.DRIVE_CONTROLLER);
+  private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
+  private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
+  private final CommandXboxController xboxController = new CommandXboxController(
+      Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -58,11 +64,11 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(driveController.getLeftX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(driveController.getLeftY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withRotationalRate(driveController.getRightX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+            .withVelocityX(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withRotationalRate(rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
-    driveController.rightBumper().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric(), s_Swerve));
+    xboxController.a().onTrue(s_Shootdexer.setAutoTracking());
   }
 
   public Command getAutonomousCommand() {

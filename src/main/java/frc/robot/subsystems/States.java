@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 public class States {
+
     public enum IntakeStates {
         STOW(0.0, 0.0),
         INTAKE(0.0, 0.0),
@@ -23,9 +24,8 @@ public class States {
         }
     }
 
-
     public enum ShootdexerStates {
-        PLACE_HOLDER(0.0,0.0,0.0,0.0, 0.0);
+        LOCKED_IDLE(0.0,0.0,0.0,0.0, 0.0);
 
         private final double HoodAngle, ShooterSpeed, TurretRotation, IndexerSpeed, KickerSpeed;
 
@@ -58,7 +58,6 @@ public class States {
         }
     }
 
-    
     public enum ClimberStates {
         RUNG_ONE(0.0),
         RUNG_TWO(0.0),

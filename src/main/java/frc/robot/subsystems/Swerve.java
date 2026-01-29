@@ -15,21 +15,13 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
-
-	private NetworkTable questNavTable;
-    private Pose2d currentPose = new Pose2d();
-
 	private final Field2d field = new Field2d();
 	private final SwerveRequest.ApplyRobotSpeeds pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 	private boolean hasAppliedOperatorPerspective = false;
@@ -40,7 +32,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 		super(drivetrainConstants, modules);
 		SmartDashboard.putData("Field", field);
 		configPathplanner();
-		questNavTable = NetworkTableInstance.getDefault().getTable("QuestNav");
 	}
 
 	public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -55,7 +46,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
 			AutoBuilder.configure(
 					() -> getState().Pose,
-					//this::getQuestNavPose,
 					this::resetPose,
 					() -> getState().Speeds,
 					(speeds, feedforwards) -> setControl(
@@ -74,22 +64,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 			e.printStackTrace();
 		}
 	}
-	    ////////////////////////////////////////////////
-        /** Reads QuestNav pose from NetworkTables */
-    private void updateQuestNavPose() {
-        double x = questNavTable.getEntry("x").getDouble(0.0);
-        double y = questNavTable.getEntry("y").getDouble(0.0);
-        double headingDeg = questNavTable.getEntry("heading").getDouble(0.0);
-
-        currentPose = new Pose2d(x, y, Rotation2d.fromDegrees(headingDeg));
-    }
-
-    /** PathPlanner pose supplier */
-    private Pose2d getQuestNavPose() {
-        return currentPose;
-    }
-
-    /////////////////////////////////////////////////////////
 
 	@Override
 	public void periodic() {
@@ -102,7 +76,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 hasAppliedOperatorPerspective = true;
             });
         }
-		updateQuestNavPose();
 	}
 
 	@Override

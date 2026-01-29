@@ -4,12 +4,15 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.generated.TunerConstants;
 
 public final class Constants {
 
   public static class Controllers {
-    public static final int DRIVE_CONTROLLER = 0;
+    public static final GenericHID TRANSLATION_CONTROLLER = new GenericHID(0);
+    public static final GenericHID ROTATION_CONTROLLER = new GenericHID(1);
+    public static final GenericHID XBOX_CONTROLLER = new GenericHID(2);
     public static final double STICK_DEADBAND = 0.1;
   }
 
@@ -19,13 +22,13 @@ public final class Constants {
   }
 
   public static final class Shootdexer {
-    //Shooter
+    // Shooter
     public static final int SHOOTER_LEAD_CAN_ID = 0;
     public static final int SHOOTER_FOLLOW_CAN_ID = 0;
     public static final int HOOD_CAN_ID = 0;
     public static final int TURRET_LEAD_CAN_ID = 0;
     public static final int TURRET_FOLLOW_CAN_ID = 0;
-    //Indexer
+    // Indexer
     public static final int KICKER_CAN_ID = 0;
     public static final int SPINER_CAN_ID = 0;
     public static final int KICKER_ENTRANCE_CAN_ID = 0;
