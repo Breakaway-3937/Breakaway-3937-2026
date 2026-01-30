@@ -29,10 +29,7 @@ public class RunShootdexer extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(xboxController.start().getAsBoolean()) {
-      s_Shootdexer.setAutoTracking(true);
-    }
-    if(xboxController.back().getAsBoolean()) {
+    if(xboxController.x().getAsBoolean()) {
       s_Shootdexer.setAutoTracking(false);
     }
   }
