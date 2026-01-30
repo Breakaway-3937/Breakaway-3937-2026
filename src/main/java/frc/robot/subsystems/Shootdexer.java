@@ -60,9 +60,15 @@ public class Shootdexer extends SubsystemBase {
     kickerExit.getConfigurator().apply(config);
   }
 
-  public Command setAutoTracking() {
-    return runOnce(() -> hoodPID.setSetpoint(hoodMap.get(s_Vision.getDistance())))
-      .andThen(runOnce(() -> turretPID.setSetpoint(turretMap.get(s_Vision.getDistance()))));
+  public void setAutoTracking(boolean autoTracking) {
+    if(autoTracking) {
+      hoodPID.setSetpoint(hoodMap.get(s_Vision.getDistance()));
+      turretPID.setSetpoint(turretMap.get(s_Vision.getDistance()));
+    }
+    else {
+      hoodPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle());
+      turretPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation());
+    }
   }
 
   @Override
