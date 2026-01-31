@@ -1,38 +1,31 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.States.ClimberStates;
-import frc.robot.subsystems.States.IntakeStates;
 
 public class Climber extends SubsystemBase {
-  private final TalonFX climberLead, climberFollow;
-  private final CANrange eyeOfSauron;
-  // private final Follower followerShoulderRequest;
-  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID, null);
   private final MotionMagicExpoVoltage climberRequest;
+  private final TalonFX climberLead, climberFollow;
+  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID, MotorAlignmentValue.Aligned);
   private ClimberStates climberState = ClimberStates.STOW;
 
   public Climber() {
     climberLead = new TalonFX(Constants.Climber.CLIMBER_LEAD_CAN_ID);
     climberFollow = new TalonFX(Constants.Climber.CLIMBER_FOLLOW_CAN_ID);
 
-    eyeOfSauron = new CANrange(Constants.Climber.EYE_OF_SAURON_CAN_ID);
-    // followerShoulderRequest = new
-    // Follower(Constants.Climber.INNER_CLIMBER_CAN_ID, false);
-    // configMotors();
-    configCANranges();
-    climberRequest = new MotionMagicExpoVoltage(0);
+    configClimber();
+
+    climberRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   }
 
   public void configMotors() {
@@ -72,15 +65,6 @@ public class Climber extends SubsystemBase {
     climberLead.setPosition(0);
     climberFollow.setPosition(0);
     climberFollow.setControl(climberFollowerRequest);
-  }
-
-  public void configCANranges() {
-    eyeOfSauron.getConfigurator().apply(new CANrangeConfiguration());
-
-    CANrangeConfiguration config = new CANrangeConfiguration();
-    config.ProximityParams.ProximityThreshold = 0.06;
-
-    eyeOfSauron.getConfigurator().apply(config);
   }
 
   public void setClimberState(ClimberStates climberState) {

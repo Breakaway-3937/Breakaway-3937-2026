@@ -31,8 +31,7 @@ public final class Constants {
     // Indexer
     public static final int KICKER_CAN_ID = 0;
     public static final int SPINER_CAN_ID = 0;
-    public static final int KICKER_ENTRANCE_CAN_ID = 0;
-    public static final int KICKER_EXIT_CAN_ID = 0;
+    public static final int EYE_OF_SAURON_CAN_ID = 0;
   }
 
   public static final class Intake {
@@ -44,7 +43,6 @@ public final class Constants {
   public static final class Climber {
     public static final int CLIMBER_LEAD_CAN_ID = 0;
     public static final int CLIMBER_FOLLOW_CAN_ID = 0;
-    public static final int EYE_OF_SAURON_CAN_ID = 0;
   }
 
 }

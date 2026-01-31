@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -11,25 +9,21 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.States.ClimberStates;
 import frc.robot.subsystems.States.IntakeStates;
 
 public class Intake extends SubsystemBase {
   private final TalonFX intake, intakeWrist;
   private final MotionMagicExpoVoltage intakeWristRequest;
-  // private final MotionMagicVoltage intakeRequest;
   private IntakeStates intakeState = IntakeStates.STOW;
 
   public Intake() {
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
     intakeWrist = new TalonFX(Constants.Intake.INTAKE_WRIST_CAN_ID);
 
-    intakeWristRequest = new MotionMagicExpoVoltage(0);
-    // intakeRequest = new MotionMagicVelocityVoltage();
-  }
+    configIntakeWrist();
+    configIntake();
 
-  public void setIntakeState(IntakeStates intakeState) {
-    this.intakeState = intakeState;
+    intakeWristRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   }
 
   public void configIntakeWrist() {
@@ -56,9 +50,7 @@ public class Intake extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     intakeWrist.getConfigurator().apply(config);
-
     intakeWrist.setPosition(0);
-
   }
 
   public void configIntake() {
@@ -75,7 +67,10 @@ public class Intake extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     intake.getConfigurator().apply(config);
+  }
 
+  public void setIntakeState(IntakeStates intakeState) {
+    this.intakeState = intakeState;
   }
 
   public Command setIntakeWrist() {
