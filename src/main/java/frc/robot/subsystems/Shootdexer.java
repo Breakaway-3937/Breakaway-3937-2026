@@ -157,8 +157,8 @@ public class Shootdexer extends SubsystemBase {
   @Override
   public void periodic() {
     if (isTracking) {
-      hood.setControl(hoodRequest.withPosition(s_Vision.getDistance()));
-      turretLead.setControl(turretRequest.withPosition(s_Vision.getAngle()));
+      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistance())));
+      turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngle())));
     } else {
       hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
       turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
