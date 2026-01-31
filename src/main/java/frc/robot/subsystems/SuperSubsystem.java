@@ -26,6 +26,10 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Shootdexer.setAutoTracking(isTracking, isHub));
   }
 
+  public Command fire() {
+    return runOnce(() -> s_Shootdexer.runShooter());
+  }
+
   @Override
   public void periodic() {}
 

@@ -83,6 +83,7 @@ public class RobotContainer {
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
+    xboxController.rightBumper().whileTrue(s_SuperSubsystem.fire());
   }
 
   public Command getAutonomousCommand() {

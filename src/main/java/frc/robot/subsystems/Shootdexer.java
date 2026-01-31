@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -44,6 +45,7 @@ public class Shootdexer extends SubsystemBase {
 
     configTurret();
     configHood();
+    configShooter();
     configCANranges();
 
     hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
@@ -112,6 +114,25 @@ public class Shootdexer extends SubsystemBase {
     hood.setPosition(0);
   }
 
+  public void configShooter() {
+
+    shooterLead.getConfigurator().apply(new TalonFXConfiguration());
+    shooterFollow.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    shooterLead.getConfigurator().apply(config);
+    shooterFollow.getConfigurator().apply(config);
+  }
+
   public void configCANranges() {
     kickerEntrance.getConfigurator().apply(new CANrangeConfiguration());
     kickerExit.getConfigurator().apply(new CANrangeConfiguration());
@@ -128,6 +149,10 @@ public class Shootdexer extends SubsystemBase {
       s_Vision.setTarget(isHub.booleanValue());
     }
     this.isTracking = isTracking;
+  }
+  
+  public Command runShooter() {
+    return runOnce(() -> shooterLead.set(SmartDashboard.getNumber("Shooter Speed", 0)));
   }
 
   public Command setSpinerForward() {
@@ -156,6 +181,7 @@ public class Shootdexer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Shooter Speed", 0);
     if (isTracking) {
       hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistance())));
       turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngle())));
