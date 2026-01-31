@@ -26,11 +26,6 @@ public class Shootdexer extends SubsystemBase {
   private final CANrange kickerEntrance, kickerExit;
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, null);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, null);
-<<<<<<< HEAD
-  private boolean autoTracking = false;
-  //private final MotionMagicExpoVoltage spinerRequest, kickerRequest;
-=======
->>>>>>> ecf936fc5dae9da126f0604c7f1b3737f0b638fb
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -48,15 +43,8 @@ public class Shootdexer extends SubsystemBase {
 
     turretMap.put(1.0, 8.5);
 
-<<<<<<< HEAD
-    //spinerRequest = new MotionMagicExpoVoltage(0);
-    //kickerRequest = new MotionMagicExpoVoltage(0);
-
-    configMotors();
-=======
     configTurret();
     configHood();
->>>>>>> ecf936fc5dae9da126f0604c7f1b3737f0b638fb
     configCANranges();
 
     hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
@@ -136,24 +124,13 @@ public class Shootdexer extends SubsystemBase {
     kickerExit.getConfigurator().apply(config);
   }
 
-<<<<<<< HEAD
-  public void setAutoTracking(boolean autoTracking) {
-    if (autoTracking) {
-      hoodPID.setSetpoint(hoodMap.get(s_Vision.getDistance()));
-      turretPID.setSetpoint(turretMap.get(s_Vision.getDistance()));
-    } else {
-      hoodPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle());
-      turretPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation());
-=======
   public void setAutoTracking(boolean isTracking, Boolean isHub) {
     if (isHub != null) {
       s_Vision.setTarget(isHub.booleanValue());
->>>>>>> ecf936fc5dae9da126f0604c7f1b3737f0b638fb
     }
     this.isTracking = isTracking;
   }
 
-<<<<<<< HEAD
   public Command setSpinerForward() {
     return runOnce(() -> spiner.set(0.1));
   }
@@ -252,16 +229,3 @@ public class Shootdexer extends SubsystemBase {
 
 
 // This is a shoodexter
-=======
-  @Override
-  public void periodic() {
-    if (isTracking) {
-      hood.setControl(hoodRequest.withPosition(s_Vision.getDistance()));
-      turretLead.setControl(turretRequest.withPosition(s_Vision.getAngle()));
-    } else {
-      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
-      turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
-    }
-  }
-}
->>>>>>> ecf936fc5dae9da126f0604c7f1b3737f0b638fb
