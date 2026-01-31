@@ -13,7 +13,6 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake s_Intake;
   private final Climber s_Climber;
   private final Vision s_Vision;
-  private boolean isAutoTracking = true;
 
   public SuperSubsystem(Shootdexer s_Shootdexer, Intake s_Intake, Climber s_Climber, Vision s_Vision) {
     this.s_Shootdexer = s_Shootdexer;
