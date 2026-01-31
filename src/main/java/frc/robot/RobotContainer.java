@@ -7,11 +7,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shootdexer;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.subsystems.QuestNavSubsystem;
-<<<<<<< HEAD
-import frc.robot.Constants.Intake;
-//import frc.robot.commands.RunShootdexer;
-=======
->>>>>>> ecf936fc5dae9da126f0604c7f1b3737f0b638fb
 import frc.robot.generated.TunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;

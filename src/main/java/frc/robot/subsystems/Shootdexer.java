@@ -13,19 +13,18 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
   private final Vision s_Vision;
+  private boolean isTracking = true;
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
   private final MotionMagicExpoVoltage hoodRequest;
-  private boolean isTracking = true;
   private final InterpolatingDoubleTreeMap turretMap = new InterpolatingDoubleTreeMap();
   private final MotionMagicExpoVoltage turretRequest;
   private final TalonFX shooterLead, shooterFollow, hood, turretLead, turretFollow, kicker, spiner;
-  private final CANrange kickerEntrance, kickerExit;
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, null);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, null);
+  private final CANrange kickerEntrance, kickerExit;
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -157,75 +156,15 @@ public class Shootdexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    if (isTracking) {
+      hood.setControl(hoodRequest.withPosition(s_Vision.getDistance()));
+      turretLead.setControl(turretRequest.withPosition(s_Vision.getAngle()));
+    } else {
+      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
+      turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
+    }
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // This is a shoodexter
