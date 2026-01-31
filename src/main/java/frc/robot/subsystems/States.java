@@ -26,6 +26,7 @@ public class States {
 
     public enum ShootdexerStates {
         LOCKED_IDLE(0.0, 0.0, 0.0, 0.0),
+        STOW_IDLE(0.0,0.0,0.0,0.0),
         INTAKE(0.0,0.0,0.0,0.0),
         FEED(0.0, 0.0, 0.3, 0.1),
         UNCLOG(0.0, 0.0, -0.3, -0.1);
