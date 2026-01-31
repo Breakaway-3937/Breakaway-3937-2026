@@ -2,13 +2,16 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
   private final Vision s_Vision;
@@ -21,6 +24,7 @@ public class Shootdexer extends SubsystemBase {
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, null);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, null);
   private boolean autoTracking = false;
+  //private final MotionMagicExpoVoltage spinerRequest, kickerRequest;
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -37,6 +41,9 @@ public class Shootdexer extends SubsystemBase {
     hoodMap.put(1.0, 2.0);
 
     turretMap.put(1.0, 2.0);
+
+    //spinerRequest = new MotionMagicExpoVoltage(0);
+    //kickerRequest = new MotionMagicExpoVoltage(0);
 
     configMotors();
     configCANranges();
@@ -60,19 +67,110 @@ public class Shootdexer extends SubsystemBase {
   }
 
   public void setAutoTracking(boolean autoTracking) {
-    if(autoTracking) {
+    if (autoTracking) {
       hoodPID.setSetpoint(hoodMap.get(s_Vision.getDistance()));
       turretPID.setSetpoint(turretMap.get(s_Vision.getDistance()));
-    }
-    else {
+    } else {
       hoodPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle());
       turretPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation());
     }
   }
 
+  public Command setSpinerForward() {
+    return runOnce(() -> spiner.set(0.1));
+  }
+
+  public Command setSpinerBackward() {
+    return runOnce(() -> spiner.set(-0.1));
+  }
+
+  public Command stopSpiner() {
+    return runOnce(() -> spiner.set(0.0));
+  }
+
+  public Command setKickerForward() {
+    return runOnce(() -> spiner.set(0.1));
+  }
+
+  public Command setKickerBackward() {
+    return runOnce(() -> spiner.set(-0.1));
+  }
+
+  public Command stopKicker() {
+    return runOnce(() -> spiner.set(0.0));
+  }
+
   @Override
   public void periodic() {
-    
+
   }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// This is a shoodexter

@@ -42,8 +42,8 @@ public final class Constants {
   }
 
   public static final class Climber {
-    public static final int OUTER_CLIMBER_CAN_ID = 0;
-    public static final int INNER_CLIMBER_CAN_ID = 0;
+    public static final int CLIMBER_LEAD_CAN_ID = 0;
+    public static final int CLIMBER_FOLLOW_CAN_ID = 0;
     public static final int EYE_OF_SAURON_CAN_ID = 0;
   }
 
