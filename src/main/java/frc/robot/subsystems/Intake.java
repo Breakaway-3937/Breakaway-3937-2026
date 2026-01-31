@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
     intakeWrist = new TalonFX(Constants.Intake.INTAKE_WRIST_CAN_ID);
 
-    intakeWristRequest = new MotionMagicExpoVoltage(null);
+    intakeWristRequest = new MotionMagicExpoVoltage(0);
     // intakeRequest = new MotionMagicVelocityVoltage();
   }
 
@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.0;
     config.Slot0.kA = 0.0;
@@ -61,16 +61,13 @@ public class Intake extends SubsystemBase {
 
   }
 
-
-    public void configIntake() {
+  public void configIntake() {
     intake.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
-    config.MotionMagic.MotionMagicExpo_kV = 0.0;
-    config.MotionMagic.MotionMagicExpo_kA = 0.0;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -78,8 +75,6 @@ public class Intake extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     intake.getConfigurator().apply(config);
-
-   // intake.setPosition(0);
 
   }
 

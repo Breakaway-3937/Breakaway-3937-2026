@@ -146,6 +146,39 @@ public class Shootdexer extends SubsystemBase {
     shooterFollow.getConfigurator().apply(config);
   }
 
+    public void configSpiner() {
+
+    spiner.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    spiner.getConfigurator().apply(config);
+  }
+
+  public void configKicker() {
+    kicker.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    kicker.getConfigurator().apply(config);
+  }
+
   public void configCANranges() {
     kickerEntrance.getConfigurator().apply(new CANrangeConfiguration());
     kickerExit.getConfigurator().apply(new CANrangeConfiguration());

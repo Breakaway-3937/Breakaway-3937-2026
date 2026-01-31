@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,10 +32,45 @@ public class Climber extends SubsystemBase {
     // Follower(Constants.Climber.INNER_CLIMBER_CAN_ID, false);
     // configMotors();
     configCANranges();
-    climberRequest = new MotionMagicExpoVoltage(null);
+    climberRequest = new MotionMagicExpoVoltage(0);
   }
 
   public void configMotors() {
+    climberFollow.setControl(climberFollowerRequest);
+  }
+
+    public void configClimber() {
+
+    climberLead.getConfigurator().apply(new TalonFXConfiguration());
+    climberFollow.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    //COACH SAID COAST! DO NOT PUT IN BRAKE MODE! SOMETHING ELSE IS PASSIVELY...
+    //BRAKING IT AND I'M TOO LAZY TO ASK CAD FOR A BETTER EXPLANATION!
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.0;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.1;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    config.Slot0.kG = 0.0;
+
+    config.MotionMagic.MotionMagicExpo_kV = 0.0;
+    config.MotionMagic.MotionMagicExpo_kA = 0.0;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    climberLead.getConfigurator().apply(config);
+    climberFollow.getConfigurator().apply(config);
+    climberLead.setPosition(0);
+    climberFollow.setPosition(0);
     climberFollow.setControl(climberFollowerRequest);
   }
 
