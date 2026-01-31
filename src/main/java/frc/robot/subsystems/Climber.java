@@ -9,26 +9,30 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.States.ClimberStates;
+import frc.robot.subsystems.States.IntakeStates;
 
 public class Climber extends SubsystemBase {
   private final TalonFX climberLead, climberFollow;
   private final CANrange eyeOfSauron;
-  //private final Follower followerShoulderRequest;
- private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID, null);
- private final MotionMagicExpoVoltage climberRequest;
+  // private final Follower followerShoulderRequest;
+  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID, null);
+  private final MotionMagicExpoVoltage climberRequest;
+  private ClimberStates climberState = ClimberStates.STOW;
 
   public Climber() {
     climberLead = new TalonFX(Constants.Climber.CLIMBER_LEAD_CAN_ID);
     climberFollow = new TalonFX(Constants.Climber.CLIMBER_FOLLOW_CAN_ID);
 
     eyeOfSauron = new CANrange(Constants.Climber.EYE_OF_SAURON_CAN_ID);
-    //followerShoulderRequest = new Follower(Constants.Climber.INNER_CLIMBER_CAN_ID, false);
-    //configMotors();
+    // followerShoulderRequest = new
+    // Follower(Constants.Climber.INNER_CLIMBER_CAN_ID, false);
+    // configMotors();
     configCANranges();
     climberRequest = new MotionMagicExpoVoltage(null);
   }
 
-    public void configMotors() {
+  public void configMotors() {
     climberFollow.setControl(climberFollowerRequest);
   }
 
@@ -41,10 +45,14 @@ public class Climber extends SubsystemBase {
     eyeOfSauron.getConfigurator().apply(config);
   }
 
-  public Command setClimber() {
-    return runOnce(() ->  climberLead.setControl(climberRequest.withPosition(States.ClimberStates.STOW.getClimb())));
+  public void setClimberState(ClimberStates climberState) {
+    this.climberState = climberState;
   }
- 
+
+  public Command setClimber() {
+    return runOnce(() -> climberLead.setControl(climberRequest.withPosition(climberState.getClimb())));
+  }
+
   @Override
   public void periodic() {
 

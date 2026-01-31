@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -14,6 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.States.ClimberStates;
+import frc.robot.subsystems.States.IntakeStates;
+import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
   private final Vision s_Vision;
@@ -26,6 +30,9 @@ public class Shootdexer extends SubsystemBase {
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, null);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, null);
   private final CANrange kickerEntrance, kickerExit;
+  private ShootdexerStates shootdexerState = ShootdexerStates.LOCKED_IDLE;
+   private final MotionMagicVoltage spinerRequest;
+   private final MotionMagicVoltage kickerRequest;
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -48,8 +55,13 @@ public class Shootdexer extends SubsystemBase {
     configShooter();
     configCANranges();
 
+
+
     hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
     turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+
+    spinerRequest = new MotionMagicVoltage(null);
+    kickerRequest = new MotionMagicVoltage(null);
   }
 
   public void configTurret() {
@@ -155,29 +167,18 @@ public class Shootdexer extends SubsystemBase {
     return runOnce(() -> shooterLead.set(SmartDashboard.getNumber("Shooter Speed", 0)));
   }
 
-  public Command setSpinerForward() {
-    return runOnce(() -> spiner.set(0.1));
+      public void setShootDexerState(ShootdexerStates shootdexerState) {
+    this.shootdexerState = shootdexerState;
   }
 
-  public Command setSpinerBackward() {
-    return runOnce(() -> spiner.set(-0.1));
+  public Command setSpiner() {
+    return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinerSpeed())));
   }
 
-  public Command stopSpiner() {
-    return runOnce(() -> spiner.set(0.0));
+  public Command setKicker() {
+    return runOnce(() -> kicker.setControl(kickerRequest.withPosition(shootdexerState.getKickerSpeed())));
   }
 
-  public Command setKickerForward() {
-    return runOnce(() -> spiner.set(0.1));
-  }
-
-  public Command setKickerBackward() {
-    return runOnce(() -> spiner.set(-0.1));
-  }
-
-  public Command stopKicker() {
-    return runOnce(() -> spiner.set(0.0));
-  }
 
   @Override
   public void periodic() {
