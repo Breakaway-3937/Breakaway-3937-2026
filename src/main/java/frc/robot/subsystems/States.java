@@ -25,7 +25,8 @@ public class States {
     }
 
     public enum ShootdexerStates {
-        LOCKED_IDLE(0.0,0.0);
+        LOCKED_IDLE(0.0,0.0),
+        STOW_IDLE(0.0,0.0);
 
         private final double HoodAngle, TurretRotation;
 

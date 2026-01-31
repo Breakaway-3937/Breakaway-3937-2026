@@ -1,10 +1,18 @@
 package frc.robot.subsystems;
 
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
     private final Swerve s_Swerve;
+    private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
+    private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
+    private final Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
+    private final Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
+    private final Rect[] trenches = {trench1, trench2, trench3, trench4};
     private double redTargetX = 5.0;
     private double redTargetY = 5.0;
     private double blueTargetX = -5.0;
@@ -14,7 +22,7 @@ public class Vision extends SubsystemBase {
         this.s_Swerve = s_Swerve;
     }
 
-    public double getDistance() {
+    public double getDistanceToTarget() {
         double robotX = s_Swerve.getState().Pose.getX();
         double robotY = s_Swerve.getState().Pose.getY();
         var alliance = DriverStation.getAlliance().orElse(null);
@@ -34,7 +42,7 @@ public class Vision extends SubsystemBase {
         return distance;
     }
 
-    public double getAngle() {
+    public double getAngleToTarget() {
         double robotX = s_Swerve.getState().Pose.getX();
         double robotY = s_Swerve.getState().Pose.getY();
         var alliance = DriverStation.getAlliance().orElse(null);
@@ -53,6 +61,18 @@ public class Vision extends SubsystemBase {
 
         double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
         return angle - robotAngle;
+    }
+
+    public boolean isUnderTrench() {
+        boolean isUnder = false;
+        for(Rect trench : trenches) {
+            Point robotPosition = new Point(s_Swerve.getState().Pose.getX(), s_Swerve.getState().Pose.getY());
+            if(robotPosition.inside(trench)) {
+                isUnder = true;
+                break;
+            }
+        }
+        return isUnder;
     }
 
     public void setTarget(boolean isHub) {
