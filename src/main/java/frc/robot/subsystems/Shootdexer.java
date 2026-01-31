@@ -22,6 +22,7 @@ import frc.robot.subsystems.States.ShootdexerStates;
 public class Shootdexer extends SubsystemBase {
   private final Vision s_Vision;
   private boolean isTracking = true;
+  private boolean isUnderTrench = false;
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
   private final MotionMagicExpoVoltage hoodRequest;
   private final InterpolatingDoubleTreeMap turretMap = new InterpolatingDoubleTreeMap();
@@ -133,7 +134,7 @@ public class Shootdexer extends SubsystemBase {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     config.CurrentLimits.SupplyCurrentLimit = 80;
@@ -183,10 +184,15 @@ public class Shootdexer extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shooter Speed", 0);
-    if (isTracking) {
-      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistance())));
-      turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngle())));
-    } else {
+    if (isTracking && !s_Vision.isUnderTrench()) {
+      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
+      turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngleToTarget())));
+    } 
+    else if(isTracking && s_Vision.isUnderTrench()) {
+      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.STOW_IDLE.getHoodAngle()));
+      turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngleToTarget())));
+    }
+    else {
       hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
       turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
     }
