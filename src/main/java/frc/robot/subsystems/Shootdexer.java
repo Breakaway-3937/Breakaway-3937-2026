@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,14 +16,14 @@ import frc.robot.Constants;
 public class Shootdexer extends SubsystemBase {
   private final Vision s_Vision;
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
-  private final PIDController hoodPID = new PIDController(0.1, 0.0, 0.0);
+  private final MotionMagicExpoVoltage hoodRequest;
+  private boolean isTracking = true;
   private final InterpolatingDoubleTreeMap turretMap = new InterpolatingDoubleTreeMap();
-  private final PIDController turretPID = new PIDController(0.1, 0.0, 0.0);
+  private final MotionMagicExpoVoltage turretRequest;
   private final TalonFX shooterLead, shooterFollow, hood, turretLead, turretFollow, kicker, spiner;
   private final CANrange kickerEntrance, kickerExit;
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, null);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, null);
-  private boolean autoTracking = false;
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -36,16 +39,76 @@ public class Shootdexer extends SubsystemBase {
 
     hoodMap.put(1.0, 2.0);
 
-    turretMap.put(1.0, 2.0);
+    turretMap.put(1.0, 8.5);
 
-    configMotors();
+    configTurret();
+    configHood();
     configCANranges();
+
+    hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+    turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   }
 
-  public void configMotors() {
-    shooterFollow.setControl(shooterFollowerRequest);
+  public void configTurret() {
+
+    turretLead.getConfigurator().apply(new TalonFXConfiguration());
+    turretFollow.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.0;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.1;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    config.Slot0.kG = 0.0;
+
+    config.MotionMagic.MotionMagicExpo_kV = 0.0;
+    config.MotionMagic.MotionMagicExpo_kA = 0.0;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    turretLead.getConfigurator().apply(config);
+    turretFollow.getConfigurator().apply(config);
+    turretLead.setPosition(0);
+    turretFollow.setPosition(0);
     turretFollow.setControl(turretFollowerRequest);
-    turretPID.enableContinuousInput(-180.0, 180.0);
+  }
+
+  public void configHood() {
+
+    hood.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.0;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.1;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    config.Slot0.kG = 0.0;
+
+    config.MotionMagic.MotionMagicExpo_kV = 0.0;
+    config.MotionMagic.MotionMagicExpo_kA = 0.0;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    hood.getConfigurator().apply(config);
+    hood.setPosition(0);
   }
 
   public void configCANranges() {
@@ -59,20 +122,21 @@ public class Shootdexer extends SubsystemBase {
     kickerExit.getConfigurator().apply(config);
   }
 
-  public void setAutoTracking(boolean autoTracking) {
-    if(autoTracking) {
-      hoodPID.setSetpoint(hoodMap.get(s_Vision.getDistance()));
-      turretPID.setSetpoint(turretMap.get(s_Vision.getDistance()));
+  public void setAutoTracking(boolean isTracking, Boolean isHub) {
+    if (isHub != null) {
+      s_Vision.setTarget(isHub.booleanValue());
     }
-    else {
-      hoodPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle());
-      turretPID.setSetpoint(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation());
-    }
+    this.isTracking = isTracking;
   }
 
   @Override
   public void periodic() {
-    
+    if (isTracking) {
+      hood.setControl(hoodRequest.withPosition(s_Vision.getDistance()));
+      turretLead.setControl(turretRequest.withPosition(s_Vision.getAngle()));
+    } else {
+      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
+      turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
+    }
   }
-
 }

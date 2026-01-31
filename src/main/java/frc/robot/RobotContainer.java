@@ -3,10 +3,10 @@ package frc.robot;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shootdexer;
+import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.subsystems.QuestNavSubsystem;
-import frc.robot.Constants.Intake;
-import frc.robot.commands.RunShootdexer;
 import frc.robot.generated.TunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -43,9 +43,7 @@ public class RobotContainer {
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
   private final Climber s_Climber = new Climber();
   private final Intake s_Intake = new Intake();
-
-  //Commands
-  private final RunShootdexer c_RunShootdexer = new RunShootdexer(s_Shootdexer, xboxController);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake, s_Climber, s_Vision);
 
   //Misc
   private final SendableChooser<Command> autoChooser;
@@ -60,7 +58,6 @@ public class RobotContainer {
   
 
   public RobotContainer() {
-    s_Shootdexer.setDefaultCommand(c_RunShootdexer);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("DO NOTHING", Commands.none());
@@ -82,6 +79,10 @@ public class RobotContainer {
             .withVelocityX(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+
+    xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
+    xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
+    xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
   }
 
   public Command getAutonomousCommand() {
