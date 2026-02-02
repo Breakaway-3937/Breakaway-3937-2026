@@ -24,14 +24,14 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Vision = s_Vision;
   }
 
-  public Command setIntakeOut() {
-    return s_Climber.setClimber().andThen(s_Intake.setIntakeWrist().alongWith(s_Intake.turnIntakeOn())
+  private Command setIntakeOut() {
+    return s_Climber.setClimber().andThen(s_Intake.setIntakeWrist().alongWith(s_Intake.setIntakePower())
         .alongWith(s_Shootdexer.setKicker()).alongWith(s_Shootdexer.setSpiner()));
   }
 
-  public Command setIntakeIn() {
+  private Command setIntakeIn() {
     return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker().alongWith(s_Shootdexer.setSpiner()))
-        .alongWith(s_Intake.turnIntakeOn()).alongWith(s_Climber.setClimber());
+        .alongWith(s_Intake.setIntakePower()).alongWith(s_Climber.setClimber());
   }
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {
@@ -44,7 +44,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command prestageClimb() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.LOCKED_IDLE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.PRESTAGE)))
         .andThen(setIntakeIn());
   }
@@ -65,14 +65,14 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command protectIntake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.LOCKED_IDLE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW)))
         .andThen(setIntakeIn());
   }
 
     public Command overrideStow() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.LOCKED_IDLE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW)))
         .andThen(setIntakeOut());
   }

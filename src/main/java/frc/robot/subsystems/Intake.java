@@ -81,12 +81,8 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> intakeWrist.stopMotor());
   }
 
-  public Command turnIntakeOn() {
+  public Command setIntakePower() {
     return runOnce(() -> intake.set(intakeState.getPower()));
-  }
-
-  public Command turnIntakeOff() {
-    return runOnce(() -> intake.set(0.0));
   }
 
   @Override

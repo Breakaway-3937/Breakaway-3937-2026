@@ -26,12 +26,15 @@ public class Shootdexer extends SubsystemBase {
   private final InterpolatingDoubleTreeMap turretMap = new InterpolatingDoubleTreeMap();
   private final MotionMagicExpoVoltage turretRequest;
   private final TalonFX shooterLead, shooterFollow, hood, turretLead, turretFollow, kicker, spiner;
-  private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID, MotorAlignmentValue.Aligned);
-  private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID, MotorAlignmentValue.Aligned);
+  private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
+      MotorAlignmentValue.Aligned);
+  private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID,
+      MotorAlignmentValue.Aligned);
   private final CANrange eyeOfSauron;
-  private ShootdexerStates shootdexerState = ShootdexerStates.LOCKED_IDLE;
-   private final MotionMagicVoltage spinerRequest;
-   private final MotionMagicVoltage kickerRequest;
+  private ShootdexerStates shootdexerState = ShootdexerStates.IDLE;
+  private final MotionMagicVoltage spinerRequest;
+  private final MotionMagicVoltage kickerRequest;
+  private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
   public Shootdexer(Vision s_Vision) {
     this.s_Vision = s_Vision;
@@ -129,7 +132,7 @@ public class Shootdexer extends SubsystemBase {
     shooterFollow.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -145,12 +148,12 @@ public class Shootdexer extends SubsystemBase {
     shooterFollow.setControl(shooterFollowerRequest);
   }
 
-    public void configSpiner() {
+  public void configSpiner() {
 
     spiner.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -194,23 +197,26 @@ public class Shootdexer extends SubsystemBase {
     }
     this.isTracking = isTracking;
   }
-  
+
   public Command runShooter() {
     return runOnce(() -> shooterLead.set(SmartDashboard.getNumber("Shooter Speed", 0)));
   }
 
-      public void setShootDexerState(ShootdexerStates shootdexerState) {
+  public void setShootDexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
 
+  public Command setShooterPower() {
+    return runOnce(() -> shooterLead.set(shootdexerState.getShooterSpeed()));
+  }
+
   public Command setSpiner() {
-    return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinerSpeed())));
+    return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinnerSpeed())));
   }
 
   public Command setKicker() {
     return runOnce(() -> kicker.setControl(kickerRequest.withPosition(shootdexerState.getKickerSpeed())));
   }
-
 
   @Override
   public void periodic() {
@@ -218,14 +224,12 @@ public class Shootdexer extends SubsystemBase {
     if (isTracking && !s_Vision.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
       turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngleToTarget())));
-    } 
-    else if(isTracking && s_Vision.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.STOW_IDLE.getHoodAngle()));
+    } else if (isTracking && s_Vision.isUnderTrench()) {
+      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngleToTarget())));
-    }
-    else {
-      hood.setControl(hoodRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getHoodAngle()));
-      turretLead.setControl(turretRequest.withPosition(States.ShootdexerStates.LOCKED_IDLE.getTurretRotation()));
+    } else {
+      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+      turretLead.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
   }
 
