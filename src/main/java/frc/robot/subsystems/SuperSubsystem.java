@@ -49,14 +49,14 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(setIntakeIn());
   }
 
-  public Command Intake() {
+  public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
         .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.INTAKE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW)))
         .andThen(setIntakeOut());
   }
 
-  public Command Unclog() {
+  public Command unclog() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.UNCLOG))
         .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.UNCLOG)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW)))
