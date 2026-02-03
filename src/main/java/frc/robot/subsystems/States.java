@@ -25,32 +25,25 @@ public class States {
     }
 
     public enum ShootdexerStates {
-        LOCKED_IDLE(0.0, 0.0, 0.0, 0.0),
-        STOW_IDLE(0.0,0.0,0.0,0.0),
-        INTAKE(0.0,0.0,0.0,0.0),
-        FEED(0.0, 0.0, 0.3, 0.1),
-        UNCLOG(0.0, 0.0, -0.3, -0.1);
+        IDLE (0.0, 0.0, 0.0),
+        INTAKE(0.0, 0.0, 0.2),
+        UNCLOG(0.0, 0.0, -0.2),
+        FIRE(0.0, 0.0, 0.8);
 
-        private final double HoodAngle, TurretRotation, SpinerSpeed, KickerSpeed;
+        private final double ShooterSpeed, SpinnerSpeed, KickerSpeed;
 
-        private ShootdexerStates(double HoodAngle, double TurretRotation, double SpinerSpeed, double KickerSpeed) {
-            this.HoodAngle = HoodAngle;
-            this.TurretRotation = TurretRotation;
-            this.SpinerSpeed = SpinerSpeed;
+        private ShootdexerStates(double ShooterSpeed, double SpinnerSpeed, double KickerSpeed) {
+            this.ShooterSpeed = ShooterSpeed;
+            this.SpinnerSpeed = SpinnerSpeed;
             this.KickerSpeed = KickerSpeed;
-
         }
 
-        public double getHoodAngle() {
-            return HoodAngle;
+        public double getShooterSpeed() {
+            return ShooterSpeed;
         }
 
-        public double getTurretRotation() {
-            return TurretRotation;
-        }
-
-        public double getSpinerSpeed() {
-            return SpinerSpeed;
+        public double getSpinnerSpeed() {
+            return SpinnerSpeed;
         }
 
         public double getKickerSpeed() {

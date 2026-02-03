@@ -79,7 +79,13 @@ public class RobotContainer {
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
-    xboxController.rightBumper().whileTrue(s_SuperSubsystem.fire());
+    xboxController.leftTrigger().whileTrue(s_SuperSubsystem.intake());
+    xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
+    xboxController.rightTrigger().whileTrue(s_SuperSubsystem.fire());
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.fire());
+    xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
+    xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
+    xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 
   public Command getAutonomousCommand() {
