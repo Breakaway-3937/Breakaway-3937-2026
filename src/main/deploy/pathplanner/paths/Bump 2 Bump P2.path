@@ -89,7 +89,7 @@
   "folder": "Bump 2 Bump",
   "idealStartingState": {
     "velocity": 2.8,
-    "rotation": 0.7252242990592533
+    "rotation": 0.7252242990592535
   },
   "useDefaultConstraints": true
 }

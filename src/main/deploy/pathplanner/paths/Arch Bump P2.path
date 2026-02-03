@@ -53,7 +53,7 @@
   "folder": "Arch Bump",
   "idealStartingState": {
     "velocity": 3.7,
-    "rotation": -91.46880071438564
+    "rotation": -91.46880071438565
   },
   "useDefaultConstraints": true
 }

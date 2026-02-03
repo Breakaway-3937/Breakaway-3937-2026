@@ -20,15 +20,20 @@
         "y": 0.6386019971469341
       },
       "prevControl": {
-        "x": 6.752453637660485,
-        "y": 0.6386019971469341
+        "x": 6.794992867332382,
+        "y": 0.5868473609129817
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Trench Dump P2 2 P3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5458422174840089,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,10 +47,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 88.6980473274213
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Trench Dump",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -178.8308606720924

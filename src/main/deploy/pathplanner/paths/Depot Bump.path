@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.63796005706134,
-        "y": 2.592339514978602
+        "x": 3.560328102710413,
+        "y": 4.067346647646221
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.680499286733238,
-        "y": 1.7901426533523535
+        "x": 2.2923395149786017,
+        "y": 4.00265335235378
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.506804564907275,
-        "y": 0.6386019971469341
+        "x": 0.4809272467902993,
+        "y": 4.675463623395149
       },
       "prevControl": {
-        "x": 1.0243509272467899,
-        "y": 0.8068045649072757
+        "x": 0.6620684736091292,
+        "y": 3.9638373751783167
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Trench Dump P1 2 P2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.8308606720924
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Trench Dump",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
