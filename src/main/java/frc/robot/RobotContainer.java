@@ -59,13 +59,10 @@ public class RobotContainer {
   public RobotContainer() {
 
     autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.setDefaultOption("DO NOTHING", Commands.none());
-    autoChooser.addOption("PapaSmerfJeffords",
-        new PathPlannerAuto("PapaSmerfJeffords", true).withName("PapaSmerfJeffords"));
-    autoChooser.addOption("Straight Back",
-        new PathPlannerAuto("Straight Back", true).withName("Straight Back"));
-    autoChooser.addOption("Straight Left",
-        new PathPlannerAuto("Straight Left", false).withName("Straight Left"));
+    autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
+    autoChooser.addOption("Arch Trench", new PathPlannerAuto("Arch Trench", false).withName("ArchTrench"));
+    autoChooser.addOption("Arch Bump", new PathPlannerAuto("Arch Bump", false).withName("Arch Bump"));
+    autoChooser.addOption("Trench 2 Trench", new PathPlannerAuto("Trench 2 Trench", false).withName("Trench 2 Trench"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     s_Swerve.resetPose(new Pose2d(3.418, 3.987, new Rotation2d(121.115)));

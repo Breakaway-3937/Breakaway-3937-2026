@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.534450784593438,
+        "y": 5.658801711840229
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.534450784593439,
+        "y": 5.658801711840229
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.730299572039942,
+        "y": 5.658801711840229
+      },
+      "prevControl": {
+        "x": 6.976017618773523,
+        "y": 5.612729578077682
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Bump 2 Bump P1 to P2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.8,
+    "rotation": 0.7252242990592533
+  },
+  "reversed": false,
+  "folder": "Bump 2 Bump",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 1.6211459136533775
+  },
+  "useDefaultConstraints": true
+}
