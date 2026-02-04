@@ -12,10 +12,6 @@ import frc.robot.generated.TunerConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,10 +34,10 @@ public class RobotContainer {
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
   private final Vision s_Vision = new Vision(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
-  //private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
-  //private final Climber s_Climber = new Climber();
-  //private final Intake s_Intake = new Intake();
-  //private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake, s_Climber, s_Vision);
+  private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
+  private final Climber s_Climber = new Climber();
+  private final Intake s_Intake = new Intake();
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake, s_Climber, s_Vision);
 
   //Misc
   private final SendableChooser<Command> autoChooser;
@@ -65,7 +61,6 @@ public class RobotContainer {
     autoChooser.addOption("Trench 2 Trench", new PathPlannerAuto("Trench 2 Trench", false).withName("Trench 2 Trench"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
-    //s_Swerve.resetPose(new Pose2d(12.973, 0.640, new Rotation2d(Math.toRadians(180))));
     configureBindings();
   }
 
@@ -76,7 +71,7 @@ public class RobotContainer {
             .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
-    /*xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
+    xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
     xboxController.leftTrigger().whileTrue(s_SuperSubsystem.intake());
@@ -85,7 +80,7 @@ public class RobotContainer {
     xboxController.rightBumper().onTrue(s_SuperSubsystem.fire());
     xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
     xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
-    xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());*/
+    xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 
   public Command getAutonomousCommand() {
