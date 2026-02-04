@@ -1,12 +1,12 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Swerve;
 
-public class Vision extends SubsystemBase {
+public class Vision {
     private final Swerve s_Swerve;
     private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
     private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
