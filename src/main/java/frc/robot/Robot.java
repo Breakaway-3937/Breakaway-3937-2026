@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
 
     if(autonomousCommand != null) {
       autonomousCommand.schedule();
+      robotContainer.getQuestNavSubsystem().setPose(robotContainer.getSwerve().getState().Pose);
     }
   }
 

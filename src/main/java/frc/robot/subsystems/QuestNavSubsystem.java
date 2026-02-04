@@ -4,6 +4,7 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -26,9 +27,12 @@ public class QuestNavSubsystem extends SubsystemBase {
             0.035 // Trust down to 2 degrees rotational
     );
 
-    public QuestNavSubsystem(Swerve swerve, Pose3d initial_pose) {
-        questNav.setPose(initial_pose.transformBy(ROBOT_TO_QUEST));
+    public QuestNavSubsystem(Swerve swerve) {
         this.s_Swerve = swerve;
+    }
+
+    public void setPose(Pose2d pose) {
+        questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
     }
 
     @Override
