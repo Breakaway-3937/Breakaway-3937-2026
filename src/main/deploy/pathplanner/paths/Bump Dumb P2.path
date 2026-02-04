@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4785421686746987,
+        "y": 0.6474096385542167
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5396965026125324,
+        "y": 1.3169625350039191
+      },
+      "isLocked": false,
+      "linkedName": "Bump Dump P1 2 P2"
+    },
+    {
+      "anchor": {
+        "x": 3.5820120481927713,
+        "y": 2.6034698795180726
+      },
+      "prevControl": {
+        "x": 2.137916782300408,
+        "y": 1.6774178587295379
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Bump Dump P2 2 P3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 4.0,
+    "rotation": 178.71267105847502
+  },
+  "reversed": false,
+  "folder": "Bump Dump",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

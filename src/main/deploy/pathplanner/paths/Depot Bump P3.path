@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.560156626506024,
+        "y": 5.594108416547789
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.07505758501582,
+        "y": 5.540689230623567
+      },
+      "isLocked": false,
+      "linkedName": "Depot Bump P2 2 P3"
+    },
+    {
+      "anchor": {
+        "x": 7.811036144578313,
+        "y": 5.594108416547789
+      },
+      "prevControl": {
+        "x": 7.86837586336063,
+        "y": 6.409761144732764
+      },
+      "nextControl": {
+        "x": 7.778253012048193,
+        "y": 5.12777108433735
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.811036144578313,
+        "y": 4.493963855421687
+      },
+      "prevControl": {
+        "x": 7.8223880598079765,
+        "y": 4.743705990474264
+      },
+      "nextControl": {
+        "x": 7.789180722891565,
+        "y": 4.013144578313253
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.560156626506024,
+        "y": 5.594108416547789
+      },
+      "prevControl": {
+        "x": 3.997265060240964,
+        "y": 5.575807228915662
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Depot Bump P2 2 P3"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9485477178423226,
+      "rotationDegrees": -86.93004442756585
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 4.0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Depot Bump",
+  "idealStartingState": {
+    "velocity": 4.0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,111 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5820120481927713,
+        "y": 2.6034698795180726
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.565063530865025,
+        "y": 2.6088554694010826
+      },
+      "isLocked": false,
+      "linkedName": "Bump Dump P2 2 P3"
+    },
+    {
+      "anchor": {
+        "x": 5.876831325301204,
+        "y": 2.6034698795180726
+      },
+      "prevControl": {
+        "x": 5.800580932297853,
+        "y": 2.84155784134486
+      },
+      "nextControl": {
+        "x": 6.412289156626506,
+        "y": 0.9315301204819275
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.789180722891565,
+        "y": 0.516277108433735
+      },
+      "prevControl": {
+        "x": 6.894510790305679,
+        "y": 0.42681011514359324
+      },
+      "nextControl": {
+        "x": 8.037940020443195,
+        "y": 0.5411530381976711
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.789180722891565,
+        "y": 3.576036144578313
+      },
+      "prevControl": {
+        "x": 7.789180722861487,
+        "y": 2.9433456328532066
+      },
+      "nextControl": {
+        "x": 7.78918072290345,
+        "y": 3.826036144578313
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4673855421743895,
+        "y": 1.8385301204863524
+      },
+      "prevControl": {
+        "x": 2.4892409638611377,
+        "y": 1.5325542168718944
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.9294605809128687,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.88140399658205
+  },
+  "reversed": false,
+  "folder": "Bump Dump",
+  "idealStartingState": {
+    "velocity": 4.0,
+    "rotation": 178.71267105847502
+  },
+  "useDefaultConstraints": true
+}
