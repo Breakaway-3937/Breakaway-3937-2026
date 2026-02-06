@@ -24,22 +24,22 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
 
-  //Driver Controllers
+  // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
-  //Subsystems
+  // Subsystems
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
   private final Vision s_Vision = new Vision(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
   private final Climber s_Climber = new Climber();
   private final Intake s_Intake = new Intake();
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake, s_Climber, s_Vision);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake, s_Climber);
 
-  //Misc
+  // Misc
   private final SendableChooser<Command> autoChooser;
   private double translationMultiplier = 1.0;
   private double rotationMultiplier = 1.0;
@@ -49,11 +49,12 @@ public class RobotContainer {
       .withRotationalDeadband(Constants.Swerve.MAX_ANGULAR_RATE * Constants.Controllers.STICK_DEADBAND)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  
-
   public RobotContainer() {
 
-    s_QuestNavSubsystem.setPose(s_Swerve.getState().Pose);
+    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+    NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
+
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
     autoChooser.addOption("Arch Trench", new PathPlannerAuto("Arch Trench", false).withName("ArchTrench"));
@@ -62,15 +63,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
-
-
-
-
-
-    //NAMED COMMANDS FOR AUTO
-      NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
-      NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
-      NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
   }
 
   private void configureBindings() {

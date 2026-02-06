@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Vision;
 import frc.robot.subsystems.States.ClimberStates;
 import frc.robot.subsystems.States.IntakeStates;
 import frc.robot.subsystems.States.ShootdexerStates;
@@ -17,13 +16,11 @@ public class SuperSubsystem extends SubsystemBase {
   private final Shootdexer s_Shootdexer;
   private final Intake s_Intake;
   private final Climber s_Climber;
-  private final Vision s_Vision;
 
-  public SuperSubsystem(Shootdexer s_Shootdexer, Intake s_Intake, Climber s_Climber, Vision s_Vision) {
+  public SuperSubsystem(Shootdexer s_Shootdexer, Intake s_Intake, Climber s_Climber) {
     this.s_Shootdexer = s_Shootdexer;
     this.s_Intake = s_Intake;
     this.s_Climber = s_Climber;
-    this.s_Vision = s_Vision;
   }
 
   private Command setIntakeOut() {
