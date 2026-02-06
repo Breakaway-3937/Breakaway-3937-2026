@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
@@ -61,6 +62,15 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
+
+
+
+
+
+    //NAMED COMMANDS FOR AUTO
+      NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+      NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+      NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
   }
 
   private void configureBindings() {

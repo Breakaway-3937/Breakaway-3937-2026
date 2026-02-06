@@ -56,7 +56,8 @@ public class States {
         RUNG_ONE(0.0),
         RUNG_TWO(0.0),
         RUNG_THREE(0.0),
-        PRESTAGE(0.0);
+        PRESTAGE(0.0),
+        PULL(0.0);
 
         private final double Climb;
 

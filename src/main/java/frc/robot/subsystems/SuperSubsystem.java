@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Vision;
 import frc.robot.subsystems.States.ClimberStates;
@@ -71,11 +72,19 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(setIntakeIn());
   }
 
-    public Command overrideStow() {
+  public Command overrideStow() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW)))
         .andThen(setIntakeOut());
+  }
+
+  public Command climbRungOne() {
+    return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
+        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
+        .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.RUNG_ONE))).andThen(setIntakeIn())
+        .andThen(Commands.waitSeconds(0.5)).andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.PULL)))
+        .andThen(setIntakeIn());
   }
 
   @Override
