@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Vision;
+import frc.robot.Calculations;
 import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
-  private final Vision s_Vision;
+  private final Calculations s_Vision;
   private boolean isTracking = true;
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
   private final MotionMagicExpoVoltage hoodRequest;
@@ -37,7 +37,7 @@ public class Shootdexer extends SubsystemBase {
   private final MotionMagicVoltage kickerRequest;
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
-  public Shootdexer(Vision s_Vision) {
+  public Shootdexer(Calculations s_Vision) {
     this.s_Vision = s_Vision;
     shooterLead = new TalonFX(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID);
     shooterFollow = new TalonFX(Constants.Shootdexer.SHOOTER_FOLLOW_CAN_ID);

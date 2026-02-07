@@ -27,12 +27,11 @@ public class RobotContainer {
   // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
-  private final CommandXboxController xboxController = new CommandXboxController(
-      Constants.Controllers.XBOX_CONTROLLER.getPort());
+  private final CommandXboxController xboxController = new CommandXboxController(Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
-  private final Vision s_Vision = new Vision(s_Swerve);
+  private final Calculations s_Vision = new Calculations(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
   private final Climber s_Climber = new Climber();
