@@ -23,8 +23,8 @@ public final class Constants {
 
   public static final class Shootdexer {
     // Shooter
-    public static final int SHOOTER_LEAD_CAN_ID = 0;
-    public static final int SHOOTER_FOLLOW_CAN_ID = 0;
+    public static final int SHOOTER_LEAD_CAN_ID = 15;
+    public static final int SHOOTER_FOLLOW_CAN_ID = 16;
     public static final int HOOD_CAN_ID = 0;
     public static final int TURRET_LEAD_CAN_ID = 0;
     public static final int TURRET_FOLLOW_CAN_ID = 0;
