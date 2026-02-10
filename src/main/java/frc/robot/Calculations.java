@@ -13,10 +13,10 @@ public class Calculations {
     private final Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
     private final Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
     private final Rect[] trenches = {trench1, trench2, trench3, trench4};
-    private double redTargetX = 5.0;
-    private double redTargetY = 5.0;
-    private double blueTargetX = -5.0;
-    private double blueTargetY = -5.0;
+    private double redTargetX = 11.9;
+    private double redTargetY = 4.035;
+    private double blueTargetX = 4.6;
+    private double blueTargetY = 4.035;
 
     public Calculations(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
