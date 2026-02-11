@@ -25,7 +25,7 @@ public class States {
     }
 
     public enum ShootdexerStates {
-        IDLE (0.0, 0.0, 0.0),
+        IDLE (-10, 0.0, 0.0),
         INTAKE(0.0, 0.0, 0.2),
         UNCLOG(0.0, 0.0, -0.2),
         FIRE(0.0, 0.0, 0.8);

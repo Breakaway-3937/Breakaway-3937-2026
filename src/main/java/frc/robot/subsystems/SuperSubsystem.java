@@ -14,16 +14,16 @@ import frc.robot.subsystems.States.ShootdexerStates;
 public class SuperSubsystem extends SubsystemBase {
 
   private final Shootdexer s_Shootdexer;
-  private final Intake s_Intake;
-  private final Climber s_Climber;
+  //private final Intake s_Intake;
+  //private final Climber s_Climber;
 
-  public SuperSubsystem(Shootdexer s_Shootdexer, Intake s_Intake, Climber s_Climber) {
+  public SuperSubsystem(Shootdexer s_Shootdexer/* , Intake s_Intake, Climber s_Climber*/) {
     this.s_Shootdexer = s_Shootdexer;
-    this.s_Intake = s_Intake;
-    this.s_Climber = s_Climber;
+    //this.s_Intake = s_Intake;
+    //this.s_Climber = s_Climber;
   }
 
-  private Command setIntakeOut() {
+  /*private Command setIntakeOut() {
     return s_Climber.setClimber().andThen(s_Intake.setIntakeWrist().alongWith(s_Intake.setIntakePower())
         .alongWith(s_Shootdexer.setKicker()).alongWith(s_Shootdexer.setSpiner()));
   }
@@ -31,17 +31,21 @@ public class SuperSubsystem extends SubsystemBase {
   private Command setIntakeIn() {
     return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker().alongWith(s_Shootdexer.setSpiner()))
         .alongWith(s_Intake.setIntakePower()).alongWith(s_Climber.setClimber());
-  }
+  }*/
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {
     return runOnce(() -> s_Shootdexer.setAutoTracking(isTracking, isHub));
   }
 
   public Command fire() {
-    return runOnce(() -> s_Shootdexer.runShooter());
+    return s_Shootdexer.runShooter();
   }
 
-  public Command prestageClimb() {
+  public Command idel() {
+    return s_Shootdexer.setShooterPower();
+  }
+
+  /*public Command prestageClimb() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.PRESTAGE)))
@@ -82,7 +86,7 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.RUNG_ONE))).andThen(setIntakeIn())
         .andThen(Commands.waitSeconds(0.5)).andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.PULL)))
         .andThen(setIntakeIn());
-  }
+  }*/
 
   @Override
   public void periodic() {

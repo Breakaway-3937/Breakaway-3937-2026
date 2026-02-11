@@ -1,9 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,18 +25,19 @@ public class Shootdexer extends SubsystemBase {
   private final Calculations s_Vision;
   private boolean isTracking = true;
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
-  private final MotionMagicExpoVoltage hoodRequest;
+  //private final MotionMagicExpoVoltage hoodRequest;
   private final InterpolatingDoubleTreeMap turretMap = new InterpolatingDoubleTreeMap();
-  private final MotionMagicExpoVoltage turretRequest;
+  //private final MotionMagicExpoVoltage turretRequest;
   private final TalonFX shooterLead, shooterFollow, hood, turretLead, turretFollow, kicker, spiner;
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
-      MotorAlignmentValue.Aligned);
+      MotorAlignmentValue.Opposed);
   private final Follower turretFollowerRequest = new Follower(Constants.Shootdexer.TURRET_LEAD_CAN_ID,
       MotorAlignmentValue.Aligned);
   private final CANrange eyeOfSauron;
   private ShootdexerStates shootdexerState = ShootdexerStates.IDLE;
-  private final MotionMagicVoltage spinerRequest;
-  private final MotionMagicVoltage kickerRequest;
+  private final MotionMagicVelocityVoltage shooterRequest;
+  //private final MotionMagicVoltage spinerRequest;
+  //private final MotionMagicVoltage kickerRequest;
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
   public Shootdexer(Calculations s_Vision) {
@@ -53,16 +56,18 @@ public class Shootdexer extends SubsystemBase {
 
     turretMap.put(1.0, 8.5);
 
-    configTurret();
-    configHood();
+    
+    shooterRequest = new MotionMagicVelocityVoltage(0);
+    //configTurret();
+    //configHood();
     configShooter();
-    configCANranges();
+    //configCANranges();
 
-    hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
-    turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+    //hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+    //turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
-    spinerRequest = new MotionMagicVoltage(null);
-    kickerRequest = new MotionMagicVoltage(null);
+    //spinerRequest = new MotionMagicVoltage(null);
+    //kickerRequest = new MotionMagicVoltage(null);
   }
 
   public void configTurret() {
@@ -137,15 +142,18 @@ public class Shootdexer extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
-    shooterLead.setPosition(0);
-    shooterFollow.setPosition(0);
     shooterFollow.setControl(shooterFollowerRequest);
   }
 
@@ -200,7 +208,8 @@ public class Shootdexer extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.set(SmartDashboard.getNumber("Shooter Speed", 0)));
+    System.out.println("RUNNNNING");
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
   }
 
   public void setShootDexerState(ShootdexerStates shootdexerState) {
@@ -208,21 +217,22 @@ public class Shootdexer extends SubsystemBase {
   }
 
   public Command setShooterPower() {
-    return runOnce(() -> shooterLead.set(shootdexerState.getShooterSpeed()));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed())));
   }
-
+/* 
   public Command setSpiner() {
     return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinnerSpeed())));
   }
 
   public Command setKicker() {
     return runOnce(() -> kicker.setControl(kickerRequest.withPosition(shootdexerState.getKickerSpeed())));
-  }
+  }*/
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shooter Speed", 0);
-    if (isTracking && !s_Vision.isUnderTrench()) {
+    SmartDashboard.putNumber("Lead Motor", shooterLead.getVelocity().getValueAsDouble());
+    //SmartDashboard.putNumber("Shooter Speed", 0);
+    /*if (isTracking && !s_Vision.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
       turretLead.setControl(turretRequest.withPosition(turretMap.get(s_Vision.getAngleToTarget())));
     } else if (isTracking && s_Vision.isUnderTrench()) {
@@ -231,7 +241,7 @@ public class Shootdexer extends SubsystemBase {
     } else {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turretLead.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
-    }
+    }*/
   }
 
 }
