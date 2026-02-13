@@ -6,6 +6,7 @@ public class States {
         STOW(0.0, 0.0),
         INTAKE(0.0, 0.2),
         FIRE(0.0, 0.0),
+        TEST(0.0,0.0),
         UNCLOG(0.0, -0.2);
 
         private final double angle, power;

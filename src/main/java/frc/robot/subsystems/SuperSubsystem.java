@@ -23,7 +23,9 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Intake = s_Intake;
     //this.s_Climber = s_Climber;
   }
-
+ private Command setIntakeTest() {
+    return s_Intake.setIntakeWrist();
+  }
   /*private Command setIntakeOut() {
     return s_Climber.setClimber().andThen(s_Intake.setIntakeWrist().alongWith(s_Intake.setIntakePower())
         .alongWith(s_Shootdexer.setKicker()).alongWith(s_Shootdexer.setSpiner()));
@@ -48,13 +50,13 @@ public class SuperSubsystem extends SubsystemBase {
   public Command noSpin() {
     return s_Shootdexer.stopSpiner();
   }
-
-    public Command intake() {
-    return s_Intake.runIntake();
+  public Command intakeTestOut() {
+    return runOnce(() -> s_Intake.setIntakeState(IntakeStates.TEST)).andThen(setIntakeTest());
   }
-  public Command noIntake() {
-    return s_Intake.stopIntake();
+    public Command intakeTestIn() {
+    return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW)).andThen(setIntakeTest());
   }
+  
 /*
    public Command idel() {
     return s_Shootdexer.setShooterPower();
@@ -66,6 +68,7 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.PRESTAGE)))
         .andThen(setIntakeIn());
   }
+
 
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))

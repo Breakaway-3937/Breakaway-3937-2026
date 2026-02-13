@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -13,43 +12,20 @@ import frc.robot.Constants;
 import frc.robot.subsystems.States.IntakeStates;
 
 public class Intake extends SubsystemBase {
-  private final TalonFX intake;
- // private final MotionMagicExpoVoltage intakeWristRequest;
+  private final TalonFX  intakeWrist;
+  private final MotionMagicExpoVoltage intakeWristRequest;
   private IntakeStates intakeState = IntakeStates.STOW;
-  private final MotionMagicVelocityVoltage intakeRequest;
+
   public Intake() {
-    intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
-   // intakeWrist = new TalonFX(Constants.Intake.INTAKE_WRIST_CAN_ID);
+    //intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
+    intakeWrist = new TalonFX(Constants.Intake.INTAKE_WRIST_CAN_ID);
 
-  //  configIntakeWrist();
-    configIntake();
-    intakeRequest = new MotionMagicVelocityVoltage(0);
-   // intakeWristRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+    configIntakeWrist();
+    //configIntake();
+
+    intakeWristRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   }
 
-   public void configIntake() {
-
-    intake.getConfigurator().apply(new TalonFXConfiguration());
-
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    config.Slot0.kS = 0.0;
-    config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.00;
-    config.Slot0.kP = 0.07;
-    config.Slot0.kI = 0.0;
-    config.Slot0.kD = 0.0;
-
-    config.MotionMagic.MotionMagicAcceleration = 400;
-    config.MotionMagic.MotionMagicJerk = 4000;
-
-    intake.getConfigurator().apply(config);
-  }
-
-/* 
   public void configIntakeWrist() {
     intakeWrist.getConfigurator().apply(new TalonFXConfiguration());
 
@@ -77,8 +53,22 @@ public class Intake extends SubsystemBase {
     intakeWrist.setPosition(0);
   }
 
-  
+ /*  public void configIntake() {
+    intake.getConfigurator().apply(new TalonFXConfiguration());
 
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+    intake.getConfigurator().apply(config);
+  }
+*/
   public void setIntakeState(IntakeStates intakeState) {
     this.intakeState = intakeState;
   }
@@ -91,17 +81,7 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> intakeWrist.stopMotor());
   }
 
-  public Command setIntakePower() {
-    return runOnce(() -> intake.set(intakeState.getPower()));
-  }
-*/
 
-  public Command runIntake() {
-    return runOnce(() -> intake.setControl(intakeRequest.withVelocity(-10)));
-  }
-    public Command stopIntake() {
-    return runOnce(() -> intake.setControl(intakeRequest.withVelocity(  0)));
-  }
   @Override
   public void periodic() {
 
