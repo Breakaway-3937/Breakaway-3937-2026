@@ -36,8 +36,8 @@ public class RobotContainer {
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
   //private final Climber s_Climber = new Climber();
-  //private final Intake s_Intake = new Intake();
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer/* , s_Intake, s_Climber*/);
+  private final Intake s_Intake = new Intake();
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake /*  s_Climber*/);
 
   // Misc
   private final SendableChooser<Command> autoChooser;
@@ -51,7 +51,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+   // NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
     //NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
@@ -77,7 +77,8 @@ public class RobotContainer {
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
     //xboxController.leftTrigger().whileTrue(s_SuperSubsystem.intake());
     //xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
-    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
+    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.spin()).onFalse(s_SuperSubsystem.noSpin());
+      xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.noIntake());
     //xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
     //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
     //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());

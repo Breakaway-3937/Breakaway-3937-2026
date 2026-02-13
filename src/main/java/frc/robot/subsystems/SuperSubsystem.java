@@ -14,12 +14,13 @@ import frc.robot.subsystems.States.ShootdexerStates;
 public class SuperSubsystem extends SubsystemBase {
 
   private final Shootdexer s_Shootdexer;
-  //private final Intake s_Intake;
+  private final Intake s_Intake;
   //private final Climber s_Climber;
+  
 
-  public SuperSubsystem(Shootdexer s_Shootdexer/* , Intake s_Intake, Climber s_Climber*/) {
+  public SuperSubsystem(Shootdexer s_Shootdexer , Intake s_Intake /*Climber s_Climber*/) {
     this.s_Shootdexer = s_Shootdexer;
-    //this.s_Intake = s_Intake;
+    this.s_Intake = s_Intake;
     //this.s_Climber = s_Climber;
   }
 
@@ -36,15 +37,29 @@ public class SuperSubsystem extends SubsystemBase {
   public Command autoTrack(boolean isTracking, Boolean isHub) {
     return runOnce(() -> s_Shootdexer.setAutoTracking(isTracking, isHub));
   }
-
+/* 
   public Command fire() {
     return s_Shootdexer.runShooter();
   }
-
-  public Command idel() {
-    return s_Shootdexer.setShooterPower();
+    */
+  public Command spin() {
+    return s_Shootdexer.runSpiner();
+  }
+  public Command noSpin() {
+    return s_Shootdexer.stopSpiner();
   }
 
+    public Command intake() {
+    return s_Intake.runIntake();
+  }
+  public Command noIntake() {
+    return s_Intake.stopIntake();
+  }
+/*
+   public Command idel() {
+    return s_Shootdexer.setShooterPower();
+  }
+*/
   /*public Command prestageClimb() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))

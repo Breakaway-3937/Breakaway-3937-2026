@@ -35,8 +35,8 @@ public class Shootdexer extends SubsystemBase {
       MotorAlignmentValue.Aligned);
   private final CANrange eyeOfSauron;
   private ShootdexerStates shootdexerState = ShootdexerStates.IDLE;
-  private final MotionMagicVelocityVoltage shooterRequest;
-  //private final MotionMagicVoltage spinerRequest;
+  //private final MotionMagicVelocityVoltage shooterRequest;
+  private final MotionMagicVelocityVoltage spinerRequest;
   //private final MotionMagicVoltage kickerRequest;
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
@@ -57,16 +57,17 @@ public class Shootdexer extends SubsystemBase {
     turretMap.put(1.0, 8.5);
 
     
-    shooterRequest = new MotionMagicVelocityVoltage(0);
+    //shooterRequest = new MotionMagicVelocityVoltage(0);
     //configTurret();
     //configHood();
-    configShooter();
+   // configShooter();
     //configCANranges();
 
     //hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
     //turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
-    //spinerRequest = new MotionMagicVoltage(null);
+    spinerRequest = new MotionMagicVelocityVoltage(0);
+    configSpiner();
     //kickerRequest = new MotionMagicVoltage(null);
   }
 
@@ -166,10 +167,15 @@ public class Shootdexer extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
 
     spiner.getConfigurator().apply(config);
   }
@@ -206,19 +212,26 @@ public class Shootdexer extends SubsystemBase {
     }
     this.isTracking = isTracking;
   }
-
+/* 
   public Command runShooter() {
     System.out.println("RUNNNNING");
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
   }
-
+*/
   public void setShootDexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
-
+  public Command runSpiner() {
+    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(-10)));
+  }
+    public Command stopSpiner() {
+    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(0)));
+  }
+/* 
   public Command setShooterPower() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed())));
   }
+*/
 /* 
   public Command setSpiner() {
     return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinnerSpeed())));
