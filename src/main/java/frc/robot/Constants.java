@@ -36,7 +36,7 @@ public final class Constants {
 
   public static final class Intake {
     public static final int INTAKE_CAN_ID = 0;
-    public static final int INTAKE_WRIST_CAN_ID = 0;
+    public static final int INTAKE_WRIST_CAN_ID = 3;
 
   }
 
