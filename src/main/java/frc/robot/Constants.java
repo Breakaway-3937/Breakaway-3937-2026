@@ -30,12 +30,12 @@ public final class Constants {
     public static final int TURRET_FOLLOW_CAN_ID = 0;
     // Indexer
     public static final int KICKER_CAN_ID = 0;
-    public static final int SPINER_CAN_ID = 0;
+    public static final int SPINER_CAN_ID = 4;
     public static final int EYE_OF_SAURON_CAN_ID = 0;
   }
 
   public static final class Intake {
-    public static final int INTAKE_CAN_ID = 0;
+    public static final int INTAKE_CAN_ID = 5;
     public static final int INTAKE_WRIST_CAN_ID = 3;
 
   }
