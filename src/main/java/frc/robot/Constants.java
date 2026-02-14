@@ -5,7 +5,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.PracticeTunerConstants;
+import frc.robot.generated.PracticeTunerConstants;
 
 public final class Constants {
 
@@ -17,7 +18,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static final double MAX_SPEED = PracticeTunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(1.25).in(RadiansPerSecond);
   }
 

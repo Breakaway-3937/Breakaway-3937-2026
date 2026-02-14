@@ -8,7 +8,7 @@ import frc.robot.subsystems.States.IntakeStates;
 import frc.robot.subsystems.States.ShootdexerStates;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.subsystems.QuestNavSubsystem;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -36,7 +36,7 @@ public class RobotContainer {
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
-  private final Swerve s_Swerve = TunerConstants.createDrivetrain();
+  private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
   private final Calculations s_Vision = new Calculations(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
