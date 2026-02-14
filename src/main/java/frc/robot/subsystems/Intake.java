@@ -60,23 +60,27 @@ public class Intake extends SubsystemBase {
     intakeWrist.setPosition(0);
   }
 
-  
   public void configIntake() {
     intake.getConfigurator().apply(new TalonFXConfiguration());
-    
+
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    
-    config.CurrentLimits.SupplyCurrentLimit = 80;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
-    
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
+
     intake.getConfigurator().apply(config);
-    }
-   
+  }
+
   public void setIntakeState(IntakeStates intakeState) {
     this.intakeState = intakeState;
   }
@@ -84,19 +88,21 @@ public class Intake extends SubsystemBase {
   public Command setIntakeWrist() {
     return runOnce(() -> intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle())));
   }
-  
-  public Command setIntakePower(){
+
+  public Command setIntakePower() {
     return runOnce(() -> intake.setControl(intakeRequest.withVelocity(intakeState.getPower())));
   }
 
   public Command stopWrist() {
     return runOnce(() -> intakeWrist.stopMotor());
   }
-public void setIntakeThing() {
-  System.out.println("I'm Running");
-  //setIntakeState(IntakeStates.TEST);
-intake.set(-0.4);
-}
+
+  public void setIntakeThing() {
+    System.out.println("I'm Running");
+    // setIntakeState(IntakeStates.TEST);
+    intake.set(-0.4);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("IntakePose", intakeWrist.getPosition().getValueAsDouble());
