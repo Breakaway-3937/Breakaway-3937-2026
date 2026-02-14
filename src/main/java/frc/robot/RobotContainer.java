@@ -68,9 +68,9 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withRotationalRate(rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+            .withVelocityX(translationController.getRawAxis(0) * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getRawAxis(1) * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withRotationalRate(rotationController.getRawAxis(0) * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));

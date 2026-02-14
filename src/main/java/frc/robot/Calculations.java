@@ -4,6 +4,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
@@ -50,9 +51,11 @@ public class Calculations {
 
         if (alliance == DriverStation.Alliance.Red) {
             angle = Math.toDegrees(Math.atan2(redTargetY - robotY, redTargetX - robotX));
+            SmartDashboard.putNumber("MY RED ANGLE", angle);
         }
         else if (alliance == DriverStation.Alliance.Blue) {
             angle = Math.toDegrees(Math.atan2(blueTargetY - robotY, blueTargetX - robotX));
+            SmartDashboard.putNumber("My BLUE ANGLE", angle);
         }
         else {
             System.out.println("Alliance not recognized");
@@ -77,16 +80,20 @@ public class Calculations {
 
     public void setTarget(boolean isHub) {
         if(isHub) {
-            redTargetX = 5.0;
-            redTargetY = 5.0;
-            blueTargetX = -5.0;
-            blueTargetY = -5.0;
+            redTargetX = 11.9;
+            redTargetY = 4.035;
+            blueTargetX = 4.6;
+            blueTargetY = 4.035;
         } 
         else {
-            redTargetX = 3.0;
-            redTargetY = 3.0;
-            blueTargetX = -3.0;
-            blueTargetY = -3.0;
+            redTargetX = 0.0;
+            redTargetY = 0.0;
+            blueTargetX = 0.0;
+            blueTargetY = 0.0;
         }
+    }
+
+    public double getAngle() {
+        return s_Swerve.getState().Pose.getRotation().getDegrees();
     }
 }
