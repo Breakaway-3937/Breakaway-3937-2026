@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Calculations;
+import frc.robot.subsystems.States.IntakeStates;
 import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
@@ -221,25 +222,26 @@ public class Shootdexer extends SubsystemBase {
   public void setShootDexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
-  public Command runSpiner() {
-    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(-10)));
-  }
-    public Command stopSpiner() {
-    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(0)));
-  }
+  
 /* 
   public Command setShooterPower() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed())));
   }
 */
-/* 
+ 
   public Command setSpiner() {
-    return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinnerSpeed())));
+    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(shootdexerState.getSpinnerSpeed())));
   }
-
+/* 
   public Command setKicker() {
     return runOnce(() -> kicker.setControl(kickerRequest.withPosition(shootdexerState.getKickerSpeed())));
   }*/
+
+  public void setSpinerThing() {
+  System.out.println("I'm Running");
+  setShootDexerState(shootdexerState.TEST1);
+spiner.setControl(spinerRequest.withVelocity(0));
+}
 
   @Override
   public void periodic() {

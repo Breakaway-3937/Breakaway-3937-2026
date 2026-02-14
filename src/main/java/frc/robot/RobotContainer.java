@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -82,7 +84,11 @@ public class RobotContainer {
     //xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
     //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
     //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
-    //xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.intakeEverythingTestIn());
+    //xboxController.leftBumper().onTrue(new InstantCommand(() -> s_SuperSubsystem.setEverything()));
+    //xboxController.leftBumper().onTrue(new PrintCommand("Pressed"));
+
+
   }
 
   public Command getAutonomousCommand() {
