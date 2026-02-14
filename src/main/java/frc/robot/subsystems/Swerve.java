@@ -71,18 +71,18 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 	public void periodic() {
 		field.setRobotPose(getState().Pose);
 		if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent((allianceColor) -> {
-                setOperatorPerspectiveForward(
-                        allianceColor == Alliance.Red ? redAlliancePerspectiveRotation
-                                : blueAlliancePerspectiveRotation);
-                hasAppliedOperatorPerspective = true;
-            });
-        }
+			DriverStation.getAlliance().ifPresent((allianceColor) -> {
+				setOperatorPerspectiveForward(
+						allianceColor == Alliance.Red ? redAlliancePerspectiveRotation
+								: blueAlliancePerspectiveRotation);
+				hasAppliedOperatorPerspective = true;
+			});
+		}
 	}
 
 	@Override
 	public void simulationPeriodic() {
 		updateSimState(0.02, 12.0);
-		
+
 	}
 }

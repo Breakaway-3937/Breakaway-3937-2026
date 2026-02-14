@@ -97,10 +97,8 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> intakeWrist.stopMotor());
   }
 
-  public void setIntakeThing() {
-    System.out.println("I'm Running");
-    // setIntakeState(IntakeStates.TEST);
-    intake.set(-0.4);
+  public Command stopIntake() {
+    return runOnce(() -> intake.stopMotor());
   }
 
   @Override

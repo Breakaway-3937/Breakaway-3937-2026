@@ -30,16 +30,17 @@ public class RobotContainer {
   // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
-  private final CommandXboxController xboxController = new CommandXboxController(Constants.Controllers.XBOX_CONTROLLER.getPort());
+  private final CommandXboxController xboxController = new CommandXboxController(
+      Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
   private final Swerve s_Swerve = TunerConstants.createDrivetrain();
   private final Calculations s_Vision = new Calculations(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
-  //private final Climber s_Climber = new Climber();
+  // private final Climber s_Climber = new Climber();
   private final Intake s_Intake = new Intake();
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake /*  s_Climber*/);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake /* s_Climber */);
 
   // Misc
   private final SendableChooser<Command> autoChooser;
@@ -53,9 +54,9 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-   // NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
-    //NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
-    //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
+    // NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    // NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+    // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
@@ -72,22 +73,17 @@ public class RobotContainer {
         s_Swerve.applyRequest(() -> drive
             .withVelocityX(translationController.getRawAxis(0) * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withVelocityY(translationController.getRawAxis(1) * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withRotationalRate(rotationController.getRawAxis(0) * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+            .withRotationalRate(
+                rotationController.getRawAxis(0) * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
-    //xboxController.leftTrigger().whileTrue(s_SuperSubsystem.intake());
-    //xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
-    //xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.spin()).onFalse(s_SuperSubsystem.noSpin());
-      //xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.noIntake());
-    //xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
-    //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
-    //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
-    xboxController.rightBumper().onTrue(s_SuperSubsystem.intakeEverythingTestIn());
-    //xboxController.leftBumper().onTrue(new InstantCommand(() -> s_SuperSubsystem.setEverything()));
-    //xboxController.leftBumper().onTrue(new PrintCommand("Pressed"));
-
+    xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
+    xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
+    // xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
+    // xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
 
   }
 
@@ -103,4 +99,18 @@ public class RobotContainer {
   public QuestNavSubsystem getQuestNavSubsystem() {
     return s_QuestNavSubsystem;
   }
+
+  public Shootdexer getShootdexer() {
+    return s_Shootdexer;
+  }
+
+  public Intake getIntake() {
+    return s_Intake;
+  }
+
+  /*
+   * public Climber getClimber() {
+   * return s_Climber;
+   * }
+   */
 }

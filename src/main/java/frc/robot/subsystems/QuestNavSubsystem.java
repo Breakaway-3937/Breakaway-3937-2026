@@ -18,7 +18,7 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     QuestNav questNav = new QuestNav();
 
-    Transform3d ROBOT_TO_QUEST = new Transform3d(0, 0, 0.20, new Rotation3d(0,0,0));
+    Transform3d ROBOT_TO_QUEST = new Transform3d(0, 0, 0.20, new Rotation3d(0, 0, 0));
     Swerve s_Swerve;
 
     Matrix<N3, N1> QUESTNAV_STD_DEVS = VecBuilder.fill(
@@ -51,9 +51,9 @@ public class QuestNavSubsystem extends SubsystemBase {
                 double timestamp = questFrame.dataTimestamp();
 
                 Pose3d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
-                
+
                 double ctreTime = Utils.fpgaToCurrentTime(timestamp);
-                
+
                 s_Swerve.addVisionMeasurement(robotPose.toPose2d(), ctreTime, QUESTNAV_STD_DEVS);
             }
         }

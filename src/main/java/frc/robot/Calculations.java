@@ -13,7 +13,7 @@ public class Calculations {
     private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
     private final Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
     private final Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
-    private final Rect[] trenches = {trench1, trench2, trench3, trench4};
+    private final Rect[] trenches = { trench1, trench2, trench3, trench4 };
     private double redTargetX = 11.9;
     private double redTargetY = 4.035;
     private double blueTargetX = 4.6;
@@ -31,11 +31,9 @@ public class Calculations {
 
         if (alliance == DriverStation.Alliance.Red) {
             distance = Math.hypot(redTargetX - robotX, redTargetY - robotY);
-        }
-        else if (alliance == DriverStation.Alliance.Blue) {
+        } else if (alliance == DriverStation.Alliance.Blue) {
             distance = Math.hypot(blueTargetX - robotX, blueTargetY - robotY);
-        }
-        else {
+        } else {
             System.out.println("Alliance not recognized");
             distance = 0.0;
         }
@@ -52,12 +50,10 @@ public class Calculations {
         if (alliance == DriverStation.Alliance.Red) {
             angle = Math.toDegrees(Math.atan2(redTargetY - robotY, redTargetX - robotX));
             SmartDashboard.putNumber("MY RED ANGLE", angle);
-        }
-        else if (alliance == DriverStation.Alliance.Blue) {
+        } else if (alliance == DriverStation.Alliance.Blue) {
             angle = Math.toDegrees(Math.atan2(blueTargetY - robotY, blueTargetX - robotX));
             SmartDashboard.putNumber("My BLUE ANGLE", angle);
-        }
-        else {
+        } else {
             System.out.println("Alliance not recognized");
             return 0.0;
         }
@@ -68,9 +64,9 @@ public class Calculations {
 
     public boolean isUnderTrench() {
         boolean isUnder = false;
-        for(Rect trench : trenches) {
+        for (Rect trench : trenches) {
             Point robotPosition = new Point(s_Swerve.getState().Pose.getX(), s_Swerve.getState().Pose.getY());
-            if(robotPosition.inside(trench)) {
+            if (robotPosition.inside(trench)) {
                 isUnder = true;
                 break;
             }
@@ -79,13 +75,12 @@ public class Calculations {
     }
 
     public void setTarget(boolean isHub) {
-        if(isHub) {
+        if (isHub) {
             redTargetX = 11.9;
             redTargetY = 4.035;
             blueTargetX = 4.6;
             blueTargetY = 4.035;
-        } 
-        else {
+        } else {
             redTargetX = 0.0;
             redTargetY = 0.0;
             blueTargetX = 0.0;

@@ -16,7 +16,8 @@ import frc.robot.subsystems.States.ClimberStates;
 public class Climber extends SubsystemBase {
   private final MotionMagicExpoVoltage climberRequest;
   private final TalonFX climberLead, climberFollow;
-  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID, MotorAlignmentValue.Aligned);
+  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID,
+      MotorAlignmentValue.Aligned);
   private ClimberStates climberState = ClimberStates.STOW;
 
   public Climber() {
@@ -32,7 +33,7 @@ public class Climber extends SubsystemBase {
     climberFollow.setControl(climberFollowerRequest);
   }
 
-    public void configClimber() {
+  public void configClimber() {
 
     climberLead.getConfigurator().apply(new TalonFXConfiguration());
     climberFollow.getConfigurator().apply(new TalonFXConfiguration());
@@ -40,8 +41,8 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    //COACH SAID COAST! DO NOT PUT IN BRAKE MODE! SOMETHING ELSE IS PASSIVELY...
-    //BRAKING IT AND I'M TOO LAZY TO ASK CAD FOR A BETTER EXPLANATION!
+    // COACH SAID COAST! DO NOT PUT IN BRAKE MODE! SOMETHING ELSE IS PASSIVELY...
+    // BRAKING IT AND I'M TOO LAZY TO ASK CAD FOR A BETTER EXPLANATION!
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     config.Slot0.kS = 0.0;

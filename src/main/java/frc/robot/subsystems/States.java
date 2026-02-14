@@ -6,7 +6,7 @@ public class States {
         STOW(12.3, 0.0),
         INTAKE(0.5, 0.2),
         FIRE(4.2, 0.0),
-        TEST(0.5,50.0),
+        TEST(0.5, 50.0),
         UNCLOG(0.0, -0.2);
 
         private final double angle, power;
@@ -26,10 +26,10 @@ public class States {
     }
 
     public enum ShootdexerStates {
-        IDLE (-10, 0.0, 0.0),
+        IDLE(-10, 0.0, 0.0),
         INTAKE(0.0, 0.0, 0.2),
         TEST1(0.0, 70.0, 0.0),
-        TEST2(0.0,0.0,0.0),
+        TEST2(0.0, 0.0, 0.0),
         UNCLOG(0.0, 0.0, -0.2),
         FIRE(0.0, 0.0, 0.8);
 
