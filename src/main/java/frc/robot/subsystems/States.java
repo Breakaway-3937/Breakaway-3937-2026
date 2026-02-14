@@ -4,7 +4,7 @@ public class States {
 
     public enum IntakeStates {
         STOW(0.0, 0.0),
-        INTAKE(0.5, 10.0),
+        INTAKE(0.5, 35.0),
         UNCLOG(0.5, -10.0);
 
         private final double angle, power;
@@ -26,7 +26,7 @@ public class States {
     public enum ShootdexerStates {
         IDLE(-20, 0.0, 0.0),
         INTAKE(-20.0, 340.0, 1000.0),
-        UNCLOG(20.0, -340.0, -1000.0),
+        UNCLOG(-20.0, 340.0, 1000.0),
         FIRE(0.0, 0.0, 0.8);
 
         private final double ShooterSpeed, SpinnerSpeed, KickerSpeed;

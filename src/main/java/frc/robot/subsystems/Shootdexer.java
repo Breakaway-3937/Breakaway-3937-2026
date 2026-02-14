@@ -19,6 +19,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Calculations;
@@ -174,7 +175,7 @@ public class Shootdexer extends SubsystemBase {
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.00;
+    config.Slot0.kA = 0.0;
     config.Slot0.kP = 0.07;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
@@ -195,7 +196,7 @@ public class Shootdexer extends SubsystemBase {
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.00;
+    config.Slot0.kA = 0.0;
     config.Slot0.kP = 0.07;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
@@ -216,7 +217,7 @@ public class Shootdexer extends SubsystemBase {
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.00;
+    config.Slot0.kA = 0.0;
     config.Slot0.kP = 0.07;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
@@ -248,24 +249,19 @@ public class Shootdexer extends SubsystemBase {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
   }
 
-  public Command idelShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
-  }
-
   public void setShootdexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
 
-  public Command setShooterPower() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed())));
+  public void setShootdexerRequests() { 
+    //kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()));
+    //diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()));
+    //shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed()));
+    spinner.setControl(spinnerRequest.withVelocity(shootdexerState.getSpinnerSpeed()));
   }
 
-  public Command setSpinner() {
-    return runOnce(() -> spinner.setControl(spinnerRequest.withVelocity(shootdexerState.getSpinnerSpeed())));
-  }
-
-  public Command setKicker() {
-    return runOnce(() -> diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()))).andThen(runOnce(() -> kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()))));
+  public Command setShootdexer() {
+    return runOnce(() -> setShootdexerRequests());
   }
 
   @Override
