@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Calculations;
+import frc.robot.subsystems.States.IntakeStates;
 import frc.robot.subsystems.States.ShootdexerStates;
 
 public class Shootdexer extends SubsystemBase {
@@ -33,8 +34,8 @@ public class Shootdexer extends SubsystemBase {
       MotorAlignmentValue.Opposed);
   private final CANrange eyeOfSauron;
   private ShootdexerStates shootdexerState = ShootdexerStates.IDLE;
-  private final MotionMagicVelocityVoltage shooterRequest;
-  //private final MotionMagicVoltage spinerRequest;
+  //private final MotionMagicVelocityVoltage shooterRequest;
+  private final MotionMagicVelocityVoltage spinerRequest;
   //private final MotionMagicVoltage kickerRequest;
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
   private final double DEGREE_TO_TURRET = -46.86 / 360.0;
@@ -52,16 +53,17 @@ public class Shootdexer extends SubsystemBase {
 
     hoodMap.put(1.0, 2.0);
     
-    shooterRequest = new MotionMagicVelocityVoltage(0);
+    //shooterRequest = new MotionMagicVelocityVoltage(0);
     configTurret();
     //configHood();
-    //configShooter();
+   // //configShooter();
     //configCANranges();
 
     //hoodRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
     turretRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
-    //spinerRequest = new MotionMagicVoltage(null);
+    spinerRequest = new MotionMagicVelocityVoltage(0);
+    configSpiner();
     //kickerRequest = new MotionMagicVoltage(null);
   }
 
@@ -77,7 +79,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.5;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 5.0;
+    config.Slot0.kP = 0.4;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
     config.Slot0.kG = 0.0;
@@ -157,10 +159,15 @@ public class Shootdexer extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
 
     spiner.getConfigurator().apply(config);
   }
@@ -197,26 +204,34 @@ public class Shootdexer extends SubsystemBase {
     }
     this.isTracking = isTracking;
   }
-
+/* 
   public Command runShooter() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
   }
-
+*/
   public void setShootDexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
-
+  
+/* 
   public Command setShooterPower() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed())));
   }
-/* 
+*/
+ 
   public Command setSpiner() {
-    return runOnce(() -> spiner.setControl(spinerRequest.withPosition(shootdexerState.getSpinnerSpeed())));
+    return runOnce(() -> spiner.setControl(spinerRequest.withVelocity(shootdexerState.getSpinnerSpeed())));
   }
-
+/* 
   public Command setKicker() {
     return runOnce(() -> kicker.setControl(kickerRequest.withPosition(shootdexerState.getKickerSpeed())));
   }*/
+
+  public void setSpinerThing() {
+  System.out.println("I'm Running");
+  setShootDexerState(shootdexerState.TEST1);
+spiner.setControl(spinerRequest.withVelocity(0));
+}
 
   @Override
   public void periodic() {
