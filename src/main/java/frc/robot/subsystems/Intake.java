@@ -104,7 +104,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("IntakePose", intakeWrist.getPosition().getValueAsDouble());
-    // SmartDashboard.putNumber("Drive kV", Constants.intakeWrist.kV);
   }
 
 }

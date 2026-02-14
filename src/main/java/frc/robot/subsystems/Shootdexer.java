@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.lang.Thread.State;
 import java.lang.constant.DirectMethodHandleDesc;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -247,7 +248,11 @@ public class Shootdexer extends SubsystemBase {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
   }
 
-  public void setShootDexerState(ShootdexerStates shootdexerState) {
+  public Command idelShooter() {
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
+  }
+
+  public void setShootdexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
 
@@ -263,23 +268,9 @@ public class Shootdexer extends SubsystemBase {
     return runOnce(() -> diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()))).andThen(runOnce(() -> kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()))));
   }
 
-  public Command stopKicker() {
-    return runOnce(() -> kicker.stopMotor()).andThen(runOnce(() -> diverter.stopMotor()));
-  }
-
-  public Command stopSpinner() {
-    return runOnce(() -> spinner.stopMotor());
-  }
-
-  public Command stopShooter() {
-    return runOnce(() -> shooterLead.stopMotor());
-  }
-
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Lead Motor", shooterLead.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Turret Position", turret.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Swerve Angle", s_Vision.getAngle());
+    SmartDashboard.putString("ShootdexerState", shootdexerState.toString());
     if (isTracking && !s_Vision.isUnderTrench()) {
       // hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
       //turret.setControl(turretRequest.withPosition((s_Vision.getAngleToTarget()) * DEGREE_TO_TURRET));

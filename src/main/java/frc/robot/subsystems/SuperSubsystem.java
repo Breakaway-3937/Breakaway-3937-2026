@@ -23,14 +23,16 @@ public class SuperSubsystem extends SubsystemBase {
   }
 
   private Command setIntakeOut() {
-    return /* s_Climber.setClimber().andThen( */s_Intake.setIntakeWrist().andThen(s_Intake.setIntakePower())
-        .andThen(s_Shootdexer.setKicker()).andThen(s_Shootdexer.setSpinner())/* ) */;
+    return /* s_Climber.setClimber().andThen( */s_Intake.setIntakeWrist()
+      .andThen(s_Intake.setIntakePower())
+      .andThen(s_Shootdexer.setKicker())
+      .andThen(s_Shootdexer.setSpinner())/* ) */;
   }
 
   private Command setIntakeIn() {
-    return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker().andThen(
-        s_Shootdexer.setSpinner()))
-        .andThen(s_Intake.setIntakePower())/* .andThen(s_Climber.setClimber()) */;
+    return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker()
+      .andThen(s_Shootdexer.setSpinner()))
+      .andThen(s_Intake.setIntakePower())/* .andThen(s_Climber.setClimber()) */;
   }
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {
@@ -41,8 +43,12 @@ public class SuperSubsystem extends SubsystemBase {
     return s_Shootdexer.runShooter();
   }
 
-  public Command idel() {
-    return s_Shootdexer.setShooterPower();
+  public Command idle() {
+    s_Shootdexer.setShootdexerState(States.ShootdexerStates.IDLE);
+    return s_Shootdexer.setShooterPower()
+      .andThen(s_Shootdexer.setKicker())
+      .andThen(s_Shootdexer.setSpinner())
+      .andThen(s_Intake.stopIntake());
   }
 
   /*
@@ -57,32 +63,32 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.INTAKE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.INTAKE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }
 
   public Command stopIntake() {
-    return runOnce(() -> s_Intake.stopIntake()).andThen(runOnce(() -> s_Shootdexer.stopSpinner()));
+    return s_Intake.stopIntake().andThen(idle());
   }
 
   public Command unclog() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.UNCLOG))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.UNCLOG)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.UNCLOG)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }
 
   public Command protectIntake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeIn());
   }
 
   public Command overrideStow() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE)))
+        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }

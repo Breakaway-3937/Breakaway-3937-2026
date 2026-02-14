@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    robotContainer.getSwerve().resetPose(new Pose2d(new Translation2d(16.05, 0.47), new Rotation2d()));
+
     robotContainer.getQuestNavSubsystem().setPose(robotContainer.getSwerve().getState().Pose);
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
