@@ -4,6 +4,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shootdexer;
+import frc.robot.subsystems.States.IntakeStates;
 import frc.robot.subsystems.States.ShootdexerStates;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.subsystems.QuestNavSubsystem;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -53,6 +55,8 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   public RobotContainer() {
+    s_Shootdexer.setShootDexerState(ShootdexerStates.IDLE);
+    s_Intake.setIntakeState(IntakeStates.INTAKE);
 
     // NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
     // NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
@@ -76,14 +80,19 @@ public class RobotContainer {
             .withRotationalRate(
                 rotationController.getRawAxis(0) * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
-    xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
-    xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
-    xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
-    xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
-    xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
+    //xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
+    //xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
+    //xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
+    //xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
+    //xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
+    //xboxController.rightBumper().onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idel());
+    //xboxController.start().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
     // xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
     // xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
+    xboxController.a().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
+    xboxController.b().onTrue(s_Shootdexer.setSpinner()).onFalse(s_Shootdexer.stopSpinner());
+    xboxController.x().onTrue(s_Shootdexer.setShooterPower()).onFalse(s_Shootdexer.stopShooter());
+    xboxController.back().onTrue(s_Intake.setIntakeWrist()).onFalse(s_Intake.stopIntake());
 
   }
 

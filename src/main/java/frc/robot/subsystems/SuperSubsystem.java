@@ -23,14 +23,14 @@ public class SuperSubsystem extends SubsystemBase {
   }
 
   private Command setIntakeOut() {
-    return /* s_Climber.setClimber().andThen( */s_Intake.setIntakeWrist().alongWith(s_Intake.setIntakePower())
-        .alongWith(s_Shootdexer.setKicker()).alongWith(s_Shootdexer.setSpinner())/* ) */;
+    return /* s_Climber.setClimber().andThen( */s_Intake.setIntakeWrist().andThen(s_Intake.setIntakePower())
+        .andThen(s_Shootdexer.setKicker()).andThen(s_Shootdexer.setSpinner())/* ) */;
   }
 
   private Command setIntakeIn() {
-    return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker().alongWith(
+    return s_Intake.setIntakeWrist().andThen(s_Shootdexer.setKicker().andThen(
         s_Shootdexer.setSpinner()))
-        .alongWith(s_Intake.setIntakePower())/* .alongWith(s_Climber.setClimber()) */;
+        .andThen(s_Intake.setIntakePower())/* .andThen(s_Climber.setClimber()) */;
   }
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {

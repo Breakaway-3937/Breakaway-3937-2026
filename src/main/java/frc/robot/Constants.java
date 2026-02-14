@@ -28,8 +28,9 @@ public final class Constants {
     public static final int HOOD_CAN_ID = 0;
     public static final int TURRET_CAN_ID = 12;
     // Indexer
-    public static final int KICKER_CAN_ID = 0;
-    public static final int SPINER_CAN_ID = 4;
+    public static final int KICKER_CAN_ID = 13;
+    public static final int DIVERTER_CAN_ID = 14;
+    public static final int SPINNER_CAN_ID = 4;
     public static final int EYE_OF_SAURON_CAN_ID = 0;
   }
 

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.lang.constant.DirectMethodHandleDesc;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -29,7 +31,7 @@ public class Shootdexer extends SubsystemBase {
 
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
 
-  private final TalonFX shooterLead, shooterFollow, hood, turret, kicker, spiner;
+  private final TalonFX shooterLead, shooterFollow, hood, turret, kicker, spinner, diverter;
   private final CANrange eyeOfSauron;
 
   private final MotionMagicExpoVoltage turretRequest;
@@ -37,6 +39,7 @@ public class Shootdexer extends SubsystemBase {
   private final MotionMagicVelocityVoltage shooterRequest;
   private final MotionMagicVelocityVoltage spinnerRequest;
   private final MotionMagicVelocityVoltage kickerRequest;
+  private final MotionMagicVelocityVoltage diverterRequest;
 
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
@@ -54,13 +57,15 @@ public class Shootdexer extends SubsystemBase {
     hood = new TalonFX(Constants.Shootdexer.HOOD_CAN_ID);
     turret = new TalonFX(Constants.Shootdexer.TURRET_CAN_ID);
     kicker = new TalonFX(Constants.Shootdexer.KICKER_CAN_ID);
-    spiner = new TalonFX(Constants.Shootdexer.SPINER_CAN_ID);
+    diverter = new TalonFX(Constants.Shootdexer.DIVERTER_CAN_ID);
+    spinner = new TalonFX(Constants.Shootdexer.SPINNER_CAN_ID);
     eyeOfSauron = new CANrange(Constants.Shootdexer.EYE_OF_SAURON_CAN_ID);
 
     turretRequest = new MotionMagicExpoVoltage(0);
     hoodRequest = new MotionMagicExpoVoltage(0);
     spinnerRequest = new MotionMagicVelocityVoltage(0);
     kickerRequest = new MotionMagicVelocityVoltage(0);
+    diverterRequest = new MotionMagicVelocityVoltage(0);
     shooterRequest = new MotionMagicVelocityVoltage(0);
 
     hoodMap.put(1.0, 2.0);
@@ -70,6 +75,8 @@ public class Shootdexer extends SubsystemBase {
     configShooter();
     configCANranges();
     configSpinner();
+    configDiverter();
+    configKicker();
   }
 
   public void configTurret() {
@@ -157,7 +164,7 @@ public class Shootdexer extends SubsystemBase {
 
   public void configSpinner() {
 
-    spiner.getConfigurator().apply(new TalonFXConfiguration());
+    spinner.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -174,7 +181,7 @@ public class Shootdexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 400;
     config.MotionMagic.MotionMagicJerk = 4000;
 
-    spiner.getConfigurator().apply(config);
+    spinner.getConfigurator().apply(config);
   }
 
   public void configKicker() {
@@ -183,14 +190,40 @@ public class Shootdexer extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
 
     kicker.getConfigurator().apply(config);
+  }
+
+  public void configDiverter() {
+    diverter.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.00;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 4000;
+
+    diverter.getConfigurator().apply(config);
   }
 
   public void configCANranges() {
@@ -223,15 +256,23 @@ public class Shootdexer extends SubsystemBase {
   }
 
   public Command setSpinner() {
-    return runOnce(() -> spiner.setControl(spinnerRequest.withVelocity(shootdexerState.getSpinnerSpeed())));
+    return runOnce(() -> spinner.setControl(spinnerRequest.withVelocity(shootdexerState.getSpinnerSpeed())));
   }
 
   public Command setKicker() {
-    return runOnce(() -> kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed())));
+    return runOnce(() -> diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()))).andThen(runOnce(() -> kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()))));
+  }
+
+  public Command stopKicker() {
+    return runOnce(() -> kicker.stopMotor()).andThen(runOnce(() -> diverter.stopMotor()));
   }
 
   public Command stopSpinner() {
-    return runOnce(() -> spiner.stopMotor());
+    return runOnce(() -> spinner.stopMotor());
+  }
+
+  public Command stopShooter() {
+    return runOnce(() -> shooterLead.stopMotor());
   }
 
   @Override
@@ -241,13 +282,13 @@ public class Shootdexer extends SubsystemBase {
     SmartDashboard.putNumber("Swerve Angle", s_Vision.getAngle());
     if (isTracking && !s_Vision.isUnderTrench()) {
       // hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
-      turret.setControl(turretRequest.withPosition((s_Vision.getAngleToTarget()) * DEGREE_TO_TURRET));
+      //turret.setControl(turretRequest.withPosition((s_Vision.getAngleToTarget()) * DEGREE_TO_TURRET));
     } else if (isTracking && s_Vision.isUnderTrench()) {
       // hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      turret.setControl(turretRequest.withPosition(s_Vision.getAngleToTarget() * DEGREE_TO_TURRET));
+      //turret.setControl(turretRequest.withPosition(s_Vision.getAngleToTarget() * DEGREE_TO_TURRET));
     } else {
       // hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
+      //turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
   }
 
