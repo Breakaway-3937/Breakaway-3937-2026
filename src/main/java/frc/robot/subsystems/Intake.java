@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
     configIntakeWrist();
     configIntake();
 
-    intakeWristRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+    intakeWristRequest = new MotionMagicExpoVoltage(0);
     intakeRequest = new MotionMagicVelocityVoltage(0);
   }
 
@@ -91,6 +91,15 @@ public class Intake extends SubsystemBase {
 
   public Command setIntakePower() {
     return runOnce(() -> intake.setControl(intakeRequest.withVelocity(intakeState.getPower())));
+  }
+
+  public void setIntakeRequests() {
+    intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle()));
+    intake.setControl(intakeRequest.withVelocity(intakeState.getPower()));
+  }
+
+  public Command setIntake() {
+    return runOnce(() -> setIntakeRequests());
   }
 
   public Command stopWrist() {

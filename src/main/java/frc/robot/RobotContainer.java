@@ -76,17 +76,17 @@ public class RobotContainer {
             .withVelocityX(-translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withVelocityY(-translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                -rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, null));
-    //xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idle());
-    xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idle());
-    //xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
+    xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
+    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     //xboxController.start().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
-    // xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
-    // xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
+    //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
+    //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
     //xboxController.a().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
     //xboxController.b().onTrue(s_Shootdexer.setSpinner()).onFalse(s_Shootdexer.stopSpinner());
     //xboxController.x().onTrue(s_Shootdexer.setShooterPower()).onFalse(s_Shootdexer.stopShooter());

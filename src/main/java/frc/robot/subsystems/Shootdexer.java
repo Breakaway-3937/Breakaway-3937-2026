@@ -49,7 +49,6 @@ public class Shootdexer extends SubsystemBase {
   private ShootdexerStates shootdexerState = ShootdexerStates.IDLE;
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
-  private final double DEGREE_TO_TURRET = -46.86 / 360.0;
 
   public Shootdexer(Calculations s_Vision) {
     this.s_Vision = s_Vision;
@@ -90,16 +89,22 @@ public class Shootdexer extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.0;
-    config.Slot0.kV = 0.5;
+    config.Slot0.kS = 0.2;
+    config.Slot0.kV = 0.12;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 0.4;
+    config.Slot0.kP = 4.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
-    config.Slot0.kG = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.01;
-    config.MotionMagic.MotionMagicExpo_kA = 0.05;
+    config.Slot1.kS = 0.0;
+    config.Slot1.kV = 0.12;
+    config.Slot1.kA = 0.0;
+    config.Slot1.kP = 20.0;
+    config.Slot1.kI = 0.0;
+    config.Slot1.kD = 0.0;
+
+    config.MotionMagic.MotionMagicExpo_kV = 0.3;
+    config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -156,8 +161,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicAcceleration = 400;
-    config.MotionMagic.MotionMagicJerk = 4000;
+    config.MotionMagic.MotionMagicAcceleration = 900;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
@@ -180,8 +184,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicAcceleration = 400;
-    config.MotionMagic.MotionMagicJerk = 4000;
+    config.MotionMagic.MotionMagicAcceleration = 900;
 
     spinner.getConfigurator().apply(config);
   }
@@ -201,8 +204,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicAcceleration = 400;
-    config.MotionMagic.MotionMagicJerk = 4000;
+    config.MotionMagic.MotionMagicAcceleration = 900;
 
     kicker.getConfigurator().apply(config);
   }
@@ -222,8 +224,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicAcceleration = 400;
-    config.MotionMagic.MotionMagicJerk = 4000;
+    config.MotionMagic.MotionMagicAcceleration = 900;
 
     diverter.getConfigurator().apply(config);
   }
@@ -246,36 +247,45 @@ public class Shootdexer extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-80)));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-1000)));
+  }
+
+  public Command idleShooter() {
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
   }
 
   public void setShootdexerState(ShootdexerStates shootdexerState) {
     this.shootdexerState = shootdexerState;
   }
 
-  public void setShootdexerRequests() { 
-    //kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()));
-    //diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()));
-    //shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed()));
+  public void setShootdexerRequests() {
+    kicker.setControl(kickerRequest.withVelocity(shootdexerState.getKickerSpeed()));
+    diverter.setControl(diverterRequest.withVelocity(shootdexerState.getKickerSpeed()));
     spinner.setControl(spinnerRequest.withVelocity(shootdexerState.getSpinnerSpeed()));
+    shooterLead.setControl(shooterRequest.withVelocity(shootdexerState.getShooterSpeed()));
   }
 
   public Command setShootdexer() {
     return runOnce(() -> setShootdexerRequests());
   }
 
+  public void math() {
+
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString("ShootdexerState", shootdexerState.toString());
+    SmartDashboard.putNumber("Turret Motor", turret.getPosition().getValueAsDouble());
     if (isTracking && !s_Vision.isUnderTrench()) {
       // hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getDistanceToTarget())));
-      //turret.setControl(turretRequest.withPosition((s_Vision.getAngleToTarget()) * DEGREE_TO_TURRET));
+      s_Vision.setTurretAngle(turret, turretRequest);
     } else if (isTracking && s_Vision.isUnderTrench()) {
       // hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      //turret.setControl(turretRequest.withPosition(s_Vision.getAngleToTarget() * DEGREE_TO_TURRET));
+      s_Vision.setTurretAngle(turret, turretRequest);
     } else {
       // hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      //turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
+      turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE).withSlot(0));
     }
   }
 
