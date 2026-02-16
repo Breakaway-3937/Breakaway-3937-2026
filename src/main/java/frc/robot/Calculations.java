@@ -31,6 +31,8 @@ public class Calculations {
     private double adjustedAngle = 0.0;
     private double turretAngleOvershot = 0.0;
     private double turretHome = 30.0;
+    
+        boolean flopplyFlag = false;
 
     private final double DEGREE_TO_TURRET = -46.86 / 360.0;
 
@@ -94,17 +96,24 @@ public class Calculations {
         SmartDashboard.putNumber("Last Angle", lastAngle);
         SmartDashboard.putNumber("Robot Angle", robotAngle);
         SmartDashboard.putNumber("Angle to Target", angle);
-        if (adjustedAngle % 360 + turretAngleOvershot > 180 + turretHome + turretAngleOvershot) {
-            adjustedAngle -= 360;
+        if (adjustedAngle - (360 * rotationCount) + turretAngleOvershot > 180 + turretHome + turretAngleOvershot) {
+            adjustedAngle += 360;
+            flopplyFlag=false;
             System.out.println("Flip Positive");
             turret.getConfigurator().apply(fastConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
-        } else if (adjustedAngle % 360 + turretAngleOvershot < -180 + turretHome + turretAngleOvershot) {
-            adjustedAngle += 360;
+        } else if (adjustedAngle - (360 * rotationCount) + turretAngleOvershot < -180 + turretHome - turretAngleOvershot) {
+            adjustedAngle -= 360;
+            flopplyFlag = false;
             System.out.println("Flip Negative");
             turret.getConfigurator().apply(fastConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
         } else {
+            if (!flopplyFlag) {
+                System.out.println("No Flip");
+                flopplyFlag = true;
+            }
+            
             turret.getConfigurator().apply(normalConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(0));
         }
