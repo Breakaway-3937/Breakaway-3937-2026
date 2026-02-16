@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 public class States {
 
     public enum IntakeStates {
-        STOW(0.0, 0.0),
+        STOW(10.0, 0.0),
         FIRE(4.0,35.0),
         IDLE(4.0, 0.0),
         INTAKE(0.5, 35.0),

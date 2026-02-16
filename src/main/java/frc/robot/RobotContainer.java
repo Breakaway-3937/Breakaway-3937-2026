@@ -84,6 +84,7 @@ public class RobotContainer {
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
+    xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
     //xboxController.start().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
     //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
     //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());

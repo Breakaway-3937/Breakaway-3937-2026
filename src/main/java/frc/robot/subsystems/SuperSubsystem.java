@@ -25,7 +25,9 @@ public class SuperSubsystem extends SubsystemBase {
   private Command setIntakeOut() {
     return /* s_Climber.setClimber().andThen( */s_Intake.setIntake();
   }
-
+  private Command intakeProtect(){
+    return s_Intake.setIntake();
+  }
   private Command setIntakeIn() {
     return s_Intake.setIntakeWrist()
       .andThen(s_Shootdexer.setShootdexer())
@@ -80,7 +82,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeIn());
+        .andThen(intakeProtect()).alongWith(s_Shootdexer.setShootdexer());
   }
 
   public Command overrideStow() {
@@ -104,6 +106,10 @@ public class SuperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+  //  System.out.println("Un-comment this to immediately spike the ram usage.");
+
+
+
   }
 
 }
