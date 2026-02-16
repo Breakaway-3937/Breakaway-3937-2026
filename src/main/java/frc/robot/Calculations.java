@@ -59,12 +59,6 @@ public class Calculations {
     }
 
     public void setTurretAngle(TalonFX turret, MotionMagicExpoVoltage turretRequest) {
-        MotionMagicConfigs normalConfig = new MotionMagicConfigs();
-        normalConfig.MotionMagicExpo_kV = 0.3;
-        normalConfig.MotionMagicExpo_kA = 0.1;
-        MotionMagicConfigs fastConfig = new MotionMagicConfigs();
-        fastConfig.MotionMagicExpo_kV = 0.02;
-        fastConfig.MotionMagicExpo_kA = 0.02;
 
         double robotX = s_Swerve.getState().Pose.getX();
         double robotY = s_Swerve.getState().Pose.getY();
@@ -96,17 +90,19 @@ public class Calculations {
         SmartDashboard.putNumber("Last Angle", lastAngle);
         SmartDashboard.putNumber("Robot Angle", robotAngle);
         SmartDashboard.putNumber("Angle to Target", angle);
-        if (adjustedAngle - (360 * rotationCount) + turretAngleOvershot > 180 + turretHome + turretAngleOvershot) {
+        if (adjustedAngle  > 180 + turretHome + turretAngleOvershot) {
             adjustedAngle += 360;
             flopplyFlag=false;
+            rotationCount--;
             System.out.println("Flip Positive");
-            turret.getConfigurator().apply(fastConfig);
+            //turret.getConfigurator().apply(fastConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
-        } else if (adjustedAngle - (360 * rotationCount) + turretAngleOvershot < -180 + turretHome - turretAngleOvershot) {
+        } else if (adjustedAngle < -180 + turretHome - turretAngleOvershot) {
             adjustedAngle -= 360;
             flopplyFlag = false;
+            rotationCount++;
             System.out.println("Flip Negative");
-            turret.getConfigurator().apply(fastConfig);
+            //turret.getConfigurator().apply(fastConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
         } else {
             if (!flopplyFlag) {
@@ -114,7 +110,7 @@ public class Calculations {
                 flopplyFlag = true;
             }
             
-            turret.getConfigurator().apply(normalConfig);
+            //turret.getConfigurator().apply(normalConfig);
             turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(0));
         }
     }
