@@ -92,7 +92,7 @@ public class Shootdexer extends SubsystemBase {
     config.Slot0.kS = 0.2;
     config.Slot0.kV = 0.12;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 4.0;
+    config.Slot0.kP = 6.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
@@ -103,8 +103,8 @@ public class Shootdexer extends SubsystemBase {
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.25;
-    config.MotionMagic.MotionMagicExpo_kA = 0.02;
+    config.MotionMagic.MotionMagicExpo_kV = 0.005;
+    config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
