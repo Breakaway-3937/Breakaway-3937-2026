@@ -1,11 +1,9 @@
 package frc.robot;
 
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shootdexer;
-import frc.robot.subsystems.States.IntakeStates;
-import frc.robot.subsystems.States.ShootdexerStates;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.generated.PracticeTunerConstants;
@@ -18,13 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
@@ -37,12 +31,13 @@ public class RobotContainer {
 
   // Subsystems
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
-  private final Calculations s_Vision = new Calculations(s_Swerve);
+  private final Calculations s_Calculations = new Calculations(s_Swerve);
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
-  private final Shootdexer s_Shootdexer = new Shootdexer(s_Vision);
+  private final Shooter s_Shooter = new Shooter(s_Calculations);
   // private final Climber s_Climber = new Climber();
+  private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shootdexer, s_Intake /* s_Climber */);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake /* s_Climber */);
 
   // Misc
   private final SendableChooser<Command> autoChooser;
@@ -85,14 +80,6 @@ public class RobotContainer {
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
-    //xboxController.start().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
-    //xboxController.povUp().onTrue(s_SuperSubsystem.prestageClimb());
-    //xboxController.povDown().onTrue(s_SuperSubsystem.overrideStow());
-    //xboxController.a().onTrue(s_Shootdexer.setKicker()).onFalse(s_Shootdexer.stopKicker());
-    //xboxController.b().onTrue(s_Shootdexer.setSpinner()).onFalse(s_Shootdexer.stopSpinner());
-    //xboxController.x().onTrue(s_Shootdexer.setShooterPower()).onFalse(s_Shootdexer.stopShooter());
-    //xboxController.back().onTrue(s_Intake.setIntakeWrist()).onFalse(s_Intake.stopIntake());
-
   }
 
   public Command getAutonomousCommand() {
@@ -108,8 +95,12 @@ public class RobotContainer {
     return s_QuestNavSubsystem;
   }
 
-  public Shootdexer getShootdexer() {
-    return s_Shootdexer;
+  public Shooter getShooter() {
+    return s_Shooter;
+  }
+
+  public Indexer getIndexer() {
+    return s_Indexer;
   }
 
   public Intake getIntake() {

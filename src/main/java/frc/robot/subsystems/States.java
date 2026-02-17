@@ -25,20 +25,15 @@ public class States {
         }
     }
 
-    public enum ShootdexerStates {
-        IDLE(-20, 0.0, 0.0),
-        FIRE(-1000.0, 340.0, 1000.0);
+    public enum IndexerStates {
+        IDLE(0.0, 0.0),
+        FIRE(200.0, 1000.0);
 
-        private final double ShooterSpeed, SpinnerSpeed, KickerSpeed;
+        private final double SpinnerSpeed, KickerSpeed;
 
-        private ShootdexerStates(double ShooterSpeed, double SpinnerSpeed, double KickerSpeed) {
-            this.ShooterSpeed = ShooterSpeed;
+        private IndexerStates(double SpinnerSpeed, double KickerSpeed) {
             this.SpinnerSpeed = SpinnerSpeed;
             this.KickerSpeed = KickerSpeed;
-        }
-
-        public double getShooterSpeed() {
-            return ShooterSpeed;
         }
 
         public double getSpinnerSpeed() {

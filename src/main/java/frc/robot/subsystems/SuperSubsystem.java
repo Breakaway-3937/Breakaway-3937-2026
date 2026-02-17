@@ -7,17 +7,19 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.States.ClimberStates;
+import frc.robot.subsystems.States.IndexerStates;
 import frc.robot.subsystems.States.IntakeStates;
-import frc.robot.subsystems.States.ShootdexerStates;
 
 public class SuperSubsystem extends SubsystemBase {
 
-  private final Shootdexer s_Shootdexer;
+  private final Shooter s_Shooter;
+  private final Indexer s_Indexer;
   private final Intake s_Intake;
   // private final Climber s_Climber;
 
-  public SuperSubsystem(Shootdexer s_Shootdexer, Intake s_Intake /* Climber s_Climber */) {
-    this.s_Shootdexer = s_Shootdexer;
+  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake /* Climber s_Climber */) {
+    this.s_Shooter = s_Shooter;
+    this.s_Indexer = s_Indexer;
     this.s_Intake = s_Intake;
     // this.s_Climber = s_Climber;
   }
@@ -25,30 +27,29 @@ public class SuperSubsystem extends SubsystemBase {
   private Command setIntakeOut() {
     return /* s_Climber.setClimber().andThen( */s_Intake.setIntake();
   }
-  private Command intakeProtect(){
-    return s_Intake.setIntake();
-  }
+  
   private Command setIntakeIn() {
     return s_Intake.setIntakeWrist()
-      .andThen(s_Shootdexer.setShootdexer())
       .andThen(s_Intake.setIntakePower())/* .andThen(s_Climber.setClimber()) */;
   }
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {
-    return runOnce(() -> s_Shootdexer.setAutoTracking(isTracking, isHub));
+    return runOnce(() -> s_Shooter.setAutoTracking(isTracking, isHub));
   }
 
   public Command fire() {
-    return runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.FIRE))
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-      .andThen(s_Shootdexer.setShootdexer())
+      .andThen(s_Shooter.runShooter())
+      .alongWith(s_Indexer.setIndexer())
       .alongWith(s_Intake.setIntake());
   }
 
   public Command idle() {
-    return runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE))
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-      .andThen(s_Shootdexer.setShootdexer())
+      .andThen(s_Shooter.idleShooter())
+      .alongWith(s_Indexer.setIndexer())
       .alongWith(s_Intake.setIntake());
   }
 
@@ -80,14 +81,15 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command protectIntake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE)))
+        .andThen(runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(intakeProtect()).alongWith(s_Shootdexer.setShootdexer());
+        .andThen(s_Intake.setIntake())
+        .alongWith(s_Indexer.setIndexer());
   }
 
   public Command overrideStow() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
-        .andThen(runOnce(() -> s_Shootdexer.setShootdexerState(ShootdexerStates.IDLE)))
+        .andThen(runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }
@@ -106,10 +108,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  //  System.out.println("Un-comment this to immediately spike the ram usage.");
-
-
-
+    //System.out.println("Un-comment this to immediately spike the ram usage.");
   }
 
 }

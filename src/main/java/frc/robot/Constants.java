@@ -26,7 +26,7 @@ public final class Constants {
     // Shooter
     public static final int SHOOTER_LEAD_CAN_ID = 15;
     public static final int SHOOTER_FOLLOW_CAN_ID = 16;
-    public static final int HOOD_CAN_ID = 0;
+    public static final int HOOD_CAN_ID = 17;
     public static final int TURRET_CAN_ID = 12;
     // Indexer
     public static final int KICKER_CAN_ID = 13;

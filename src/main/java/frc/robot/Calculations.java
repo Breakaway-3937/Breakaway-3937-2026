@@ -1,18 +1,9 @@
 package frc.robot;
 
-import java.io.ObjectInputFilter.Config;
-
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
@@ -26,14 +17,11 @@ public class Calculations {
     private double redTargetY = 4.035;
     private double blueTargetX = 4.6;
     private double blueTargetY = 4.035;
+
     private double rotationCount = 0.0;
     private double lastAngle = 0.0;
-    private double adjustedAngle = 0.0;
     private double turretAngleOvershot = 0.0;
     private double turretHome = 30.0;
-    
-        boolean flopplyFlag = false;
-
     private final double DEGREE_TO_TURRET = -46.86 / 360.0;
 
     public Calculations(Swerve s_Swerve) {
@@ -58,61 +46,43 @@ public class Calculations {
         return distance;
     }
 
-    public void setTurretAngle(TalonFX turret, MotionMagicExpoVoltage turretRequest) {
+    public double getAdjustedTurretAngle() {
 
         double robotX = s_Swerve.getState().Pose.getX();
         double robotY = s_Swerve.getState().Pose.getY();
+        double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+
         var alliance = DriverStation.getAlliance().orElse(null);
         double angle;
+        double adjustedAngle;
 
         if (alliance == DriverStation.Alliance.Red) {
             angle = Math.toDegrees(Math.atan2(redTargetY - robotY, redTargetX - robotX));
-            SmartDashboard.putNumber("MY RED ANGLE", angle);
         } else if (alliance == DriverStation.Alliance.Blue) {
             angle = Math.toDegrees(Math.atan2(blueTargetY - robotY, blueTargetX - robotX));
-            SmartDashboard.putNumber("My BLUE ANGLE", angle);
         } else {
             System.out.println("Alliance not recognized");
             angle = 0.0;
         }
-
-        double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
 
         if (robotAngle > 90 && lastAngle < -90) {
             rotationCount--;
         } else if (robotAngle < -90 && lastAngle > 90) {
             rotationCount++;
         }
+
         lastAngle = robotAngle;
         adjustedAngle = robotAngle + (rotationCount * 360);
-        SmartDashboard.putNumber("Adjusted Angle", adjustedAngle);
-        SmartDashboard.putNumber("Rotation Count", rotationCount);
-        SmartDashboard.putNumber("Last Angle", lastAngle);
-        SmartDashboard.putNumber("Robot Angle", robotAngle);
-        SmartDashboard.putNumber("Angle to Target", angle);
+
         if (adjustedAngle  > 180 + turretHome + turretAngleOvershot) {
             adjustedAngle += 360;
-            flopplyFlag=false;
             rotationCount--;
-            System.out.println("Flip Positive");
-            //turret.getConfigurator().apply(fastConfig);
-            turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
         } else if (adjustedAngle < -180 + turretHome - turretAngleOvershot) {
             adjustedAngle -= 360;
-            flopplyFlag = false;
             rotationCount++;
-            System.out.println("Flip Negative");
-            //turret.getConfigurator().apply(fastConfig);
-            turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(1));
-        } else {
-            if (!flopplyFlag) {
-                System.out.println("No Flip");
-                flopplyFlag = true;
-            }
-            
-            //turret.getConfigurator().apply(normalConfig);
-            turret.setControl(turretRequest.withPosition((angle - adjustedAngle) * DEGREE_TO_TURRET).withSlot(0));
         }
+
+        return (angle - adjustedAngle) * DEGREE_TO_TURRET;
     }
 
     public boolean isUnderTrench() {
@@ -141,7 +111,4 @@ public class Calculations {
         }
     }
 
-    public double getAngle() {
-        return s_Swerve.getState().Pose.getRotation().getDegrees();
-    }
 }
