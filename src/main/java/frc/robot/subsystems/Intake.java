@@ -29,6 +29,8 @@ public class Intake extends SubsystemBase {
 
     intakeWristRequest = new MotionMagicExpoVoltage(0);
     intakeRequest = new MotionMagicVelocityVoltage(0);
+
+    super.setDefaultCommand(setIntake());
   }
 
   public void configIntakeWrist() {
@@ -39,15 +41,16 @@ public class Intake extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.25;
-    config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.01;
-    config.Slot0.kP = 4.45;
-    config.Slot0.kI = 0;
-    config.Slot0.kD = 0.18;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.15;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 2.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    //FIXME
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.03;
-    config.MotionMagic.MotionMagicExpo_kA = 0.025;
+    config.MotionMagic.MotionMagicExpo_kV = 0.7;
+    config.MotionMagic.MotionMagicExpo_kA = 0.01;
 
     config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -111,7 +114,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("IntakePose", intakeWrist.getPosition().getValueAsDouble());
   }
 
 }

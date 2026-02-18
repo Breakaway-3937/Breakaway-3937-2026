@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,6 +36,7 @@ public class Shooter extends SubsystemBase {
       MotorAlignmentValue.Opposed);
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
+  private double currentPosition = 0.0;
 
   public Shooter(Calculations s_Calculations) {
     this.s_Calculations = s_Calculations;
@@ -162,25 +164,47 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-1000)));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-37.5)));
+    //-37.5 = 1400
   }
 
   public Command idleShooter() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
   }
 
+  public void increaseHood() {
+    currentPosition += 0.1;
+    hood.setControl(hoodRequest.withPosition(currentPosition));
+  }
+
+  public void decreaseHood() {
+    currentPosition -= 0.1;
+    hood.setControl(hoodRequest.withPosition(currentPosition));
+  }
+
+  public Command increaseHoodRequest() {
+    return runOnce(() -> increaseHood());
+  }
+
+  public Command decreaseHoodRequest() {
+    return runOnce(() -> decreaseHood());
+  }
+
   @Override
   public void periodic() {
     if (isTracking && !s_Calculations.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
+      //hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else if (isTracking && s_Calculations.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+      //hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else {
-      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+      //hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
+
+    SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble() * 60);
   }
 
 }

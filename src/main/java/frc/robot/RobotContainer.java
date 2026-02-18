@@ -80,6 +80,8 @@ public class RobotContainer {
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
+    xboxController.povUp().onTrue(s_Shooter.increaseHoodRequest());
+    xboxController.povDown().onTrue(s_Shooter.decreaseHoodRequest());
   }
 
   public Command getAutonomousCommand() {
