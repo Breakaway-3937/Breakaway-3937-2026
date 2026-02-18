@@ -84,6 +84,8 @@ public class RobotContainer {
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
     xboxController.povUp().onTrue(s_Shooter.increaseHoodRequest());
     xboxController.povDown().onTrue(s_Shooter.decreaseHoodRequest());
+    xboxController.povLeft().onTrue(s_Shooter.increaseShooter());
+    xboxController.povRight().onTrue(s_Shooter.decreaseShooter());
   }
 
   public Command getAutonomousCommand() {

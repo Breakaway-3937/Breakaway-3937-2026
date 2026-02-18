@@ -35,8 +35,7 @@ public class Shooter extends SubsystemBase {
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
 
-  private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
-  private double currentPosition = 0.0;
+  private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0, STOW_HOOD_ANGLE = 0.0;
 
   public Shooter(Calculations s_Calculations) {
     this.s_Calculations = s_Calculations;
@@ -174,22 +173,20 @@ public class Shooter extends SubsystemBase {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
   }
 
-  public void increaseHood() {
-    currentPosition += 0.1;
-    hood.setControl(hoodRequest.withPosition(currentPosition));
-  }
-
-  public void decreaseHood() {
-    currentPosition -= 0.1;
-    hood.setControl(hoodRequest.withPosition(currentPosition));
-  }
-
   public Command increaseHoodRequest() {
-    return runOnce(() -> increaseHood());
+    return runOnce(() -> hood.setControl(hoodRequest.withPosition(hood.getPosition().getValueAsDouble() + 0.1)));
   }
 
   public Command decreaseHoodRequest() {
-    return runOnce(() -> decreaseHood());
+    return runOnce(() -> hood.setControl(hoodRequest.withPosition(hood.getPosition().getValueAsDouble() - 0.1)));
+  }
+
+  public Command increaseShooter() {
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterLead.getVelocity().getValueAsDouble() + 1)));
+  }
+
+  public Command decreaseShooter() {
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterLead.getVelocity().getValueAsDouble() - 1)));
   }
 
   @Override
@@ -198,7 +195,7 @@ public class Shooter extends SubsystemBase {
       //hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else if (isTracking && s_Calculations.isUnderTrench()) {
-      //hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+      //hood.setControl(hoodRequest.withPosition(STOW_HOOD_ANGLE));`
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else {
       //hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
