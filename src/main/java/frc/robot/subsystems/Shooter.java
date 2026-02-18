@@ -15,8 +15,8 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Calculations;
+import frc.robot.utility.Calculations;
+import frc.robot.utility.Constants;
 
 public class Shooter extends SubsystemBase {
   private final Calculations s_Calculations;
@@ -57,6 +57,8 @@ public class Shooter extends SubsystemBase {
     configHood();
     configShooter();
     configCANranges();
+
+    super.setDefaultCommand(idleShooter());
   }
 
   public void configTurret() {

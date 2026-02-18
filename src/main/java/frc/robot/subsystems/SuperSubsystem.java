@@ -7,9 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.States.ClimberStates;
-import frc.robot.subsystems.States.IndexerStates;
-import frc.robot.subsystems.States.IntakeStates;
+import frc.robot.utility.States.ClimberStates;
+import frc.robot.utility.States.IndexerStates;
+import frc.robot.utility.States.IntakeStates;
 
 public class SuperSubsystem extends SubsystemBase {
 

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.utility;
 
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
