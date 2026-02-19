@@ -22,6 +22,7 @@ public class Shooter extends SubsystemBase {
   private final Calculations s_Calculations;
 
   private boolean isTracking = true;
+  private double speed;
 
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
 
@@ -51,6 +52,8 @@ public class Shooter extends SubsystemBase {
     shooterRequest = new MotionMagicVelocityVoltage(0);
 
     hoodMap.put(1.0, 2.0);
+
+    SmartDashboard.putNumber("Shooter Speed Setpoint RPM", 1400);
 
     configTurret();
     configHood();
@@ -165,8 +168,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-37.5)));
-    //-37.5 = 1400
+    double rpm = SmartDashboard.getNumber("Shooter Speed Setpoint RPM", 1400);
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-(rpm / 60.0))));
   }
 
   public Command idleShooter() {
