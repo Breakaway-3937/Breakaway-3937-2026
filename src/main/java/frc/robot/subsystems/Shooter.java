@@ -22,9 +22,9 @@ public class Shooter extends SubsystemBase {
   private final Calculations s_Calculations;
 
   private boolean isTracking = true;
-  private double speed;
 
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
 
   private final TalonFX shooterLead, shooterFollow, hood, turret;
   private final CANrange eyeOfSauron;
@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
 
-  private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0, STOW_HOOD_ANGLE = 0.0;
+  private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
   public Shooter(Calculations s_Calculations) {
     this.s_Calculations = s_Calculations;
@@ -51,16 +51,25 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new MotionMagicVelocityVoltage(0);
 
-    hoodMap.put(1.0, 2.0);
+    hoodMap.put(1.524, 0.0);
+    hoodMap.put(25.908, 4.5);
+    hoodMap.put(4.572, 4.3);
+    hoodMap.put(3.6576, 3.4);
+    hoodMap.put(3.048, 3.0);
+    hoodMap.put(2.1336, 1.55);
 
-    SmartDashboard.putNumber("Shooter Speed Setpoint RPM", 1400);
+    shooterMap.put(1.524, 40.0);
+    shooterMap.put(25.908, 51.25);
+    shooterMap.put(4.572, 48.75);
+    shooterMap.put(3.6576, 45.5);
+    shooterMap.put(3.048, 43.5);
+    shooterMap.put(2.1336, 41.5);
 
     configTurret();
     configHood();
     configShooter();
     configCANranges();
 
-    super.setDefaultCommand(idleShooter());
   }
 
   public void configTurret() {
@@ -134,7 +143,7 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
@@ -168,12 +177,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    double rpm = SmartDashboard.getNumber("Shooter Speed Setpoint RPM", 1400);
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-(rpm / 60.0))));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterMap.get(s_Calculations.getDistanceToTarget()))));
+    //return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-(rpm / 60.0) * 1.5)));
   }
 
   public Command idleShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-20)));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
   }
 
   public Command increaseHoodRequest() {
@@ -184,29 +193,21 @@ public class Shooter extends SubsystemBase {
     return runOnce(() -> hood.setControl(hoodRequest.withPosition(hood.getPosition().getValueAsDouble() - 0.1)));
   }
 
-  public Command increaseShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterLead.getVelocity().getValueAsDouble() + 1)));
-  }
-
-  public Command decreaseShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterLead.getVelocity().getValueAsDouble() - 1)));
-  }
-
   @Override
   public void periodic() {
     if (isTracking && !s_Calculations.isUnderTrench()) {
-      //hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
+      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else if (isTracking && s_Calculations.isUnderTrench()) {
-      //hood.setControl(hoodRequest.withPosition(STOW_HOOD_ANGLE));`
+      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
     } else {
-      //hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+      hood.setControl(hoodRequest.withPosition(s_Calculations.getDistanceToTarget()));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble());
   }
 
 }

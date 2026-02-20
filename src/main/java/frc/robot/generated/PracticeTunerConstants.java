@@ -83,8 +83,8 @@ public class PracticeTunerConstants {
     private static final double kSteerGearRatio = 26.09090909090909;
     private static final Distance kWheelRadius = Inches.of(4);
 
-    private static final boolean kInvertLeftSide = true;
-    private static final boolean kInvertRightSide = false;
+    private static final boolean kInvertLeftSide = false;//Flipped
+    private static final boolean kInvertRightSide = true;
 
     private static final int kPigeonId = 25;
 

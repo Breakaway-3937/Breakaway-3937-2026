@@ -18,7 +18,7 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     QuestNav questNav = new QuestNav();
 
-    Transform3d ROBOT_TO_QUEST = new Transform3d(0, 0, 0.20, new Rotation3d(0, 0, 0));
+    Transform3d ROBOT_TO_QUEST = new Transform3d(-0.314, 0, 0.25527, new Rotation3d(0, 0, 0));
     Swerve s_Swerve;
 
     Matrix<N3, N1> QUESTNAV_STD_DEVS = VecBuilder.fill(

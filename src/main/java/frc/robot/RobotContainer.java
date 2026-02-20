@@ -70,10 +70,10 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(-translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(-translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityX(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                -rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
@@ -82,10 +82,6 @@ public class RobotContainer {
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
-    xboxController.povUp().onTrue(s_Shooter.increaseHoodRequest());
-    xboxController.povDown().onTrue(s_Shooter.decreaseHoodRequest());
-    xboxController.povLeft().onTrue(s_Shooter.increaseShooter());
-    xboxController.povRight().onTrue(s_Shooter.decreaseShooter());
   }
 
   public Command getAutonomousCommand() {

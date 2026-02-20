@@ -27,7 +27,7 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(200.0, 1000.0);
+        FIRE(10.0, 1000.0);
 
         private final double SpinnerSpeed, KickerSpeed;
 

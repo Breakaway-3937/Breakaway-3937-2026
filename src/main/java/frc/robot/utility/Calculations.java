@@ -43,6 +43,7 @@ public class Calculations {
             distance = 0.0;
         }
 
+        //Meters
         return distance;
     }
 
