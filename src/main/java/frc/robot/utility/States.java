@@ -10,6 +10,8 @@ public class States {
         UNCLOG(0.5, -10.0);
 
         private final double angle, power;
+        private final double INTAKE_POWER_CONVERSION = 1.67;
+        private final double INTAKE_WRIST_CONVERSION = 0.025;
 
         private IntakeStates(double angle, double power) {
             this.angle = angle;
@@ -27,9 +29,10 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(10.0, 1000.0);
+        FIRE(2.0, 1000.0);
 
         private final double SpinnerSpeed, KickerSpeed;
+        private final double SPINNER_CONVERSION = 12.67;
 
         private IndexerStates(double SpinnerSpeed, double KickerSpeed) {
             this.SpinnerSpeed = SpinnerSpeed;
@@ -37,7 +40,7 @@ public class States {
         }
 
         public double getSpinnerSpeed() {
-            return SpinnerSpeed;
+            return SpinnerSpeed * SPINNER_CONVERSION;
         }
 
         public double getKickerSpeed() {

@@ -3,6 +3,8 @@ package frc.robot.utility;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Swerve;
 
@@ -17,6 +19,8 @@ public class Calculations {
     private double redTargetY = 4.035;
     private double blueTargetX = 4.6;
     private double blueTargetY = 4.035;
+    private final double TURRET_OFFSET_X = -0.13; //Meters
+    private final double TURRET_OFFSET_Y = -0.16; //Meters
 
     private double rotationCount = 0.0;
     private double lastAngle = 0.0;
