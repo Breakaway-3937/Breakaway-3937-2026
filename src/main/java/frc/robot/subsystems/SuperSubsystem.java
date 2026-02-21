@@ -27,8 +27,8 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Intake = s_Intake;
     // this.s_Climber = s_Climber;
 
-    runSubsystems = new ParallelCommandGroup(s_Shooter.runShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
-    runSubsystems2 = new ParallelCommandGroup(s_Shooter.runShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
+    runSubsystems = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
+    runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
@@ -47,7 +47,8 @@ public class SuperSubsystem extends SubsystemBase {
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-      .andThen(runSubsystems);
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystems).onlyIf(s_Shooter.isAtSpeed());
   }
 
   public Command idle() {
@@ -59,7 +60,8 @@ public class SuperSubsystem extends SubsystemBase {
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
-      .andThen(runSubsystems2);
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystems2).onlyIf(s_Shooter.isAtSpeed());
   }
 
   /*

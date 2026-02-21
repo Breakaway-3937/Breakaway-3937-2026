@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -177,19 +179,14 @@ public class Shooter extends SubsystemBase {
 
   public Command runShooter() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterMap.get(s_Calculations.getDistanceToTarget()))));
-    //return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(-(rpm / 60.0) * 1.5)));
   }
 
   public Command idleShooter() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
   }
 
-  public Command increaseHoodRequest() {
-    return runOnce(() -> hood.setControl(hoodRequest.withPosition(hood.getPosition().getValueAsDouble() + 0.1)));
-  }
-
-  public Command decreaseHoodRequest() {
-    return runOnce(() -> hood.setControl(hoodRequest.withPosition(hood.getPosition().getValueAsDouble() - 0.1)));
+  public BooleanSupplier isAtSpeed() {
+    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Calculations.getDistanceToTarget()) - 5 && shooterLead.getVelocity().getValueAsDouble() < shooterMap.get(s_Calculations.getDistanceToTarget()) + 5;
   }
 
   @Override
