@@ -61,8 +61,8 @@ public class Shooter extends SubsystemBase {
     hoodMap.put(3.048, 3.0);
     hoodMap.put(2.1336, 1.55);
 
-    shooterMap.put(1.524, 40.0);
-    shooterMap.put(25.908, 51.25);
+    shooterMap.put(1.524, 39.2);
+    shooterMap.put(5.1816, 51.25);
     shooterMap.put(4.572, 48.75);
     shooterMap.put(3.6576, 45.5);
     shooterMap.put(3.048, 43.5);
@@ -193,10 +193,10 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     if (isTracking && !s_Calculations.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getDistanceToTarget())));
-      turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
+      turret.setControl(turretRequest.withPosition(s_Calculations.shootOnTheMove()));
     } else if (isTracking && s_Calculations.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
+      turret.setControl(turretRequest.withPosition(s_Calculations.shootOnTheMove()));
     } else {
       hood.setControl(hoodRequest.withPosition(s_Calculations.getDistanceToTarget()));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
@@ -206,7 +206,7 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Turret Angle", s_Calculations.getAdjustedTurretAngle());
+    SmartDashboard.putNumber("Turret Angle", s_Calculations.shootOnTheMove());
   }
 
 }
