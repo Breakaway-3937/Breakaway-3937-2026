@@ -3,11 +3,11 @@ package frc.robot.utility;
 public class States {
 
     public enum IntakeStates {
-        STOW(10.0, 0.0),
-        FIRE(4.0,60.0),
-        IDLE(4.0, 0.0),
-        INTAKE(0.5, 30.0),
-        UNCLOG(0.5, -10.0);
+        STOW(400.0, 0.0),
+        FIRE(160.0,60.0),
+        IDLE(160.0, 0.0),
+        INTAKE(20.0, 30.0),
+        UNCLOG(20.0, -10.0);
 
         private final double angle, power;
         private final double INTAKE_POWER_CONVERSION = 1.67;
