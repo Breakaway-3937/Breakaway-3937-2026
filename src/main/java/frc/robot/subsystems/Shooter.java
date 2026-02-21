@@ -22,6 +22,7 @@ public class Shooter extends SubsystemBase {
   private final Calculations s_Calculations;
 
   private boolean isTracking = true;
+  private boolean isHub = true;
 
   private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
@@ -169,11 +170,9 @@ public class Shooter extends SubsystemBase {
     eyeOfSauron.getConfigurator().apply(config);
   }
 
-  public void setAutoTracking(boolean isTracking, Boolean isHub) {
-    if (isHub != null) {
-      s_Calculations.setTarget(isHub.booleanValue());
-    }
+  public void setAutoTracking(boolean isTracking, boolean isHub) {
     this.isTracking = isTracking;
+    this.isHub = isHub;
   }
 
   public Command runShooter() {
@@ -206,8 +205,11 @@ public class Shooter extends SubsystemBase {
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 
+    s_Calculations.setTarget(isHub);
+
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret Angle", s_Calculations.getAdjustedTurretAngle());
   }
 
 }
