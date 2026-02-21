@@ -18,8 +18,9 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     QuestNav questNav = new QuestNav();
 
-    Transform3d ROBOT_TO_QUEST = new Transform3d(-0.314, 0, 0.25527, new Rotation3d(0, 0, 0));
+    Transform3d ROBOT_TO_QUEST = new Transform3d(-0.314, 0, 0.25527, new Rotation3d(0, 0, Math.PI));
     Swerve s_Swerve;
+    boolean poseSet = false;
 
     Matrix<N3, N1> QUESTNAV_STD_DEVS = VecBuilder.fill(
             0.02, // Trust down to 2cm in X direction
@@ -29,10 +30,12 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     public QuestNavSubsystem(Swerve swerve) {
         this.s_Swerve = swerve;
+        setPose(s_Swerve.getState().Pose);
     }
 
     public void setPose(Pose2d pose) {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
+        poseSet = true;
     }
 
     @Override
@@ -42,19 +45,22 @@ public class QuestNavSubsystem extends SubsystemBase {
 
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 
-        for (PoseFrame questFrame : questFrames) {
+        if(poseSet) {
 
-            if (questFrame.isTracking()) {
+            for (PoseFrame questFrame : questFrames) {
 
-                Pose3d questPose = questFrame.questPose3d();
+                if (questFrame.isTracking()) {
 
-                double timestamp = questFrame.dataTimestamp();
+                    Pose3d questPose = questFrame.questPose3d();
 
-                Pose3d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
+                    double timestamp = questFrame.dataTimestamp();
 
-                double ctreTime = Utils.fpgaToCurrentTime(timestamp);
+                    Pose3d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
 
-                s_Swerve.addVisionMeasurement(robotPose.toPose2d(), ctreTime, QUESTNAV_STD_DEVS);
+                    double ctreTime = Utils.fpgaToCurrentTime(timestamp);
+
+                    s_Swerve.addVisionMeasurement(robotPose.toPose2d(), ctreTime, QUESTNAV_STD_DEVS);
+                }
             }
         }
     }

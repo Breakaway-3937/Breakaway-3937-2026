@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.generated.PracticeTunerConstants.TunerSwerveDrivetrain;
 
 public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
+	QuestNavSubsystem s_QuestNavSubsystem;
+
 	private final Field2d field = new Field2d();
 	private final SwerveRequest.ApplyRobotSpeeds pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 	private boolean hasAppliedOperatorPerspective = false;
@@ -32,8 +34,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
 	public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
 		super(drivetrainConstants, modules);
-		SmartDashboard.putData("Field", field);
 		resetPose(new Pose2d(new Translation2d(0.5, 0.5), new Rotation2d()));
+		s_QuestNavSubsystem = new QuestNavSubsystem(this);
+		SmartDashboard.putData("Field", field);
 		configPathplanner();
 	}
 

@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.generated.PracticeTunerConstants;
-import frc.robot.generated.PracticeTunerConstants;
 
 public final class Constants {
 

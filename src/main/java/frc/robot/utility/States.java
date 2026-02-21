@@ -6,7 +6,7 @@ public class States {
         STOW(10.0, 0.0),
         FIRE(4.0,35.0),
         IDLE(4.0, 0.0),
-        INTAKE(0.5, 35.0),
+        INTAKE(0.5, 30.0),
         UNCLOG(0.5, -10.0);
 
         private final double angle, power;
@@ -29,7 +29,7 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(2.0, 1000.0);
+        FIRE(10.0, 1000.0);
 
         private final double SpinnerSpeed, KickerSpeed;
         private final double SPINNER_CONVERSION = 12.67;

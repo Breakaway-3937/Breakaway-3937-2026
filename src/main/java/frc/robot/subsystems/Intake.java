@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase {
     intakeWristRequest = new MotionMagicExpoVoltage(0);
     intakeRequest = new MotionMagicVelocityVoltage(0);
 
-    super.setDefaultCommand(setIntake());
+    //super.setDefaultCommand(setIntake());
   }
 
   public void configIntakeWrist() {
