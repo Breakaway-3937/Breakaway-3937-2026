@@ -3,8 +3,6 @@ package frc.robot.utility;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Swerve;
 
