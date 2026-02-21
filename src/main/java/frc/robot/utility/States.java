@@ -19,11 +19,11 @@ public class States {
         }
 
         public double getAngle() {
-            return angle;
+            return angle * INTAKE_WRIST_CONVERSION;
         }
 
         public double getPower() {
-            return power;
+            return power * INTAKE_POWER_CONVERSION;
         }
     }
 

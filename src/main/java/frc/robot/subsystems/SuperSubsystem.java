@@ -18,6 +18,7 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake s_Intake;
   // private final Climber s_Climber;
   ParallelCommandGroup runSubsystems;
+  ParallelCommandGroup runSubsystems2;
   ParallelCommandGroup idleSubsystems;
 
   public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake /* Climber s_Climber */) {
@@ -27,6 +28,7 @@ public class SuperSubsystem extends SubsystemBase {
     // this.s_Climber = s_Climber;
 
     runSubsystems = new ParallelCommandGroup(s_Shooter.runShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
+    runSubsystems2 = new ParallelCommandGroup(s_Shooter.runShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
@@ -35,8 +37,7 @@ public class SuperSubsystem extends SubsystemBase {
   }
   
   private Command setIntakeIn() {
-    return s_Intake.setIntakeWrist()
-      .andThen(s_Intake.setIntakePower())/* .andThen(s_Climber.setClimber()) */;
+    return s_Intake.setIntake()/* .andThen(s_Climber.setClimber()) */;
   }
 
   public Command autoTrack(boolean isTracking, Boolean isHub) {
@@ -53,6 +54,12 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
       .andThen(idleSubsystems);
+  }
+
+  public Command combo() {
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
+      .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
+      .andThen(runSubsystems2);
   }
 
   /*
