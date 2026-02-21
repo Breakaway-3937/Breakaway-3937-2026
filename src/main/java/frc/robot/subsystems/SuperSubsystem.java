@@ -48,7 +48,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
       .andThen(s_Shooter.runShooter())
-      .andThen(runSubsystems).onlyIf(s_Shooter.isAtSpeed());
+      .andThen(runSubsystems);
   }
 
   public Command idle() {
@@ -61,7 +61,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
       .andThen(s_Shooter.runShooter())
-      .andThen(runSubsystems2).onlyIf(s_Shooter.isAtSpeed());
+      .andThen(runSubsystems2);
   }
 
   /*
