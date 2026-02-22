@@ -6,6 +6,7 @@ import org.opencv.core.Rect;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
@@ -120,15 +121,24 @@ public class Calculations {
     public double shootOnTheMove() {
         double robotVelocityX = s_Swerve.getState().Speeds.vxMetersPerSecond;
         double robotVelocityY = s_Swerve.getState().Speeds.vyMetersPerSecond;
+        double robotX = s_Swerve.getState().Pose.getX();
+        double robotY = s_Swerve.getState().Pose.getY();
         double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
 
-        double targetPhantomX = currentTargetX - (robotVelocityX * timeOfFlightMap.get(getDistanceToTarget()));
-        double targetPhantomY = currentTargetY - (robotVelocityY * timeOfFlightMap.get(getDistanceToTarget()));
+        double targetPhantomX = currentTargetX - robotX - (robotVelocityX * timeOfFlightMap.get(getDistanceToTarget()));
+        double targetPhantomY = currentTargetY - robotY - (robotVelocityY * timeOfFlightMap.get(getDistanceToTarget()));
 
-        double angle = Math.sqrt(Math.pow(targetPhantomX, 2) + Math.pow(targetPhantomY, 2));
-        angle = Math.toDegrees(Math.atan2(targetPhantomY, targetPhantomX));
+        double phantomAngle = Math.sqrt(Math.pow(targetPhantomX, 2) + Math.pow(targetPhantomY, 2));
+        phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY, targetPhantomX));
 
-        double desiredAngle = angle - robotAngle;
+        double desiredAngle = phantomAngle + robotAngle;
+
+        double realAngle = Math.toDegrees(Math.atan2(currentTargetY - robotY, currentTargetX - robotX));
+        
+        SmartDashboard.putNumber("robot angle", robotAngle);
+        SmartDashboard.putNumber("phantom angle", phantomAngle);
+        SmartDashboard.putNumber("desired angle", desiredAngle);
+        SmartDashboard.putNumber("real angle", realAngle);
 
         if(desiredAngle > MAX_POSITIVE_TURRET_ANGLE) {
             desiredAngle -= 360;

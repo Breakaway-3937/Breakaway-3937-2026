@@ -57,9 +57,7 @@ public class QuestNavSubsystem extends SubsystemBase {
 
                     Pose3d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
 
-                    double ctreTime = Utils.fpgaToCurrentTime(timestamp);
-
-                    s_Swerve.addVisionMeasurement(robotPose.toPose2d(), ctreTime, QUESTNAV_STD_DEVS);
+                    s_Swerve.addVisionMeasurement(robotPose.toPose2d(), timestamp, QUESTNAV_STD_DEVS);
                 }
             }
         }

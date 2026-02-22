@@ -5,6 +5,7 @@ import frc.robot.utility.Calculations;
 import frc.robot.utility.Constants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.generated.PracticeTunerConstants;
@@ -33,7 +34,7 @@ public class RobotContainer {
   // Subsystems
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
   private final Calculations s_Calculations = new Calculations(s_Swerve);
-  //private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
+  private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
   private final Shooter s_Shooter = new Shooter(s_Calculations);
   // private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
@@ -93,9 +94,9 @@ public class RobotContainer {
     return s_Swerve;
   }
 
-  /*public QuestNavSubsystem getQuestNavSubsystem() {
+  public QuestNavSubsystem getQuestNavSubsystem() {
     return s_QuestNavSubsystem;
-  }*/
+  }
 
   public Shooter getShooter() {
     return s_Shooter;
