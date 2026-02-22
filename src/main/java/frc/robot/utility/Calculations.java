@@ -18,7 +18,7 @@ public class Calculations {
 
     private InterpolatingDoubleTreeMap timeOfFlightMap;
 
-    private final Transform2d robotToTurret = new Transform2d(0.0, 0.0, null); //FIXME
+    private final Transform2d robotToTurret = new Transform2d(0.0, 0.0, null); // FIXME
 
     private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
     private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
@@ -29,6 +29,24 @@ public class Calculations {
     private final double MAX_POSITIVE_TURRET_ANGLE = 180.0;
     private final double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
     private final double DEGREE_TO_TURRET = -46.86 / 360.0;
+
+    private double robotX;
+    private double robotY;
+    private double robotVelocityX;
+    private double robotVelocityY;
+    private double robotAngle;
+    private double robotAngleRadians;
+    private double robotVelocityXField;
+    private double robotVelocityYField;
+
+    private double realAngle;
+
+    private double targetPhantomX;
+    private double targetPhantomY;
+    private double phantomAngle;
+    private double phantomDistance;
+
+    private double speed;
 
     private double currentTargetX;
     private double currentTargetY;
@@ -94,57 +112,58 @@ public class Calculations {
         }
     }
 
+    public void runCalculations() {
+        robotX = s_Swerve.getState().Pose.getX();
+        robotY = s_Swerve.getState().Pose.getY();
+
+        robotVelocityX = s_Swerve.getState().Speeds.vxMetersPerSecond;
+        robotVelocityY = s_Swerve.getState().Speeds.vyMetersPerSecond;
+
+        robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+        robotAngleRadians = Math.toRadians(robotAngle);
+
+        robotVelocityXField = robotVelocityX * Math.cos(robotAngleRadians) - robotVelocityY * Math.sin(robotAngleRadians);
+        robotVelocityYField = robotVelocityX * Math.sin(robotAngleRadians) + robotVelocityY * Math.cos(robotAngleRadians);
+
+        realAngle = Math.toDegrees(Math.atan2(currentTargetY - robotY, currentTargetX - robotX));
+
+        targetPhantomX = currentTargetX - (robotVelocityXField * timeOfFlightMap.get(getDistanceToTarget()));
+        targetPhantomY = currentTargetY - (robotVelocityYField * timeOfFlightMap.get(getDistanceToTarget()));
+
+        phantomDistance = Math.sqrt(Math.pow(targetPhantomX - robotX, 2) + Math.pow(targetPhantomY - robotY, 2));
+        phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - robotY, targetPhantomX - robotX));
+
+        speed = Math.sqrt(Math.pow(robotVelocityX, 2) + Math.pow(robotVelocityY, 2));
+    }
+
     public double getAdjustedTurretAngle() {
+        double adjustedAngle;
 
-        double robotVelocityX = s_Swerve.getState().Speeds.vxMetersPerSecond;
-        double robotVelocityY = s_Swerve.getState().Speeds.vyMetersPerSecond;
-        double robotX = s_Swerve.getState().Pose.getX();
-        double robotY = s_Swerve.getState().Pose.getY();
-        double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
-
-        //Conversion to field centric velocities
-        double robotAngleRadians = Math.toRadians(robotAngle);
-        double robotVelocityXField = robotVelocityX * Math.cos(robotAngleRadians) - robotVelocityY * Math.sin(robotAngleRadians);
-        double robotVelocityYField = robotVelocityX * Math.sin(robotAngleRadians) + robotVelocityY * Math.cos(robotAngleRadians);
-
-        double flightTime = timeOfFlightMap.get(getDistanceToTarget());
-
-        // We didn't calculate the Phathom goal position prior to subtracting from
-        // RobotX and RobotY, we did it out of order
-        double targetPhantomX = currentTargetX - (robotVelocityXField * flightTime);
-        double targetPhantomY = currentTargetY - (robotVelocityYField * flightTime);
-
-        // I think we need to add a velocity deadzone so that we can make sure we are
-        // Accurately while slow.
-        double speed = Math.sqrt(Math.pow(robotVelocityX, 2)+ Math.pow(robotVelocityY,2));
-
-        //We had messed up this variable name and need to pass it to the look up tables
-        // in order to get the correct velocity and hood angle
-        //double phantomDistance = Math.sqrt(Math.pow(targetPhantomX - robotX, 2) + Math.pow(targetPhantomY - robotY, 2));
-
-        double phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - robotY, targetPhantomX - robotX));
-        double realAngle = Math.toDegrees(Math.atan2(currentTargetY - robotY, currentTargetX - robotX));
-
-        double desiredAngle;
-
-        if(speed < 0.1) {
-            desiredAngle = realAngle - robotAngle;
-        } else{
-            desiredAngle = phantomAngle - robotAngle;
+        if (speed < 0.1) {
+            adjustedAngle = realAngle - robotAngle;
+        } else {
+            adjustedAngle = phantomAngle - robotAngle;
         }
 
-        SmartDashboard.putNumber( "robot angle", robotAngle);
-        SmartDashboard.putNumber( "phantom angle", phantomAngle);
-        SmartDashboard.putNumber( "desired angle", desiredAngle);
-        SmartDashboard.putNumber("real angle", realAngle);
-
-        if(desiredAngle > MAX_POSITIVE_TURRET_ANGLE) {
-            desiredAngle -= 360;
-        } else if(desiredAngle < MAX_NEGATIVE_TURRET_ANGLE) {
-            desiredAngle += 360;
+        if (adjustedAngle > MAX_POSITIVE_TURRET_ANGLE) {
+            adjustedAngle -= 360;
+        } else if (adjustedAngle < MAX_NEGATIVE_TURRET_ANGLE) {
+            adjustedAngle += 360;
         }
 
-        return desiredAngle * DEGREE_TO_TURRET;
+        return adjustedAngle * DEGREE_TO_TURRET;
+    }
+
+    public double getAdjustedDistance() {
+        double adjustedDistance;
+
+        if (speed < 0.1) {
+            adjustedDistance = getDistanceToTarget();
+        } else {
+            adjustedDistance = phantomDistance;
+        }
+
+        return adjustedDistance;
     }
 
 }
