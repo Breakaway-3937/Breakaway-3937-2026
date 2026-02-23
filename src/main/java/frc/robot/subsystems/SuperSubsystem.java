@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -50,21 +48,19 @@ public class SuperSubsystem extends SubsystemBase {
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-      .andThen(s_Shooter.runShooter())
-      .andThen(runSubsystems);
+      .andThen(s_Shooter.runShooter());
   }
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-      .andThen(idleSubsystems);
+      .andThen(s_Shooter.idleShooter());
   }
 
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
-      .andThen(s_Shooter.runShooter())
-      .andThen(runSubsystems2);
+      .andThen(s_Shooter.runShooter());
   }
 
   /*
