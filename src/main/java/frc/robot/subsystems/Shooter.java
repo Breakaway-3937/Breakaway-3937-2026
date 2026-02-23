@@ -187,6 +187,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     s_Calculations.runCalculations();
 
+    s_Calculations.setTarget(isHub);
+
     if (isTracking && !s_Calculations.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Calculations.getAdjustedDistance())));
       turret.setControl(turretRequest.withPosition(s_Calculations.getAdjustedTurretAngle()));
@@ -197,8 +199,6 @@ public class Shooter extends SubsystemBase {
       hood.setControl(hoodRequest.withPosition(s_Calculations.getAdjustedDistance()));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
-
-    s_Calculations.setTarget(isHub);
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble());
