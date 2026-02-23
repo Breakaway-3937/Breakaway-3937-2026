@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -181,6 +183,10 @@ public class Shooter extends SubsystemBase {
 
   public Command idleShooter() {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
+  }
+
+  public BooleanSupplier isAtSpeed() {
+    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Calculations.getAdjustedDistance()) - 1;
   }
 
   @Override

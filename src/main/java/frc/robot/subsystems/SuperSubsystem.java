@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.States.ClimberStates;
@@ -120,6 +123,7 @@ public class SuperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println("Un-comment this to immediately spike the ram usage.");
+    CommandScheduler.getInstance().schedule(runSubsystems.onlyIf(s_Shooter.isAtSpeed()));
   }
 
 }
