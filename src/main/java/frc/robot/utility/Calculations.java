@@ -6,9 +6,9 @@ import org.opencv.core.Rect;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
@@ -32,21 +32,18 @@ public class Calculations {
 
     private double robotX;
     private double robotY;
-    private double robotVelocityX;
-    private double robotVelocityY;
     private double robotAngle;
-    private double robotAngleRadians;
-    private double robotVelocityXField;
-    private double robotVelocityYField;
 
-    private double realAngle;
-
-    private double targetPhantomX;
-    private double targetPhantomY;
-    private double phantomAngle;
-    private double phantomDistance;
+    private ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
+    private ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
 
     private double speed;
+
+    private double realDistance;
+    private double realAngle;
+
+    private double phantomDistance;
+    private double phantomAngle;
 
     private double currentTargetX;
     private double currentTargetY;
@@ -64,16 +61,6 @@ public class Calculations {
         timeOfFlightMap.put(1.57, 0.93);
     }
 
-    public double getDistanceToTarget() {
-        double robotX = s_Swerve.getState().Pose.getX();
-        double robotY = s_Swerve.getState().Pose.getY();
-
-        double distance = Math.hypot(currentTargetX - robotX, currentTargetY - robotY);
-
-        // Meters
-        return distance;
-    }
-
     public boolean isUnderTrench() {
         boolean isUnder = false;
         Pose2d turretPose = s_Swerve.getState().Pose.transformBy(robotToTurret);
@@ -89,7 +76,6 @@ public class Calculations {
     }
 
     public void setTarget(boolean isHub) {
-        double robotY = s_Swerve.getState().Pose.getY();
 
         if (isHub && alliance == DriverStation.Alliance.Red) {
             // Red Hub
@@ -116,24 +102,22 @@ public class Calculations {
         robotX = s_Swerve.getState().Pose.getX();
         robotY = s_Swerve.getState().Pose.getY();
 
-        robotVelocityX = s_Swerve.getState().Speeds.vxMetersPerSecond;
-        robotVelocityY = s_Swerve.getState().Speeds.vyMetersPerSecond;
+        robotRelativeSpeeds.vxMetersPerSecond = s_Swerve.getState().Speeds.vxMetersPerSecond;
+        robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
+        robotRelativeSpeeds.omegaRadiansPerSecond = s_Swerve.getState().Speeds.omegaRadiansPerSecond;
 
-        robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
-        robotAngleRadians = Math.toRadians(robotAngle);
+        fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, s_Swerve.getState().Pose.getRotation());
 
-        robotVelocityXField = robotVelocityX * Math.cos(robotAngleRadians) - robotVelocityY * Math.sin(robotAngleRadians);
-        robotVelocityYField = robotVelocityX * Math.sin(robotAngleRadians) + robotVelocityY * Math.cos(robotAngleRadians);
+        speed = Math.sqrt(Math.pow(robotRelativeSpeeds.vxMetersPerSecond, 2) + Math.pow(robotRelativeSpeeds.vyMetersPerSecond, 2));
 
+        realDistance = Math.hypot(currentTargetX - robotX, currentTargetY - robotY);
         realAngle = Math.toDegrees(Math.atan2(currentTargetY - robotY, currentTargetX - robotX));
 
-        targetPhantomX = currentTargetX - (robotVelocityXField * timeOfFlightMap.get(getDistanceToTarget()));
-        targetPhantomY = currentTargetY - (robotVelocityYField * timeOfFlightMap.get(getDistanceToTarget()));
+        double targetPhantomX = currentTargetX - (fieldRelativeSpeeds.vxMetersPerSecond * timeOfFlightMap.get(realDistance));
+        double targetPhantomY = currentTargetY - (fieldRelativeSpeeds.vyMetersPerSecond * timeOfFlightMap.get(realDistance));
 
         phantomDistance = Math.sqrt(Math.pow(targetPhantomX - robotX, 2) + Math.pow(targetPhantomY - robotY, 2));
         phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - robotY, targetPhantomX - robotX));
-
-        speed = Math.sqrt(Math.pow(robotVelocityX, 2) + Math.pow(robotVelocityY, 2));
     }
 
     public double getAdjustedTurretAngle() {
@@ -158,7 +142,7 @@ public class Calculations {
         double adjustedDistance;
 
         if (speed < 0.1) {
-            adjustedDistance = getDistanceToTarget();
+            adjustedDistance = realDistance;
         } else {
             adjustedDistance = phantomDistance;
         }
