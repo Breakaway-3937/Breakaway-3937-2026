@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.conduit.schema.PDPData;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -14,6 +16,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -191,7 +194,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Calculations.getAdjustedDistance()) - 1;
+    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Calculations.getAdjustedDistance()) - 3;
   }
 
   @Override
@@ -212,8 +215,10 @@ public class Shooter extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Speed RPM", shooterLead.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Setpoint", shooterMap.get(s_Calculations.getAdjustedDistance()));
     SmartDashboard.putNumber("Turret Angle", s_Calculations.getAdjustedTurretAngle());
+    SmartDashboard.putBoolean("Shooter Up To Speed", shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Calculations.getAdjustedDistance()) - 3);
   }
 
 }

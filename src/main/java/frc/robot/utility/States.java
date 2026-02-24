@@ -4,9 +4,9 @@ public class States {
 
     public enum IntakeStates {
         STOW(400.0, 0.0),
-        FIRE(160.0,60.0),
+        FIRE(200.0,60.0),
         IDLE(160.0, 0.0),
-        INTAKE(20.0, 30.0),
+        INTAKE(20.0, 20.0),
         UNCLOG(20.0, -10.0);
 
         private final double angle, power;
@@ -29,7 +29,7 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(10.0, 1000.0);
+        FIRE(3.0, 400.0);
 
         private final double SpinnerSpeed, KickerSpeed;
         private final double SPINNER_CONVERSION = 12.67;
