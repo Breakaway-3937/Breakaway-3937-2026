@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
@@ -56,6 +57,11 @@ public class Indexer extends SubsystemBase {
 
     config.MotionMagic.MotionMagicAcceleration = 900;
 
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
     spinner.getConfigurator().apply(config);
   }
 
@@ -77,6 +83,11 @@ public class Indexer extends SubsystemBase {
 
     config.MotionMagic.MotionMagicAcceleration = 900;
 
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
     kicker.getConfigurator().apply(config);
     diverter.getConfigurator().apply(config);
     diverter.setControl(diverterFollowerRequest);
@@ -97,6 +108,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Kicker Voltage", kicker.getMotorVoltage().getValueAsDouble());
   }
 
 }

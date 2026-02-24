@@ -101,8 +101,8 @@ public class Shooter extends SubsystemBase {
     config.MotionMagic.MotionMagicExpo_kV = 0.005;
     config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
     config.CurrentLimits.SupplyCurrentLowerLimit = 40;
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
@@ -129,8 +129,8 @@ public class Shooter extends SubsystemBase {
     config.MotionMagic.MotionMagicExpo_kV = 0.3;
     config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
     config.CurrentLimits.SupplyCurrentLowerLimit = 40;
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
@@ -156,6 +156,11 @@ public class Shooter extends SubsystemBase {
     config.Slot0.kD = 0.0;
 
     config.MotionMagic.MotionMagicAcceleration = 900;
+
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);

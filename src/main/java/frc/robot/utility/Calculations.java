@@ -4,11 +4,13 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
@@ -18,7 +20,7 @@ public class Calculations {
 
     private InterpolatingDoubleTreeMap timeOfFlightMap;
 
-    private final Transform2d robotToTurret = new Transform2d(0.0, 0.0, null); // FIXME
+    private final Transform2d robotToTurret = new Transform2d(-0.20, -0.17, new Rotation2d()); // FIXME
 
     private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
     private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
@@ -28,7 +30,7 @@ public class Calculations {
 
     private final double MAX_POSITIVE_TURRET_ANGLE = 180.0;
     private final double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
-    private final double DEGREE_TO_TURRET = -46.86 / 360.0;
+    private final double DEGREE_TO_TURRET = -46.92 / 360.0;
 
     private double robotX;
     private double robotY;
@@ -101,6 +103,9 @@ public class Calculations {
     public void runCalculations() {
         robotX = s_Swerve.getState().Pose.getX();
         robotY = s_Swerve.getState().Pose.getY();
+        robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+
+        SmartDashboard.putNumber("Robot Angle", robotAngle);
 
         robotRelativeSpeeds.vxMetersPerSecond = s_Swerve.getState().Speeds.vxMetersPerSecond;
         robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
@@ -118,6 +123,11 @@ public class Calculations {
 
         phantomDistance = Math.sqrt(Math.pow(targetPhantomX - robotX, 2) + Math.pow(targetPhantomY - robotY, 2));
         phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - robotY, targetPhantomX - robotX));
+
+        SmartDashboard.putNumber("P Distance", phantomDistance);
+        SmartDashboard.putNumber("P Angle", phantomAngle);
+        SmartDashboard.putNumber("Real Distance", realDistance);
+        SmartDashboard.putNumber("Real Angle", realAngle);
     }
 
     public double getAdjustedTurretAngle() {
@@ -135,6 +145,8 @@ public class Calculations {
             adjustedAngle += 360;
         }
 
+        SmartDashboard.putNumber("Adjusted Angle", adjustedAngle);
+
         return adjustedAngle * DEGREE_TO_TURRET;
     }
 
@@ -146,6 +158,8 @@ public class Calculations {
         } else {
             adjustedDistance = phantomDistance;
         }
+
+        SmartDashboard.putNumber("Adjusted Distance", adjustedDistance);
 
         return adjustedDistance;
     }

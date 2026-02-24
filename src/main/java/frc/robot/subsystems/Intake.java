@@ -52,10 +52,9 @@ public class Intake extends SubsystemBase {
     config.MotionMagic.MotionMagicExpo_kV = 0.7;
     config.MotionMagic.MotionMagicExpo_kA = 0.01;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
     config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-
     config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     intakeWrist.getConfigurator().apply(config);
@@ -79,6 +78,11 @@ public class Intake extends SubsystemBase {
 
     config.MotionMagic.MotionMagicAcceleration = 400;
     config.MotionMagic.MotionMagicJerk = 4000;
+
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 70;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
+    config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
     intake.getConfigurator().apply(config);
   }

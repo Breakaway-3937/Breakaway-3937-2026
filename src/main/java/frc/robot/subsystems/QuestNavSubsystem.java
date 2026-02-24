@@ -16,7 +16,7 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     QuestNav questNav = new QuestNav();
 
-    Transform3d ROBOT_TO_QUEST = new Transform3d(-0.314, 0, 0.25527, new Rotation3d(0, 0, Math.PI));
+    Transform3d ROBOT_TO_QUEST = new Transform3d(-0.35, 0.01, 0.22, new Rotation3d(0, 0, Math.PI));
     Swerve s_Swerve;
     boolean poseSet = false;
 

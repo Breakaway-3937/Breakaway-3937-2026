@@ -48,19 +48,22 @@ public class SuperSubsystem extends SubsystemBase {
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-      .andThen(s_Shooter.runShooter());
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystems);
   }
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-      .andThen(s_Shooter.idleShooter());
+      .andThen(s_Shooter.idleShooter())
+      .andThen(idleSubsystems);
   }
 
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
-      .andThen(s_Shooter.runShooter());
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystems2);
   }
 
   /*
@@ -119,7 +122,6 @@ public class SuperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println("Un-comment this to immediately spike the ram usage.");
-    CommandScheduler.getInstance().schedule(runSubsystems.onlyIf(s_Shooter.isAtSpeed()));
   }
 
 }
