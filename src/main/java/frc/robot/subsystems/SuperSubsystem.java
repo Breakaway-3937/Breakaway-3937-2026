@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.States.ClimberStates;
@@ -29,7 +28,6 @@ public class SuperSubsystem extends SubsystemBase {
     // this.s_Climber = s_Climber;
 
     runSubsystems = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
-    runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
@@ -48,19 +46,25 @@ public class SuperSubsystem extends SubsystemBase {
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-      .andThen(s_Shooter.runShooter());
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystemsCommand());
   }
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-      .andThen(s_Shooter.idleShooter());
+      .andThen(idleSubsystems);
   }
 
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
       .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
-      .andThen(s_Shooter.runShooter());
+      .andThen(s_Shooter.runShooter())
+      .andThen(runSubsystemsCommand());
+  }
+
+  public Command runSubsystemsCommand() {
+    return runSubsystems.onlyIf(s_Shooter.isAtSpeed());
   }
 
   /*
@@ -119,7 +123,6 @@ public class SuperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println("Un-comment this to immediately spike the ram usage.");
-    CommandScheduler.getInstance().schedule(runSubsystems.onlyIf(s_Shooter.isAtSpeed()));
   }
 
 }
