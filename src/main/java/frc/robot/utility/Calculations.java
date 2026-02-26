@@ -11,12 +11,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
     private final Swerve s_Swerve;
-    private final QuestNavSubsystem s_QuestNavSubsystem;
 
     private final Alliance alliance;
 
@@ -52,9 +50,8 @@ public class Calculations {
     private double currentTargetX;
     private double currentTargetY;
 
-    public Calculations(Swerve s_Swerve, QuestNavSubsystem s_QuestNavSubsystem) {
+    public Calculations(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
-        this.s_QuestNavSubsystem = s_QuestNavSubsystem;
 
         alliance = DriverStation.getAlliance().orElse(null);
 
@@ -104,11 +101,9 @@ public class Calculations {
     }
 
     public void runCalculations() {
-        Pose2d questRobotPose = s_QuestNavSubsystem.getRobotPose();
-        robotX = questRobotPose.getX();
-        robotY = questRobotPose.getY();
-        robotAngle = questRobotPose.getRotation().getDegrees();
-       //robotX = s_QuestNavSubsystem.questPose.getX();
+        robotX = s_Swerve.getState().Pose.getX();
+        robotY = s_Swerve.getState().Pose.getY();
+        robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
 
         SmartDashboard.putNumber("Robot Angle", robotAngle);
 
@@ -116,7 +111,7 @@ public class Calculations {
         robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
         robotRelativeSpeeds.omegaRadiansPerSecond = s_Swerve.getState().Speeds.omegaRadiansPerSecond;
 
-        fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, questRobotPose.getRotation());
+        fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, s_Swerve.getState().Pose.getRotation());
 
         speed = Math.sqrt(Math.pow(robotRelativeSpeeds.vxMetersPerSecond, 2) + Math.pow(robotRelativeSpeeds.vyMetersPerSecond, 2));
 

@@ -35,7 +35,7 @@ public class RobotContainer {
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
   //private final QuestNavSubsystem s_QuestNavSubsystem2
   private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
-  private final Calculations s_Calculations = new Calculations(s_Swerve, s_QuestNavSubsystem);
+  private final Calculations s_Calculations = new Calculations(s_Swerve);
   private final Shooter s_Shooter = new Shooter(s_Calculations);
   // private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
