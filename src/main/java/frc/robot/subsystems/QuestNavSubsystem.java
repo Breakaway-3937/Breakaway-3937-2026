@@ -17,13 +17,14 @@ public class QuestNavSubsystem extends SubsystemBase {
     QuestNav questNav = new QuestNav();
 
     Transform3d ROBOT_TO_QUEST = new Transform3d(-0.35, 0.01, 0.22, new Rotation3d(0, 0, Math.PI));
+    private Pose2d latestRobotPose = new Pose2d();
     Swerve s_Swerve;
     boolean poseSet = false;
 
     Matrix<N3, N1> QUESTNAV_STD_DEVS = VecBuilder.fill(
-            0.0, // Trust down to 2cm in X direction 0.02
-            0.0, // Trust down to 2cm in Y direction 0.02
-            0.0 // Trust down to 2 degrees rotational 0.035
+            0.01, // Trust down to 2cm in X direction 0.02
+            0.01, // Trust down to 2cm in Y direction 0.02
+            0.00001 // Trust down to 2 degrees rotational 0.035
     );
 
     public QuestNavSubsystem(Swerve swerve) {
@@ -34,6 +35,10 @@ public class QuestNavSubsystem extends SubsystemBase {
     public void setPose(Pose2d pose) {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
         poseSet = true;
+    }
+
+    public Pose2d getRobotPose() {
+        return latestRobotPose;
     }
 
     @Override
@@ -55,6 +60,8 @@ public class QuestNavSubsystem extends SubsystemBase {
 
                     Pose3d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
 
+                    latestRobotPose = questPose.toPose2d();
+                    
                     s_Swerve.addVisionMeasurement(robotPose.toPose2d(), timestamp, QUESTNAV_STD_DEVS);
                 }
             }
