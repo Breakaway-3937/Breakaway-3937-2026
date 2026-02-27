@@ -34,7 +34,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
 	public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
 		super(drivetrainConstants, modules);
-		resetPose(new Pose2d(new Translation2d(0.5, 0.5), new Rotation2d()));
 		SmartDashboard.putData("Field", field);
 		configPathplanner();
 	}

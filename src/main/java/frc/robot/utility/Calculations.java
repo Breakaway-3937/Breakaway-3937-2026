@@ -20,7 +20,7 @@ public class Calculations {
 
     private InterpolatingDoubleTreeMap timeOfFlightMap;
 
-    private final Transform2d robotToTurret = new Transform2d(-0.20, -0.17, new Rotation2d()); // FIXME
+    private final Transform2d robotToTurret = new Transform2d(-0.15, -0.14, new Rotation2d());
 
     private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
     private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
@@ -31,6 +31,8 @@ public class Calculations {
     private final double MAX_POSITIVE_TURRET_ANGLE = 180.0;
     private final double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
     private final double DEGREE_TO_TURRET = -46.92 / 360.0;
+
+    private Pose2d turretPose;
 
     private double robotX;
     private double robotY;
@@ -65,7 +67,6 @@ public class Calculations {
 
     public boolean isUnderTrench() {
         boolean isUnder = false;
-        Pose2d turretPose = s_Swerve.getState().Pose.transformBy(robotToTurret);
         Point turretPoint = new Point(turretPose.getX(), turretPose.getY());
 
         for (Rect trench : trenches) {
@@ -101,9 +102,10 @@ public class Calculations {
     }
 
     public void runCalculations() {
-        robotX = s_Swerve.getState().Pose.getX();
-        robotY = s_Swerve.getState().Pose.getY();
-        robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+        turretPose = s_Swerve.getState().Pose.transformBy(robotToTurret);
+        robotX = turretPose.getX();
+        robotY = turretPose.getY();
+        robotAngle = turretPose.getRotation().getDegrees();
 
         SmartDashboard.putNumber("Robot Angle", robotAngle);
 
