@@ -4,6 +4,10 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.generated.PracticeTunerConstants;
 
@@ -43,6 +47,19 @@ public final class Constants {
   public static final class Climber {
     public static final int CLIMBER_LEAD_CAN_ID = 0;
     public static final int CLIMBER_FOLLOW_CAN_ID = 0;
+  }
+
+  public static final class Vision {
+    public static final String LEFT_CAMERA = "leftCamera";
+    public static final String RIGHT_CAMERA = "rightCamera";
+
+    public static final Transform3d LEFT_CAMERA_TRANSFORM = new Transform3d(
+      new Translation3d(-0.2787156244, -0.2747080866, 0.219853637),
+      new Rotation3d(0, -20, 137.726311));
+
+    public static final Transform3d RIGHT_CAMERA_TRANSFORM = new Transform3d(
+      new Translation3d(-0.2785432326, 0.274897723, 0.2198532637),
+      new Rotation3d(0, -20, -137.726311));
   }
 
 }

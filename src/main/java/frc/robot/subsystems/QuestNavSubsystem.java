@@ -22,6 +22,8 @@ public class QuestNavSubsystem extends SubsystemBase {
     private final Transform3d ROBOT_TO_QUEST = new Transform3d(-0.33, 0.01, 0.23, new Rotation3d(0, 0, Math.PI));
     private final Swerve s_Swerve;
 
+    private Pose2d filteredPose = new Pose2d();
+
     //Here is the Kalman Std Devs.  These are the low trust and high trust values
     private static final Matrix<N3, N1> TRUSTED_STD_DEVS = VecBuilder.fill(0.02, 0.02, 0.035);
     private static final Matrix<N3, N1> NOISY_STD_DEVS = VecBuilder.fill(0.5, 0.5, 0.9);
@@ -31,16 +33,18 @@ public class QuestNavSubsystem extends SubsystemBase {
     private final LinearFilter yFilter = LinearFilter.movingAverage(5);
     private Rotation2d filteredRotation = new Rotation2d();
 
-    private Pose2d debugPose = new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d());
+    //private Pose2d debugPose = new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d());
 
     public QuestNavSubsystem(Swerve swerve) {
         this.s_Swerve = swerve;
-        setPose(debugPose);
-        s_Swerve.resetPose(debugPose); //In front of the blue hub
     }
 
     public void setPose(Pose2d pose) {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
+    }
+
+    public Pose2d getFilteredPose() {
+        return filteredPose;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class QuestNavSubsystem extends SubsystemBase {
                 // Interpolate handles the 0/360 wrap-around safely
                 filteredRotation = filteredRotation.interpolate(rawRobotPose2d.getRotation(), 0.2);
                 
-                Pose2d filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
+                filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
 
                 // Dynamic Kalman Logic (Jump Check)
                 // Compare filtered pose against the Swerve's current "best guess"
