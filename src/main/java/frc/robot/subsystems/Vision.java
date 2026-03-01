@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -119,6 +120,8 @@ public class Vision extends SubsystemBase {
 
         leftEstimator = new PhotonPoseEstimator(layout, Constants.Vision.LEFT_CAMERA_TRANSFORM);
         rightEstimator = new PhotonPoseEstimator(layout, Constants.Vision.RIGHT_CAMERA_TRANSFORM);
+
+        SmartDashboard.putString("Quest IP", NetworkTableInstance.getDefault().getConnections().toString());
     }
 
     public void setPose(Pose2d pose) {
