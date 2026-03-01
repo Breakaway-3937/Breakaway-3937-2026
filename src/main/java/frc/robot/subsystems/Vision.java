@@ -288,6 +288,8 @@ public class Vision extends SubsystemBase {
 
                 SmartDashboard.putNumber("QuestNav/Jump Distance", distanceJump);
                 SmartDashboard.putNumber("Quest Battery", questNav.getBatteryPercent().getAsInt());
+            } else {
+                filteredPose = s_Swerve.getState().Pose;
             }
         }
 
