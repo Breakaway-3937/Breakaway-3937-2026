@@ -1,11 +1,10 @@
 package frc.robot;
 
 import frc.robot.subsystems.Swerve;
-import frc.robot.utility.Calculations;
+import frc.robot.subsystems.Vision;
 import frc.robot.utility.Constants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SuperSubsystem;
 import frc.robot.generated.PracticeTunerConstants;
@@ -33,9 +32,8 @@ public class RobotContainer {
 
   // Subsystems
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
-  private final QuestNavSubsystem s_QuestNavSubsystem = new QuestNavSubsystem(s_Swerve);
-  private final Calculations s_Calculations = new Calculations(s_Swerve, s_QuestNavSubsystem);
-  private final Shooter s_Shooter = new Shooter(s_Calculations);
+  private final Vision s_Vision = new Vision(s_Swerve);
+  private final Shooter s_Shooter = new Shooter(s_Vision);
   // private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
@@ -79,9 +77,9 @@ public class RobotContainer {
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, true));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).onTrue(s_SuperSubsystem.combo()).and(s_Calculations.isTurretSafe());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).onTrue(s_SuperSubsystem.combo());
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle()).and(s_Calculations.isTurretSafe());
+    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 
@@ -94,10 +92,6 @@ public class RobotContainer {
     return s_Swerve;
   }
 
-  public QuestNavSubsystem getQuestNavSubsystem() {
-    return s_QuestNavSubsystem;
-  }
-
   public Shooter getShooter() {
     return s_Shooter;
   }
@@ -108,6 +102,10 @@ public class RobotContainer {
 
   public Intake getIntake() {
     return s_Intake;
+  }
+
+  public void setInitialPose() {
+    
   }
 
   /*
