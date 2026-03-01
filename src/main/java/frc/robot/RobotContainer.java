@@ -104,8 +104,8 @@ public class RobotContainer {
     return s_Intake;
   }
 
-  public void setInitialPose() {
-    
+  public Vision getVision() {
+    return s_Vision;
   }
 
   /*

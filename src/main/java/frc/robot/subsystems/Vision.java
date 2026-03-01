@@ -95,6 +95,8 @@ public class Vision extends SubsystemBase {
     private final int[] blueTags = { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 };
     private final int[] redTags = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
+    private Pose2d initialPose;
+
     public Vision(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
 
@@ -246,7 +248,7 @@ public class Vision extends SubsystemBase {
             }
 
             if (bestResult.isPresent()) {
-                Pose2d initialPose = new Pose2d(
+                initialPose = new Pose2d(
                         bestResult.get().estimatedPose.getX(),
                         bestResult.get().estimatedPose.getY(),
                         bestResult.get().estimatedPose.getRotation().toRotation2d());
@@ -259,6 +261,10 @@ public class Vision extends SubsystemBase {
                 SmartDashboard.putBoolean("Vision/InitPoseSuccess", false);
             }
         });
+    }
+
+    public boolean isInitPoseSet() {
+        return filteredPose.equals(initialPose);
     }
 
     @Override

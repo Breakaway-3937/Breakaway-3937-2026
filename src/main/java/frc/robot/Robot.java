@@ -61,7 +61,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    robotContainer.setInitialPose();
+    if(!robotContainer.getVision().isInitPoseSet()) {
+      CommandScheduler.getInstance().schedule(robotContainer.getVision().setInitPose());
+    } else {
+      CommandScheduler.getInstance().cancel(robotContainer.getVision().setInitPose());
+    }
   }
 
   /**
@@ -73,8 +77,7 @@ public class Robot extends TimedRobot {
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
-      autonomousCommand.schedule();
-      //robotContainer.getQuestNavSubsystem().setPose(robotContainer.getSwerve().getState().Pose);
+      CommandScheduler.getInstance().schedule(autonomousCommand);
     }
   }
 
