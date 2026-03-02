@@ -32,11 +32,11 @@ public class RobotContainer {
 
   // Subsystems
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
-  private final Vision s_Vision = new Vision(s_Swerve);
-  private final Shooter s_Shooter = new Shooter(s_Vision);
+  private final Shooter s_Shooter = new Shooter();
   // private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
+  private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
   private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake /* s_Climber */);
 
   // Misc
@@ -79,7 +79,7 @@ public class RobotContainer {
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).onTrue(s_SuperSubsystem.combo());
     xboxController.leftTrigger(0.3).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.rightTrigger(0.3).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 

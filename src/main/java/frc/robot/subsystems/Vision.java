@@ -39,9 +39,10 @@ import gg.questnav.questnav.QuestNav;
 public class Vision extends SubsystemBase {
 
     private final Swerve s_Swerve;
+    private final Shooter s_Shooter;
     private final QuestNav questNav = new QuestNav();
 
-    private final Alliance alliance = DriverStation.getAlliance().orElse(null);
+    private final static Alliance alliance = DriverStation.getAlliance().orElse(null);
 
     private final Transform3d ROBOT_TO_QUEST = new Transform3d(-0.33, 0.01, 0.23, new Rotation3d(0, 0, Math.PI));
     private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, -0.14, new Rotation2d());
@@ -55,37 +56,37 @@ public class Vision extends SubsystemBase {
     private Rotation2d filteredRotation = new Rotation2d();
 
     private Pose2d turretPose = new Pose2d();
-    private Point turretPoint = new Point();
+    private static Point turretPoint = new Point();
 
-    private final Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
-    private final Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
-    private final Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
-    private final Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
-    private final Rect[] trenches = { trench1, trench2, trench3, trench4 };
+    private final static Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
+    private final static Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
+    private final static Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
+    private final static Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
+    private final static Rect[] trenches = { trench1, trench2, trench3, trench4 };
 
-    private final double MAX_POSITIVE_TURRET_ANGLE = 180.0;
-    private final double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
-    private final double DEGREE_TO_TURRET = -46.92 / 360.0;
+    private final static double MAX_POSITIVE_TURRET_ANGLE = 180.0;
+    private final static double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
+    private final static double DEGREE_TO_TURRET = -46.92 / 360.0;
 
     private InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
     private double turretPoseX;
-    private double turretPoseY;
-    private double turretRotation;
+    private static double turretPoseY;
+    private static double turretRotation;
 
     private ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     private ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
 
-    private double speed;
+    private static double speed;
 
-    private double realDistance;
-    private double realAngle;
+    private static double realDistance;
+    private static double realAngle;
 
-    private double phantomDistance;
-    private double phantomAngle;
+    private static double phantomDistance;
+    private static double phantomAngle;
 
-    private double currentTargetX;
-    private double currentTargetY;
+    private static double currentTargetX;
+    private static double currentTargetY;
 
     private final PhotonCamera leftCamera;
     private final PhotonCamera rightCamera;
@@ -98,8 +99,9 @@ public class Vision extends SubsystemBase {
 
     private Pose2d initialPose;
 
-    public Vision(Swerve s_Swerve) {
+    public Vision(Swerve s_Swerve, Shooter s_Shooter) {
         this.s_Swerve = s_Swerve;
+        this.s_Shooter = s_Shooter;
 
         timeOfFlightMap.put(5.06, 1.0125);
         timeOfFlightMap.put(4.17, 1.096);
@@ -132,7 +134,7 @@ public class Vision extends SubsystemBase {
         return filteredPose;
     }
 
-    public boolean isUnderTrench() {
+    public static boolean isUnderTrench() {
         boolean isUnder = false;
 
         for (Rect trench : trenches) {
@@ -144,7 +146,7 @@ public class Vision extends SubsystemBase {
         return isUnder;
     }
 
-    public void setTarget(boolean isHub) {
+    public static void setTarget(boolean isHub) {
 
         if (isHub && alliance == DriverStation.Alliance.Red) {
             // Red Hub
@@ -167,7 +169,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public double getAdjustedTurretAngle() {
+    public static double getAdjustedTurretAngle() {
         double adjustedAngle;
 
         if (speed < 0.1) {
@@ -187,7 +189,7 @@ public class Vision extends SubsystemBase {
         return adjustedAngle * DEGREE_TO_TURRET;
     }
 
-    public double getAdjustedDistance() {
+    public static double getAdjustedDistance() {
         double adjustedDistance;
 
         if (speed < 0.1) {
@@ -199,6 +201,10 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Adjusted Distance", adjustedDistance);
 
         return adjustedDistance;
+    }
+
+    public boolean isTurretSafe() {
+        return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() + 3 * DEGREE_TO_TURRET) && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() - 3 * DEGREE_TO_TURRET);
     }
 
     private boolean hasBadTags(EstimatedRobotPose result) {

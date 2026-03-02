@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
 
 public class Shooter extends SubsystemBase {
-  private final Vision s_Vision;
 
   private boolean isTracking = true;
   private boolean isHub = true;
@@ -40,8 +39,7 @@ public class Shooter extends SubsystemBase {
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
-  public Shooter(Vision s_Vision) {
-    this.s_Vision = s_Vision;
+  public Shooter() {
 
     shooterLead = new TalonFX(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID);
     shooterFollow = new TalonFX(Constants.Shootdexer.SHOOTER_FOLLOW_CAN_ID);
@@ -182,7 +180,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterMap.get(s_Vision.getAdjustedDistance()))));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterMap.get(Vision.getAdjustedDistance()))));
   }
 
   public Command idleShooter() {
@@ -190,30 +188,34 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Vision.getAdjustedDistance()) - 3;
+    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(Vision.getAdjustedDistance()) - 3;
+  }
+
+  public double getTurretPosition() {
+    return turret.getPosition().getValueAsDouble();
   }
 
   @Override
   public void periodic() {
 
-    s_Vision.setTarget(isHub);
+    Vision.setTarget(isHub);
 
-    if (isTracking && !s_Vision.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(hoodMap.get(s_Vision.getAdjustedDistance())));
-      turret.setControl(turretRequest.withPosition(s_Vision.getAdjustedTurretAngle()));
-    } else if (isTracking && s_Vision.isUnderTrench()) {
+    if (isTracking && !Vision.isUnderTrench()) {
+      hood.setControl(hoodRequest.withPosition(hoodMap.get(Vision.getAdjustedDistance())));
+      turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+    } else if (isTracking && Vision.isUnderTrench()) {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      turret.setControl(turretRequest.withPosition(s_Vision.getAdjustedTurretAngle()));
+      turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
     } else {
-      hood.setControl(hoodRequest.withPosition(s_Vision.getAdjustedDistance()));
+      hood.setControl(hoodRequest.withPosition(Vision.getAdjustedDistance()));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Setpoint", shooterMap.get(s_Vision.getAdjustedDistance()));
-    SmartDashboard.putNumber("Turret Angle", s_Vision.getAdjustedTurretAngle());
-    SmartDashboard.putBoolean("Shooter Up To Speed", shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(s_Vision.getAdjustedDistance()) - 3);
+    SmartDashboard.putNumber("Shooter Setpoint", shooterMap.get(Vision.getAdjustedDistance()));
+    SmartDashboard.putNumber("Turret Angle", Vision.getAdjustedTurretAngle());
+    SmartDashboard.putBoolean("Shooter Up To Speed", shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(Vision.getAdjustedDistance()) - 3);
   }
 
 }
