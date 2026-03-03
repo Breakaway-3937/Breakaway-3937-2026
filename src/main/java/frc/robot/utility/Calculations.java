@@ -1,5 +1,7 @@
 package frc.robot.utility;
 
+import java.util.function.BooleanSupplier;
+
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
@@ -11,10 +13,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class Calculations {
     private final Swerve s_Swerve;
+    private final QuestNavSubsystem s_Quest;
 
     private final Alliance alliance;
 
@@ -52,8 +56,11 @@ public class Calculations {
     private double currentTargetX;
     private double currentTargetY;
 
-    public Calculations(Swerve s_Swerve) {
+    private boolean turretSafe;
+
+    public Calculations(Swerve s_Swerve, QuestNavSubsystem s_Quest) {
         this.s_Swerve = s_Swerve;
+        this.s_Quest = s_Quest;
 
         alliance = DriverStation.getAlliance().orElse(null);
 
@@ -76,6 +83,10 @@ public class Calculations {
             }
         }
         return isUnder;
+    }
+
+    public BooleanSupplier isTurretSafe() {
+        return () -> turretSafe;
     }
 
     public void setTarget(boolean isHub) {
@@ -102,7 +113,8 @@ public class Calculations {
     }
 
     public void runCalculations() {
-        turretPose = s_Swerve.getState().Pose.transformBy(robotToTurret);
+        //turretPose = s_Swerve.getState().Pose.transformBy(robotToTurret);
+        turretPose = s_Quest.getFilteredPose().transformBy(robotToTurret);
         robotX = turretPose.getX();
         robotY = turretPose.getY();
         robotAngle = turretPose.getRotation().getDegrees();
@@ -143,9 +155,13 @@ public class Calculations {
 
         if (adjustedAngle > MAX_POSITIVE_TURRET_ANGLE) {
             adjustedAngle -= 360;
+            turretSafe = false;
         } else if (adjustedAngle < MAX_NEGATIVE_TURRET_ANGLE) {
             adjustedAngle += 360;
+            turretSafe = false;
         }
+
+        turretSafe = true;
 
         SmartDashboard.putNumber("Adjusted Angle", adjustedAngle);
 
