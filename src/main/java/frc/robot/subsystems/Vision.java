@@ -88,6 +88,7 @@ public class Vision extends SubsystemBase {
 
     private static double currentTargetX;
     private static double currentTargetY;
+    private static boolean waitToConnect = false;
 
     private final PhotonCamera leftCamera;
     private final PhotonCamera rightCamera;
@@ -125,7 +126,12 @@ public class Vision extends SubsystemBase {
         rightEstimator = new PhotonPoseEstimator(layout, Constants.Vision.RIGHT_CAMERA_TRANSFORM);
 
         questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            System.out.print(e);
+        };
+        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
         SmartDashboard.putString("Quest IP", NetworkTableInstance.getDefault().getConnections().toString());
     }
 
@@ -281,6 +287,10 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        /*if (questNav.isConnected() && !waitToConnect) {
+            questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+            waitToConnect = true;
+        }*/
         questNav.commandPeriodic();
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 

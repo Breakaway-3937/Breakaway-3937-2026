@@ -33,10 +33,11 @@ public class RobotContainer {
   // Subsystems
   private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
   private final Shooter s_Shooter = new Shooter();
+  private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
   // private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
-  private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
+  
   private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake /* s_Climber */, s_Vision);
 
   // Misc
@@ -77,9 +78,9 @@ public class RobotContainer {
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).onTrue(s_SuperSubsystem.combo());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.0)).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.leftTrigger(0.0).and(xboxController.rightTrigger(0.3)).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(-1)).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
+    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(-1)).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo()).onFalse(s_SuperSubsystem.comboIdle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 

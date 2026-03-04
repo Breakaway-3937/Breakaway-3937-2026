@@ -6,7 +6,7 @@ import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
 
   private final MotionMagicExpoVoltage turretRequest;
   private final MotionMagicExpoVoltage hoodRequest;
-  private final MotionMagicVelocityVoltage shooterRequest;
+  private final VelocityTorqueCurrentFOC shooterRequest;
 
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
@@ -49,7 +49,7 @@ public class Shooter extends SubsystemBase {
 
     turretRequest = new MotionMagicExpoVoltage(0);
     hoodRequest = new MotionMagicExpoVoltage(0);
-    shooterRequest = new MotionMagicVelocityVoltage(0);
+    shooterRequest = new VelocityTorqueCurrentFOC(0);
 
     hoodMap.put(1.524, 0.0);
     hoodMap.put(25.908, 4.5);
@@ -95,8 +95,8 @@ public class Shooter extends SubsystemBase {
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.005;
-    config.MotionMagic.MotionMagicExpo_kA = 0.1;
+    config.MotionMagic.MotionMagicExpo_kV = 0.01;
+    config.MotionMagic.MotionMagicExpo_kA = 0.05;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -141,14 +141,20 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    config.Slot0.kS = 0.0;
+    /*config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
     config.Slot0.kA = 0.00;
     config.Slot0.kP = 0.07;
     config.Slot0.kI = 0.0;
-    config.Slot0.kD = 0.0;
+    config.Slot0.kD = 0.0;*/
 
-    config.MotionMagic.MotionMagicAcceleration = 900;
+    //config.MotionMagic.MotionMagicAcceleration = 900;
+
+    config.Slot0.kP = 999999.0;
+    config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    config.MotorOutput.PeakForwardDutyCycle = 1;
+    config.MotorOutput.PeakReverseDutyCycle = 0;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;

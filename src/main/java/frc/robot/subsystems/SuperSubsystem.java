@@ -24,6 +24,7 @@ public class SuperSubsystem extends SubsystemBase {
   ParallelRaceGroup runSubsystems;
   ParallelCommandGroup runSubsystems2;
   ParallelCommandGroup idleSubsystems;
+  ParallelCommandGroup idleSubsystems2;
 
   BooleanSupplier shooterGood;
 
@@ -41,6 +42,7 @@ public class SuperSubsystem extends SubsystemBase {
     runSubsystems = new ParallelRaceGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyWhile(shooterGood);
     runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
+    idleSubsystems2 = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
   private Command setIntakeOut() {
@@ -57,7 +59,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
-        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
         .andThen(s_Shooter.runShooter())
         .andThen(new WaitUntilCommand(s_Shooter.isAtSpeed()))
         .andThen(runSubsystems);
@@ -65,8 +67,14 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
-        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.TEST)))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
         .andThen(idleSubsystems);
+  }
+
+  public Command comboIdle() {
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
+        .andThen(idleSubsystems2);
   }
 
   public Command combo() {
