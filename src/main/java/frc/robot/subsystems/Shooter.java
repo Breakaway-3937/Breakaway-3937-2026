@@ -99,9 +99,7 @@ public class Shooter extends SubsystemBase {
     config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 70;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
     turret.getConfigurator().apply(config);
     turret.setPosition(0);
@@ -127,9 +125,7 @@ public class Shooter extends SubsystemBase {
     config.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 70;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
     hood.getConfigurator().apply(config);
     hood.setPosition(0);
@@ -155,9 +151,7 @@ public class Shooter extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 70;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
@@ -207,7 +201,7 @@ public class Shooter extends SubsystemBase {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
     } else {
-      hood.setControl(hoodRequest.withPosition(Vision.getAdjustedDistance()));
+      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 

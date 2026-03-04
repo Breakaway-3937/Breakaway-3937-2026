@@ -58,9 +58,7 @@ public class Indexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 70;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
     spinner.getConfigurator().apply(config);
   }
@@ -84,9 +82,7 @@ public class Indexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 70;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
     kicker.getConfigurator().apply(config);
     diverter.getConfigurator().apply(config);

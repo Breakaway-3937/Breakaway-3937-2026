@@ -61,11 +61,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if(!robotContainer.getVision().isInitPoseSet()) {
+    /*if(!robotContainer.getVision().isInitPoseSet()) {
       CommandScheduler.getInstance().schedule(robotContainer.getVision().setInitPose());
     } else {
       CommandScheduler.getInstance().cancel(robotContainer.getVision().setInitPose());
-    }
+    }*/
   }
 
   /**

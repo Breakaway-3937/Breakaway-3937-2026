@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -45,7 +46,7 @@ public class Vision extends SubsystemBase {
     private final static Alliance alliance = DriverStation.getAlliance().orElse(null);
 
     private final Transform3d ROBOT_TO_QUEST = new Transform3d(-0.33, 0.01, 0.23, new Rotation3d(0, 0, Math.PI));
-    private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, -0.14, new Rotation2d());
+    private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, 0.14, new Rotation2d());
 
     private final LinearFilter xFilter = LinearFilter.movingAverage(5);
     private final LinearFilter yFilter = LinearFilter.movingAverage(5);
@@ -122,6 +123,8 @@ public class Vision extends SubsystemBase {
 
         leftEstimator = new PhotonPoseEstimator(layout, Constants.Vision.LEFT_CAMERA_TRANSFORM);
         rightEstimator = new PhotonPoseEstimator(layout, Constants.Vision.RIGHT_CAMERA_TRANSFORM);
+
+        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
 
         SmartDashboard.putString("Quest IP", NetworkTableInstance.getDefault().getConnections().toString());
     }
@@ -325,8 +328,7 @@ public class Vision extends SubsystemBase {
         double targetPhantomY = currentTargetY
                 - (fieldRelativeSpeeds.vyMetersPerSecond * timeOfFlightMap.get(realDistance));
 
-        phantomDistance = Math
-                .sqrt(Math.pow(targetPhantomX - targetPhantomX, 2) + Math.pow(targetPhantomY - targetPhantomY, 2));
-        phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - targetPhantomY, targetPhantomX - targetPhantomX));
+        phantomDistance = Math.sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
+        phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - turretPoseY, targetPhantomX - turretPoseX));
     }
 }

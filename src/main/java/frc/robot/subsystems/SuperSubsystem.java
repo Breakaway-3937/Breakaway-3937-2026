@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.utility.States.IndexerStates;
@@ -17,19 +20,25 @@ public class SuperSubsystem extends SubsystemBase {
   private final Indexer s_Indexer;
   private final Intake s_Intake;
   // private final Climber s_Climber;
-  ParallelCommandGroup runSubsystems;
+  private final Vision s_Vision;
+  ParallelRaceGroup runSubsystems;
   ParallelCommandGroup runSubsystems2;
   ParallelCommandGroup idleSubsystems;
 
+  BooleanSupplier shooterGood;
+
   // PowerDistribution pdp = new PowerDistribution(0, ModuleType.kRev);
 
-  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake /* Climber s_Climber */) {
+  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake /* Climber s_Climber */, Vision s_Vision) {
     this.s_Shooter = s_Shooter;
     this.s_Indexer = s_Indexer;
     this.s_Intake = s_Intake;
     // this.s_Climber = s_Climber;
+    this.s_Vision = s_Vision;
 
-    runSubsystems = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
+    shooterGood = () -> s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe();
+
+    runSubsystems = new ParallelRaceGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyWhile(shooterGood);
     runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
@@ -48,7 +57,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
-        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
         .andThen(s_Shooter.runShooter())
         .andThen(new WaitUntilCommand(s_Shooter.isAtSpeed()))
         .andThen(runSubsystems);
@@ -56,7 +65,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
-        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.TEST)))
         .andThen(idleSubsystems);
   }
 
@@ -124,11 +133,13 @@ public class SuperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // System.out.println("Un-comment this to immediately spike the ram usage.");
+
     /*
      * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
      * SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
      * SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
      * SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
+     * SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));
      */
   }
 
