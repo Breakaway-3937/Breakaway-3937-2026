@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public class RobotContainer {
@@ -27,6 +29,7 @@ public class RobotContainer {
   // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
+  private final JoystickButton translationButton = new JoystickButton(translationController, Constants.Controllers.TRANSLATION_BUTTON);
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
@@ -42,8 +45,7 @@ public class RobotContainer {
 
   // Misc
   private final SendableChooser<Command> autoChooser;
-  private double translationMultiplier = 1.0;
-  private double rotationMultiplier = 1.0;
+  private double multiplier = 1.0;
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(Constants.Swerve.MAX_SPEED * Constants.Controllers.STICK_DEADBAND)
@@ -52,8 +54,8 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    // NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
-    // NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -69,11 +71,12 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityX(translationController.getY() * multiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getX() * multiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                rotationController.getX() * multiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
+    translationButton.whileTrue(setMultipliers(0.3)).whileFalse(setMultipliers(1.0));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
@@ -82,6 +85,10 @@ public class RobotContainer {
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(-1)).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo()).onFalse(s_SuperSubsystem.comboIdle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
+  }
+
+  public Command setMultipliers(double newMultiplier) {
+    return Commands.runOnce(() -> multiplier = newMultiplier);
   }
 
   public Command getAutonomousCommand() {

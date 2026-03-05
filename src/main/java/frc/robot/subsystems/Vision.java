@@ -59,10 +59,11 @@ public class Vision extends SubsystemBase {
     private Pose2d turretPose = new Pose2d();
     private static Point turretPoint = new Point();
 
-    private final static Rect trench1 = new Rect(new Point(4.0, 8.1), new Point(5.2, 6.7));
-    private final static Rect trench2 = new Rect(new Point(4.0, 1.4), new Point(5.2, 0));
-    private final static Rect trench3 = new Rect(new Point(11.4, 8.1), new Point(12.6, 6.7));
-    private final static Rect trench4 = new Rect(new Point(11.4, 1.4), new Point(12.6, 0));
+    private final static Rect trench1 = new Rect(new Point(3.7, 8.1), new Point(5.5, 6.7));
+    private final static Rect trench2 = new Rect(new Point(3.7, 1.4), new Point(5.5, 0));
+    private final static Rect trench3 = new Rect(new Point(11.1, 8.1), new Point(12.9, 6.7));
+    private final static Rect trench4 = new Rect(new Point(11.1, 1.4), new Point(12.9, 0));
+    //Added 0.3 to the trench zone
     private final static Rect[] trenches = { trench1, trench2, trench3, trench4 };
 
     private final static double MAX_POSITIVE_TURRET_ANGLE = 180.0;
@@ -88,7 +89,6 @@ public class Vision extends SubsystemBase {
 
     private static double currentTargetX;
     private static double currentTargetY;
-    private static boolean waitToConnect = false;
 
     private final PhotonCamera leftCamera;
     private final PhotonCamera rightCamera;

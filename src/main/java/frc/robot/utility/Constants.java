@@ -15,6 +15,7 @@ public final class Constants {
   public static class Controllers {
     public static final GenericHID TRANSLATION_CONTROLLER = new GenericHID(0);
     public static final GenericHID ROTATION_CONTROLLER = new GenericHID(1);
+    public static final int TRANSLATION_BUTTON = 1;
     public static final GenericHID XBOX_CONTROLLER = new GenericHID(2);
     public static final double STICK_DEADBAND = 0.1;
   }

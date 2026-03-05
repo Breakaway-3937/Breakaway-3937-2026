@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -28,7 +31,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   BooleanSupplier shooterGood;
 
-  // PowerDistribution pdp = new PowerDistribution(0, ModuleType.kRev);
+  PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
 
   public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake /* Climber s_Climber */, Vision s_Vision) {
     this.s_Shooter = s_Shooter;
@@ -142,13 +145,13 @@ public class SuperSubsystem extends SubsystemBase {
   public void periodic() {
     // System.out.println("Un-comment this to immediately spike the ram usage.");
 
-    /*
-     * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
-     * SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
-     * SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
-     * SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
-     * SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));
-     */
+    
+    SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
+    SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
+    SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
+    SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
+    SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));
+    
   }
 
 }
