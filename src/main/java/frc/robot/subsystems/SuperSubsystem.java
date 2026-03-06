@@ -44,7 +44,7 @@ public class SuperSubsystem extends SubsystemBase {
 
     runSubsystems = new ParallelRaceGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyWhile(shooterGood);
     runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
-    idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
+    idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer());
     idleSubsystems2 = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 

@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
 
@@ -23,9 +24,12 @@ public class Shooter extends SubsystemBase {
 
   private boolean isTracking = true;
   private boolean isHub = true;
+  public double shooterSetter;
 
-  private final InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
-  private final InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap hoodHubMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap shooterHubMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap hoodLobMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap shooterLobMap = new InterpolatingDoubleTreeMap();
 
   private final TalonFX shooterLead, shooterFollow, hood, turret;
   private final CANrange eyeOfSauron;
@@ -33,6 +37,7 @@ public class Shooter extends SubsystemBase {
   private final MotionMagicExpoVoltage turretRequest;
   private final MotionMagicExpoVoltage hoodRequest;
   private final VelocityTorqueCurrentFOC shooterRequest;
+  
 
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
@@ -51,25 +56,82 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
-    hoodMap.put(1.524, 0.0);
-    hoodMap.put(25.908, 4.5);
-    hoodMap.put(4.572, 4.3);
-    hoodMap.put(3.6576, 3.4);
-    hoodMap.put(3.048, 3.0);
-    hoodMap.put(2.1336, 1.55);
+    //18.5
+    hoodHubMap.put(5.6388, 5.79);
+    //17
+    hoodHubMap.put(5.1816, 5.29);
+    //16
+    hoodHubMap.put(4.8786, 4.36);
+    //15
+    hoodHubMap.put(4.572, 4.22);
+    //14
+    hoodHubMap.put(4.2672, 4.43);
+    //13
+    hoodHubMap.put(3.9624, 3.79);
+    //12
+    hoodHubMap.put(3.6576, 3.79);
+    //11
+    hoodHubMap.put(3.3528, 2.9);
+    //10
+    hoodHubMap.put(3.048, 2.82);
+    //9
+    hoodHubMap.put(2.7432, 2.81);
+    //8
+    hoodHubMap.put(2.4384, 2.17);
+    //7
+    hoodHubMap.put(2.1336, 1.60);
+    //6
+    hoodHubMap.put(1.8288, 1.60);
 
-    shooterMap.put(1.524, 39.2);
-    shooterMap.put(5.1816, 51.25);
-    shooterMap.put(4.572, 48.75);
-    shooterMap.put(3.6576, 45.5);
-    shooterMap.put(3.048, 43.5);
-    shooterMap.put(2.1336, 41.5);
+    //18.5
+    shooterHubMap.put(5.6388, 5.79);
+    //17
+    shooterHubMap.put(5.1816, 5.29);
+    //16
+    shooterHubMap.put(4.8786, 4.36);
+    //15
+    shooterHubMap.put(4.572, 4.22);
+    //14
+    shooterHubMap.put(4.2672, 4.43);
+    //13
+    shooterHubMap.put(3.9624, 3.79);
+    //12
+    shooterHubMap.put(3.6576, 3.79);
+    //11
+    shooterHubMap.put(3.3528, 2.9);
+    //10
+    shooterHubMap.put(3.048, 2.82);
+    //9
+    shooterHubMap.put(2.7432, 2.81);
+    //8
+    shooterHubMap.put(2.4384, 2.17);
+    //7
+    shooterHubMap.put(2.1336, 1.60);
+    //6
+    shooterHubMap.put(1.8288, 1.60);
+
+    hoodLobMap.put(3.7846, 3.84);
+    hoodLobMap.put(5.1816, 4.92);
+    hoodLobMap.put(6.096, 5.98);
+    hoodLobMap.put(7.0104, 6.09);
+    hoodLobMap.put(8.2296, 6.27);
+    hoodLobMap.put(9.7536, 7.6);
+    hoodLobMap.put(12.4968, 8.1);
+
+    shooterLobMap.put(3.7846, 2500.0);
+    shooterLobMap.put(5.1816, 2700.0);
+    shooterLobMap.put(6.096, 2850.0);
+    shooterLobMap.put(7.0104, 3100.0);
+    shooterLobMap.put(8.2296, 3500.0);
+    shooterLobMap.put(9.7536, 3900.0);
+    shooterLobMap.put(12.4968, 4600.0);
 
     configTurret();
     configHood();
     configShooter();
     configCANranges();
 
+    SmartDashboard.putNumber("Shooter Setter Speed", 0);
   }
 
   public void configTurret() {
@@ -180,7 +242,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterMap.get(Vision.getAdjustedDistance()))));
+    Command cmd = new InstantCommand();
+
+    if(isHub) {
+      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterHubMap.get(Vision.getAdjustedDistance()))));
+    } else {
+      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterLobMap.get(Vision.getAdjustedDistance()))));
+    }
+
+    return cmd;
   }
 
   public Command idleShooter() {
@@ -188,7 +258,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(Vision.getAdjustedDistance()) - 3;
+    return () -> shooterLead.getVelocity().getValueAsDouble() > shooterHubMap.get(Vision.getAdjustedDistance()) - 3;
   }
 
   public double getTurretPosition() {
@@ -200,22 +270,36 @@ public class Shooter extends SubsystemBase {
 
     Vision.setTarget(isHub);
 
-    if (isTracking && !Vision.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(hoodMap.get(Vision.getAdjustedDistance())));
-      turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
-    } else if (isTracking && Vision.isUnderTrench()) {
-      hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-      turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
-    } else {
+    if(isTracking && isHub) {
+      if (!Vision.isUnderTrench()) {
+        //Tracking Hub Open
+        hood.setControl(hoodRequest.withPosition(hoodHubMap.get(Vision.getAdjustedDistance())));
+        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+      } else if (Vision.isUnderTrench()) {
+        //Tracking Hub Trench
+        hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+      }
+    } else if (isTracking && !isHub) {
+      if (isTracking && !Vision.isUnderTrench()) {
+        //Tracking Lob Open
+        hood.setControl(hoodRequest.withPosition(hoodLobMap.get(Vision.getAdjustedDistance())));
+        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+      } else if (isTracking && Vision.isUnderTrench()) {
+        //Tracking Lob Trench
+        hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
+        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+      }
+    }
+    else {
+      //Not Tracking
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Setpoint", shooterMap.get(Vision.getAdjustedDistance()));
-    SmartDashboard.putNumber("Turret Angle", Vision.getAdjustedTurretAngle());
-    SmartDashboard.putBoolean("Shooter Up To Speed", shooterLead.getVelocity().getValueAsDouble() > shooterMap.get(Vision.getAdjustedDistance()) - 3);
+    shooterSetter = SmartDashboard.getNumber("Shooter Setter Speed", 1400);
   }
 
 }

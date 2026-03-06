@@ -54,8 +54,8 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
-    NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+    //NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    //NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
