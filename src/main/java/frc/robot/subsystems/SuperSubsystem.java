@@ -24,7 +24,7 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake s_Intake;
   // private final Climber s_Climber;
   private final Vision s_Vision;
-  ParallelRaceGroup runSubsystems;
+  ParallelCommandGroup runSubsystems;
   ParallelCommandGroup runSubsystems2;
   ParallelCommandGroup idleSubsystems;
   ParallelCommandGroup idleSubsystems2;
@@ -42,7 +42,8 @@ public class SuperSubsystem extends SubsystemBase {
 
     shooterGood = () -> s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe();
 
-    runSubsystems = new ParallelRaceGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyWhile(shooterGood);
+    //runSubsystems = new ParallelCommandGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyIf(shooterGood);
+    runSubsystems = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
     idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer());
     idleSubsystems2 = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
