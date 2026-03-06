@@ -15,6 +15,8 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -157,23 +159,37 @@ public class Vision extends SubsystemBase {
 
     public static void setTarget(boolean isHub) {
 
-        if (isHub && alliance == DriverStation.Alliance.Red) {
-            // Red Hub
-            currentTargetX = 11.9;
-            currentTargetY = 4.035;
-        } else if (isHub && alliance == DriverStation.Alliance.Blue) {
-            // Blue Hub
-            currentTargetX = 4.6;
-            currentTargetY = 4.035;
-        } else {
-            if (turretPoseY >= 4.035 && alliance == DriverStation.Alliance.Red) {
-                // Red Lob
-                currentTargetX = 15.0;
-                currentTargetY = 7.25;
+        if(isHub) {
+            if(alliance == DriverStation.Alliance.Red) {
+                //Red Hub
+                currentTargetX = 11.9;
+                currentTargetY = 4.035;
             } else {
-                // Blue Lob
-                currentTargetX = 1.7;
-                currentTargetY = 0.8;
+                //Blue Hub
+                currentTargetX = 4.6;
+                currentTargetY = 4.035;
+            }
+        } else {
+            if(turretPoseY >= 4.035) {
+                if(alliance == DriverStation.Alliance.Red) {
+                    //Red High Lob
+                    currentTargetX = 14.5;
+                    currentTargetY = 6.5;
+                } else {
+                    //Blue High Lob
+                    currentTargetX = 2.0;
+                    currentTargetY = 6.5;
+                }
+            } else {
+                if(alliance == DriverStation.Alliance.Red) {
+                    //Red Low Lob
+                    currentTargetX = 14.5;
+                    currentTargetY = 1.5;
+                } else {
+                    //Blue Low Lob
+                    currentTargetX = 2.0;
+                    currentTargetY = 1.5;
+                }
             }
         }
     }
