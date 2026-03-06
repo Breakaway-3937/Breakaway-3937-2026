@@ -134,6 +134,7 @@ public class Shooter extends SubsystemBase {
     configCANranges();
 
     SmartDashboard.putNumber("Shooter Added Speed", 0);
+    SmartDashboard.putNumber("Hood Added Angle", 0);
   }
 
   public void configTurret() {
@@ -304,7 +305,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Setpoint", shooterHubMap.get(Vision.getAdjustedDistance()));
     SmartDashboard.putNumber("Hood Setpoint", hoodHubMap.get(Vision.getAdjustedDistance()));
     shooterSetter = SmartDashboard.getNumber("Shooter Added Speed", 1400);
-    hoodSetter = SmartDashboard.getNumber("Hood Added Speed", 1400);
+    hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
   }
 
 }
