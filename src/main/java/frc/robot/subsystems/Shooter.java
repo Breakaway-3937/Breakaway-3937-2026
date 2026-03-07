@@ -59,7 +59,7 @@ public class Shooter extends SubsystemBase {
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
     //18.5
-    hoodHubMap.put(5.6388, 5.79);
+    /*hoodHubMap.put(5.6388, 5.79);
     //17
     hoodHubMap.put(5.1816, 5.29);
     //16
@@ -110,7 +110,23 @@ public class Shooter extends SubsystemBase {
     //7
     shooterHubMap.put(2.1336, 2250.0);
     //6
-    shooterHubMap.put(1.8288, 2000.0);
+    shooterHubMap.put(1.8288, 2000.0);*/
+
+    hoodHubMap.put(1.524, 0.0);
+    hoodHubMap.put(5.1816, 4.4);
+    hoodHubMap.put(4.572, 4.3);
+    hoodHubMap.put(3.6576, 3.4);
+    hoodHubMap.put(3.048, 3.0);
+    hoodHubMap.put(2.1336, 1.55);
+    hoodHubMap.put(6.096, 4.5);
+
+    shooterHubMap.put(1.524, 39.2);
+    shooterHubMap.put(5.1816, 51.75);
+    shooterHubMap.put(4.572, 48.75);
+    shooterHubMap.put(3.6576, 45.5);
+    shooterHubMap.put(3.048, 43.5);
+    shooterHubMap.put(2.1336, 41.5);
+    shooterHubMap.put(6.096, 54.75);
 
     hoodLobMap.put(3.7846, 3.84);
     hoodLobMap.put(5.1816, 4.92);
@@ -248,7 +264,8 @@ public class Shooter extends SubsystemBase {
     Command cmd = new InstantCommand();
 
     if(isHub) {
-      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity((shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) / 60.0)));
+      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity((shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter))));
+      //cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterSetter / 60.0)));
     } else {
       cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity((shooterLobMap.get(Vision.getAdjustedDistance()) + shooterSetter) / 60.0)));
     }
@@ -261,7 +278,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity().getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) / 60.0 - 3;
+    return () -> shooterLead.getVelocity().getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) - 3;
+    //return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter / 60.0 - 3;
   }
 
   public double getTurretPosition() {
@@ -299,6 +317,8 @@ public class Shooter extends SubsystemBase {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
+
+    SmartDashboard.putNumber("Distance", Vision.getAdjustedDistance());
 
     SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble());

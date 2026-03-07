@@ -45,7 +45,8 @@ public class RobotContainer {
 
   // Misc
   private final SendableChooser<Command> autoChooser;
-  private double multiplier = 1.0;
+  private double translationMultiplier = 1.0;
+  private double rotationMultiplier = 1.0;
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(Constants.Swerve.MAX_SPEED * Constants.Controllers.STICK_DEADBAND)
@@ -71,12 +72,12 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(translationController.getY() * multiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(translationController.getX() * multiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityX(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                rotationController.getX() * multiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
-    translationButton.whileTrue(setMultipliers(0.3)).whileFalse(setMultipliers(1.0));
+    translationButton.whileTrue(setMultipliers(0.5)).whileFalse(setMultipliers(1.0));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true, false));
     xboxController.b().onTrue(s_SuperSubsystem.autoTrack(false, true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(true, true));
@@ -88,7 +89,7 @@ public class RobotContainer {
   }
 
   public Command setMultipliers(double newMultiplier) {
-    return Commands.runOnce(() -> multiplier = newMultiplier);
+    return Commands.runOnce(() -> translationMultiplier = newMultiplier);
   }
 
   public Command getAutonomousCommand() {
