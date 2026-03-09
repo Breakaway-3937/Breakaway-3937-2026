@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.utility.States.IndexerStates;
@@ -24,10 +25,6 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake s_Intake;
   // private final Climber s_Climber;
   private final Vision s_Vision;
-  ParallelCommandGroup runSubsystems;
-  ParallelCommandGroup runSubsystems2;
-  ParallelCommandGroup idleSubsystems;
-  ParallelCommandGroup idleSubsystems2;
 
   BooleanSupplier shooterGood;
 
@@ -41,12 +38,6 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Vision = s_Vision;
 
     shooterGood = () -> s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe();
-
-    //runSubsystems = new ParallelCommandGroup (s_Indexer.setIndexer(), s_Intake.setIntake()).onlyIf(shooterGood);
-    runSubsystems = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
-    runSubsystems2 = new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
-    idleSubsystems = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer());
-    idleSubsystems2 = new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
   private Command setIntakeOut() {
@@ -57,36 +48,49 @@ public class SuperSubsystem extends SubsystemBase {
     return s_Intake.setIntake()/* .andThen(s_Climber.setClimber()) */;
   }
 
-  public Command autoTrack(boolean isTracking, Boolean isHub) {
-    return runOnce(() -> s_Shooter.setAutoTracking(isTracking, isHub));
+  private ParallelCommandGroup runSubsystems() {
+    return new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
+  }
+
+  private ParallelRaceGroup runSubsystemsIfSafe() {
+    return new ParallelRaceGroup(runSubsystems()).onlyWhile(shooterGood);
+  }
+
+  private ParallelCommandGroup idleSubsystems() {
+    return new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
+  }
+
+  private WaitUntilCommand waitForShooterSpeed() {
+    return new WaitUntilCommand(s_Shooter.isAtSpeed());
+  }
+
+  public Command autoTrack(boolean isTracking) {
+    return runOnce(() -> s_Shooter.setAutoTracking(isTracking));
   }
 
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
+        .andThen(new PrintCommand("FIRE"))
         .andThen(s_Shooter.runShooter())
-        .andThen(new WaitUntilCommand(s_Shooter.isAtSpeed()))
-        .andThen(runSubsystems);
+        .andThen(waitForShooterSpeed())
+        .andThen(runSubsystemsIfSafe());
   }
 
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-        .andThen(idleSubsystems);
-  }
-
-  public Command comboIdle() {
-    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
-        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-        .andThen(idleSubsystems2);
+        .andThen(new PrintCommand("IDLE"))
+        .andThen(idleSubsystems());
   }
 
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
+        .andThen(new PrintCommand("COMBO"))
         .andThen(s_Shooter.runShooter())
-        .andThen(new WaitUntilCommand(s_Shooter.isAtSpeed()))
-        .andThen(runSubsystems2);
+        .andThen(waitForShooterSpeed())
+        .andThen(runSubsystemsIfSafe());
   }
 
   /*
@@ -101,6 +105,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
+        .andThen(new PrintCommand("INTAKE"))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }

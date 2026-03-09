@@ -72,7 +72,7 @@ public class Vision extends SubsystemBase {
 
     private InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
-    private double turretPoseX;
+    private static double turretPoseX;
     private static double turretPoseY;
     private static double turretRotation;
 
@@ -139,8 +139,24 @@ public class Vision extends SubsystemBase {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
     }
 
-    public Pose2d getFilteredPose() {
-        return filteredPose;
+    public Pose2d getTurretPose() {
+        return turretPose;
+    }
+
+    public static boolean isInHomeTerritory() {
+        boolean isHome = false;
+
+        if(alliance == DriverStation.Alliance.Blue) {
+            if(turretPoseX <= 4.6) {
+                isHome = true;
+            }
+        } else {
+            if(turretPoseX >= 11.9) {
+                isHome = true;
+            }
+        }
+
+        return isHome;
     }
 
     public static boolean isUnderTrench() {
@@ -155,37 +171,37 @@ public class Vision extends SubsystemBase {
         return isUnder;
     }
 
-    public static void setTarget(boolean isHub) {
+    private static void setTarget() {
 
-        if(isHub) {
-            if(alliance == DriverStation.Alliance.Red) {
+        if(alliance == DriverStation.Alliance.Blue) {
+            if(turretPoseX <= 4.6) {
+                //Blue Hub
+                currentTargetX = 4.6;
+                currentTargetY = 4.035;
+            } else {
+                if(isInHomeTerritory()) {
+                    //Blue High Lob
+                    currentTargetX = 2.0;
+                    currentTargetY = 6.5;
+                } else {
+                    //Blue Low Lob
+                    currentTargetX = 2.0;
+                    currentTargetY = 1.5;
+                }
+            }
+        } else {
+            if(isInHomeTerritory()) {
                 //Red Hub
                 currentTargetX = 11.9;
                 currentTargetY = 4.035;
             } else {
-                //Blue Hub
-                currentTargetX = 4.6;
-                currentTargetY = 4.035;
-            }
-        } else {
-            if(turretPoseY >= 4.035) {
-                if(alliance == DriverStation.Alliance.Red) {
+                if(turretPoseY >= 4.035) {
                     //Red High Lob
                     currentTargetX = 14.5;
                     currentTargetY = 6.5;
                 } else {
-                    //Blue High Lob
-                    currentTargetX = 2.0;
-                    currentTargetY = 6.5;
-                }
-            } else {
-                if(alliance == DriverStation.Alliance.Red) {
                     //Red Low Lob
                     currentTargetX = 14.5;
-                    currentTargetY = 1.5;
-                } else {
-                    //Blue Low Lob
-                    currentTargetX = 2.0;
                     currentTargetY = 1.5;
                 }
             }
@@ -301,6 +317,8 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
+        setTarget();
         /*if (questNav.isConnected() && !waitToConnect) {
             questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
             waitToConnect = true;

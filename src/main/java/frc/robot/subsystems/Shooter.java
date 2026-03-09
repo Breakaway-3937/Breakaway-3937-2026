@@ -23,10 +23,8 @@ import frc.robot.utility.Constants;
 public class Shooter extends SubsystemBase {
 
   private boolean isTracking = true;
-  private boolean isHub = true;
   private double shooterSetter;
   private double hoodSetter;
-
 
   private final InterpolatingDoubleTreeMap hoodHubMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterHubMap = new InterpolatingDoubleTreeMap();
@@ -39,7 +37,6 @@ public class Shooter extends SubsystemBase {
   private final MotionMagicExpoVoltage turretRequest;
   private final MotionMagicExpoVoltage hoodRequest;
   private final VelocityTorqueCurrentFOC shooterRequest;
-  
 
   private final Follower shooterFollowerRequest = new Follower(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID,
       MotorAlignmentValue.Opposed);
@@ -58,59 +55,61 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
-    //18.5
-    /*hoodHubMap.put(5.6388, 5.79);
-    //17
-    hoodHubMap.put(5.1816, 5.29);
-    //16
-    hoodHubMap.put(4.8786, 4.36);
-    //15
-    hoodHubMap.put(4.572, 4.22);
-    //14
-    hoodHubMap.put(4.2672, 4.43);
-    //13
-    hoodHubMap.put(3.9624, 3.79);
-    //12
-    hoodHubMap.put(3.6576, 3.79);
-    //11
-    hoodHubMap.put(3.3528, 2.9);
-    //10
-    hoodHubMap.put(3.048, 2.82);
-    //9
-    hoodHubMap.put(2.7432, 2.81);
-    //8
-    hoodHubMap.put(2.4384, 2.17);
-    //7
-    hoodHubMap.put(2.1336, 1.60);
-    //6
-    hoodHubMap.put(1.8288, 1.60);
-
-    //18.5
-    shooterHubMap.put(5.6388, 3200.0);
-    //17
-    shooterHubMap.put(5.1816, 3000.0);
-    //16
-    shooterHubMap.put(4.8786, 3000.0);
-    //15
-    shooterHubMap.put(4.572, 3000.0);
-    //14
-    shooterHubMap.put(4.2672, 2750.0);
-    //13
-    shooterHubMap.put(3.9624, 2750.0);
-    //12
-    shooterHubMap.put(3.6576, 2500.0);
-    //11
-    shooterHubMap.put(3.3528, 2500.0);
-    //10
-    shooterHubMap.put(3.048, 2500.0);
-    //9
-    shooterHubMap.put(2.7432, 2250.0);
-    //8
-    shooterHubMap.put(2.4384, 2250.0);
-    //7
-    shooterHubMap.put(2.1336, 2250.0);
-    //6
-    shooterHubMap.put(1.8288, 2000.0);*/
+    // 18.5
+    /*
+     * hoodHubMap.put(5.6388, 5.79);
+     * //17
+     * hoodHubMap.put(5.1816, 5.29);
+     * //16
+     * hoodHubMap.put(4.8786, 4.36);
+     * //15
+     * hoodHubMap.put(4.572, 4.22);
+     * //14
+     * hoodHubMap.put(4.2672, 4.43);
+     * //13
+     * hoodHubMap.put(3.9624, 3.79);
+     * //12
+     * hoodHubMap.put(3.6576, 3.79);
+     * //11
+     * hoodHubMap.put(3.3528, 2.9);
+     * //10
+     * hoodHubMap.put(3.048, 2.82);
+     * //9
+     * hoodHubMap.put(2.7432, 2.81);
+     * //8
+     * hoodHubMap.put(2.4384, 2.17);
+     * //7
+     * hoodHubMap.put(2.1336, 1.60);
+     * //6
+     * hoodHubMap.put(1.8288, 1.60);
+     * 
+     * //18.5
+     * shooterHubMap.put(5.6388, 3200.0);
+     * //17
+     * shooterHubMap.put(5.1816, 3000.0);
+     * //16
+     * shooterHubMap.put(4.8786, 3000.0);
+     * //15
+     * shooterHubMap.put(4.572, 3000.0);
+     * //14
+     * shooterHubMap.put(4.2672, 2750.0);
+     * //13
+     * shooterHubMap.put(3.9624, 2750.0);
+     * //12
+     * shooterHubMap.put(3.6576, 2500.0);
+     * //11
+     * shooterHubMap.put(3.3528, 2500.0);
+     * //10
+     * shooterHubMap.put(3.048, 2500.0);
+     * //9
+     * shooterHubMap.put(2.7432, 2250.0);
+     * //8
+     * shooterHubMap.put(2.4384, 2250.0);
+     * //7
+     * shooterHubMap.put(2.1336, 2250.0);
+     * //6
+     * shooterHubMap.put(1.8288, 2000.0);
+     */
 
     hoodHubMap.put(1.524, 0.0);
     hoodHubMap.put(5.1816, 4.4);
@@ -222,14 +221,16 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    /*config.Slot0.kS = 0.0;
-    config.Slot0.kV = 0.12;
-    config.Slot0.kA = 0.00;
-    config.Slot0.kP = 0.07;
-    config.Slot0.kI = 0.0;
-    config.Slot0.kD = 0.0;*/
+    /*
+     * config.Slot0.kS = 0.0;
+     * config.Slot0.kV = 0.12;
+     * config.Slot0.kA = 0.00;
+     * config.Slot0.kP = 0.07;
+     * config.Slot0.kI = 0.0;
+     * config.Slot0.kD = 0.0;
+     */
 
-    //config.MotionMagic.MotionMagicAcceleration = 900;
+    // config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.Slot0.kP = 999999.0;
     config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
@@ -255,19 +256,20 @@ public class Shooter extends SubsystemBase {
     eyeOfSauron.getConfigurator().apply(config);
   }
 
-  public void setAutoTracking(boolean isTracking, boolean isHub) {
+  public void setAutoTracking(boolean isTracking) {
     this.isTracking = isTracking;
-    this.isHub = isHub;
   }
 
   public Command runShooter() {
     Command cmd = new InstantCommand();
 
-    if(isHub) {
-      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity((shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter))));
-      //cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterSetter / 60.0)));
+    if (Vision.isInHomeTerritory()) {
+      cmd = runOnce(() -> shooterLead
+          .setControl(shooterRequest.withVelocity((shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter))));
+      // cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(shooterSetter / 60.0)));
     } else {
-      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity((shooterLobMap.get(Vision.getAdjustedDistance()) + shooterSetter) / 60.0)));
+      cmd = runOnce(() -> shooterLead.setControl(
+          shooterRequest.withVelocity((shooterLobMap.get(Vision.getAdjustedDistance()) + shooterSetter) / 60.0)));
     }
 
     return cmd;
@@ -278,8 +280,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity().getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) - 3;
-    //return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter / 60.0 - 3;
+    return () -> shooterLead.getVelocity()
+        .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) - 3;
+    // return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter /
+    // 60.0 - 3;
   }
 
   public double getTurretPosition() {
@@ -289,31 +293,20 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
 
-    Vision.setTarget(isHub);
+    if (isTracking) {
 
-    if(isTracking && isHub) {
+      turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
+
       if (!Vision.isUnderTrench()) {
-        //Tracking Hub Open
-        hood.setControl(hoodRequest.withPosition(hoodHubMap.get(Vision.getAdjustedDistance()) + hoodSetter));
-        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
-      } else if (Vision.isUnderTrench()) {
-        //Tracking Hub Trench
+        if (Vision.isInHomeTerritory()) {
+          hood.setControl(hoodRequest.withPosition(hoodHubMap.get(Vision.getAdjustedDistance()) + hoodSetter));
+        } else {
+          hood.setControl(hoodRequest.withPosition(hoodLobMap.get(Vision.getAdjustedDistance()) + hoodSetter));
+        }
+      } else {
         hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
       }
-    } else if (isTracking && !isHub) {
-      if (isTracking && !Vision.isUnderTrench()) {
-        //Tracking Lob Open
-        hood.setControl(hoodRequest.withPosition(hoodLobMap.get(Vision.getAdjustedDistance()) + hoodSetter));
-        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
-      } else if (isTracking && Vision.isUnderTrench()) {
-        //Tracking Lob Trench
-        hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
-        turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
-      }
-    }
-    else {
-      //Not Tracking
+    } else {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
