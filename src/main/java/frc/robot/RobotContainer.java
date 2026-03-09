@@ -72,8 +72,8 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityX(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
                 rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
