@@ -10,9 +10,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.utility.States.IndexerStates;
@@ -52,16 +51,24 @@ public class SuperSubsystem extends SubsystemBase {
     return new ParallelCommandGroup(s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
-  private ParallelRaceGroup runSubsystemsIfSafe() {
-    return new ParallelRaceGroup(runSubsystems()).onlyWhile(shooterGood);
-  }
-
   private ParallelCommandGroup idleSubsystems() {
     return new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.setIntake());
   }
 
+  private ParallelCommandGroup idleSubsystemsWithIntakeDown() {
+    return new ParallelCommandGroup(s_Shooter.idleShooter(), s_Indexer.setIndexer(), s_Intake.stopIntake());
+  }
+
   private WaitUntilCommand waitForShooterSpeed() {
     return new WaitUntilCommand(s_Shooter.isAtSpeed());
+  }
+
+  private ConditionalCommand runSubsystemsIfSafe() {
+    return new ConditionalCommand(runSubsystems(), stopUnsafe(), shooterGood);
+  }
+
+  private Command stopUnsafe() {
+    return runOnce(() -> s_Indexer.stopIndexer());
   }
 
   public Command autoTrack(boolean isTracking) {
@@ -71,7 +78,6 @@ public class SuperSubsystem extends SubsystemBase {
   public Command fire() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
-        .andThen(new PrintCommand("FIRE"))
         .andThen(s_Shooter.runShooter())
         .andThen(waitForShooterSpeed())
         .andThen(runSubsystemsIfSafe());
@@ -80,14 +86,12 @@ public class SuperSubsystem extends SubsystemBase {
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
-        .andThen(new PrintCommand("IDLE"))
         .andThen(idleSubsystems());
   }
 
   public Command combo() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
-        .andThen(new PrintCommand("COMBO"))
         .andThen(s_Shooter.runShooter())
         .andThen(waitForShooterSpeed())
         .andThen(runSubsystemsIfSafe());
@@ -105,13 +109,13 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
-        .andThen(new PrintCommand("INTAKE"))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
         .andThen(setIntakeOut());
   }
 
-  public Command stopIntake() {
-    return s_Intake.stopIntake();
+  public Command idleWithIntakeDown() {
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
+        .andThen(idleSubsystemsWithIntakeDown());
   }
 
   public Command unclog() {

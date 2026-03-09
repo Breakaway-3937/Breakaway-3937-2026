@@ -80,10 +80,10 @@ public class RobotContainer {
     translationButton.whileTrue(setMultipliers(0.4)).whileFalse(setMultipliers(1.0));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
-    xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(-1)).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.stopIntake());
-    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(-1)).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
+    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
   }
 

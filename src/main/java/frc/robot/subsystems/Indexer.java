@@ -98,8 +98,17 @@ public class Indexer extends SubsystemBase {
     kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()));
   }
 
+  public void setIndexerRequestsStop() {
+    spinner.setControl(spinnerRequest.withVelocity(0));
+    kicker.setControl(kickerRequest.withVelocity(0));
+  }
+
   public Command setIndexer() {
     return runOnce(() -> setIndexerRequests());
+  }
+
+  public Command stopIndexer() {
+    return runOnce(() -> setIndexerRequestsStop());
   }
 
   @Override

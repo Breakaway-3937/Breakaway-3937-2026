@@ -26,7 +26,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -132,7 +131,6 @@ public class Vision extends SubsystemBase {
             System.out.print(e);
         };
         questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-        SmartDashboard.putString("Quest IP", NetworkTableInstance.getDefault().getConnections().toString());
     }
 
     public void setPose(Pose2d pose) {
@@ -174,12 +172,12 @@ public class Vision extends SubsystemBase {
     private static void setTarget() {
 
         if(alliance == DriverStation.Alliance.Blue) {
-            if(turretPoseX <= 4.6) {
+            if(isInHomeTerritory()) {
                 //Blue Hub
                 currentTargetX = 4.6;
                 currentTargetY = 4.035;
             } else {
-                if(isInHomeTerritory()) {
+                if(turretPoseY >= 4.035) {
                     //Blue High Lob
                     currentTargetX = 2.0;
                     currentTargetY = 6.5;

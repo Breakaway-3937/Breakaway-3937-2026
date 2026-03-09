@@ -279,6 +279,10 @@ public class Shooter extends SubsystemBase {
     return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
   }
 
+  public Command stopShooter() {
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(0)));
+  }
+
   public BooleanSupplier isAtSpeed() {
     return () -> shooterLead.getVelocity()
         .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) + shooterSetter) - 3;
