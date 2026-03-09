@@ -27,10 +27,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
 
   // Driver Controllers
-  /*private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
+  private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
-  private final JoystickButton translationButton = new JoystickButton(translationController, Constants.Controllers.TRANSLATION_BUTTON);*/
-  private final CommandXboxController testing = new CommandXboxController(0);
+  private final JoystickButton translationButton = new JoystickButton(translationController, Constants.Controllers.TRANSLATION_BUTTON);
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
@@ -73,12 +72,12 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(
         s_Swerve.applyRequest(() -> drive
-            .withVelocityX(testing.getLeftX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
-            .withVelocityY(testing.getLeftY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityX(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
+            .withVelocityY(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                testing.getRightX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
-    testing.a().whileTrue(setMultipliers(0.4)).whileFalse(setMultipliers(1.0));
+    translationButton.whileTrue(setMultipliers(0.4)).whileFalse(setMultipliers(1.0));
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.stopIntake());
