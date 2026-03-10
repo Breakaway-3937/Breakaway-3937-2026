@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,28 +13,20 @@ import frc.robot.utility.States.ClimberStates;
 
 public class Climber extends SubsystemBase {
   private final MotionMagicExpoVoltage climberRequest;
-  private final TalonFX climberLead, climberFollow;
-  private final Follower climberFollowerRequest = new Follower(Constants.Climber.CLIMBER_LEAD_CAN_ID,
-      MotorAlignmentValue.Aligned);
+  private final TalonFX climber;
   private ClimberStates climberState = ClimberStates.STOW;
 
   public Climber() {
-    climberLead = new TalonFX(Constants.Climber.CLIMBER_LEAD_CAN_ID);
-    climberFollow = new TalonFX(Constants.Climber.CLIMBER_FOLLOW_CAN_ID);
+    climber = new TalonFX(Constants.Climber.CLIMBER_CAN_ID);
 
     configClimber();
 
     climberRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   }
 
-  public void configMotors() {
-    climberFollow.setControl(climberFollowerRequest);
-  }
-
   public void configClimber() {
 
-    climberLead.getConfigurator().apply(new TalonFXConfiguration());
-    climberFollow.getConfigurator().apply(new TalonFXConfiguration());
+    climber.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -46,26 +36,20 @@ public class Climber extends SubsystemBase {
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     config.Slot0.kS = 0.0;
-    config.Slot0.kV = 0.0;
+    config.Slot0.kV = 0.2;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 0.1;
+    config.Slot0.kP = 8.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
-    config.Slot0.kG = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.0;
-    config.MotionMagic.MotionMagicExpo_kA = 0.0;
+    config.MotionMagic.MotionMagicExpo_kV = 0.01;
+    config.MotionMagic.MotionMagicExpo_kA = 0.05;
 
-    config.CurrentLimits.SupplyCurrentLimit = 80;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLowerLimit = 40;
-    config.CurrentLimits.SupplyCurrentLowerTime = 1;
+    config.CurrentLimits.SupplyCurrentLimit = 40;
 
-    climberLead.getConfigurator().apply(config);
-    climberFollow.getConfigurator().apply(config);
-    climberLead.setPosition(0);
-    climberFollow.setPosition(0);
-    climberFollow.setControl(climberFollowerRequest);
+    climber.getConfigurator().apply(config);
+    climber.setPosition(0);
   }
 
   public void setClimberState(ClimberStates climberState) {
@@ -73,7 +57,7 @@ public class Climber extends SubsystemBase {
   }
 
   public Command setClimber() {
-    return runOnce(() -> climberLead.setControl(climberRequest.withPosition(climberState.getClimb())));
+    return runOnce(() -> climber.setControl(climberRequest.withPosition(climberState.getClimb())));
   }
 
   @Override

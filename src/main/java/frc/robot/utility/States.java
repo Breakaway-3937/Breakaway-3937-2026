@@ -50,20 +50,21 @@ public class States {
 
     public enum ClimberStates {
         STOW(0.0),
-        RUNG_ONE(0.0),
+        RUNG_ONE(8.0),
         RUNG_TWO(0.0),
         RUNG_THREE(0.0),
         PRESTAGE(0.0),
-        PULL(0.0);
+        PULL(2.5);
 
         private final double Climb;
+        private final double CLIMBER_CONVERSION = 0.1256;
 
         private ClimberStates(double Climb) {
             this.Climb = Climb;
         }
 
         public double getClimb() {
-            return Climb;
+            return Climb / CLIMBER_CONVERSION;
         }
 
     }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -209,7 +210,7 @@ public class Vision extends SubsystemBase {
     public static double getAdjustedTurretAngle() {
         double adjustedAngle;
 
-        if (speed < 0.1) {
+        if (speed < 0.01) {
             adjustedAngle = realAngle - turretRotation;
         } else {
             adjustedAngle = phantomAngle - turretRotation;
@@ -221,27 +222,23 @@ public class Vision extends SubsystemBase {
             adjustedAngle += 360;
         }
 
-        SmartDashboard.putNumber("Adjusted Angle", adjustedAngle);
-
         return adjustedAngle * DEGREE_TO_TURRET;
     }
 
     public static double getAdjustedDistance() {
         double adjustedDistance;
 
-        if (speed < 0.1) {
+        if (speed < 0.01) {
             adjustedDistance = realDistance;
         } else {
             adjustedDistance = phantomDistance;
         }
 
-        SmartDashboard.putNumber("Adjusted Distance", adjustedDistance);
-
         return adjustedDistance;
     }
 
-    public boolean isTurretSafe() {
-        return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() + 3 * DEGREE_TO_TURRET) && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() - 3 * DEGREE_TO_TURRET);
+    public BooleanSupplier isTurretSafe() {
+        return () -> s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET) && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
     }
 
     private boolean hasBadTags(EstimatedRobotPose result) {
