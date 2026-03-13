@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -178,6 +179,7 @@ public class SuperSubsystem extends SubsystemBase {
   public void periodic() {
     // System.out.println("Un-comment this to immediately spike the ram usage.");
 
+    SmartDashboard.putString("Rio SN", RobotController.getSerialNumber());
     /*SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
     SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
     SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));

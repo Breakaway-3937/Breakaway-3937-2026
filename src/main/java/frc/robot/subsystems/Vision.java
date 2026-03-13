@@ -338,7 +338,7 @@ public class Vision extends SubsystemBase {
             }
         }
 
-        turretPose = rawRobotPose2d.transformBy(ROBOT_TO_TURRET);
+        turretPose = filteredPose.transformBy(ROBOT_TO_TURRET);
         turretPoseX = turretPose.getX();
         turretPoseY = turretPose.getY();
         turretRotation = turretPose.getRotation().getDegrees();
