@@ -8,6 +8,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SuperSubsystem;
+import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -35,7 +36,7 @@ public class RobotContainer {
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
-  private final Swerve s_Swerve = PracticeTunerConstants.createDrivetrain();
+  private final Swerve s_Swerve = createSwerve();
   private final Shooter s_Shooter = new Shooter();
   private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
   private final Climber s_Climber = new Climber();
@@ -126,4 +127,8 @@ public class RobotContainer {
    * return s_Climber;
    * }
    */
+
+  private Swerve createSwerve() {
+    return (Constants.COMPBOT) ? CompTunerConstants.createDrivetrain() : PracticeTunerConstants.createDrivetrain();
+  } 
 }

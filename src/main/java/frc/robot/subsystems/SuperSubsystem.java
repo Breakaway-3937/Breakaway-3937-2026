@@ -72,7 +72,7 @@ public class SuperSubsystem extends SubsystemBase {
   }
 
   private Command stopUnsafe() {
-    return runOnce(() -> s_Indexer.stopIndexer());
+    return s_Indexer.stopIndexer();
   }
 
   public Command autoTrack(boolean isTracking) {
@@ -137,7 +137,7 @@ public class SuperSubsystem extends SubsystemBase {
 
   public Command idleWithIntakeDown() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
-        .andThen(RobotContainer.setMultipliers(0.4))
+        .andThen(RobotContainer.setMultipliers(1.0))
         .andThen(idleSubsystemsWithIntakeDown());
   }
 

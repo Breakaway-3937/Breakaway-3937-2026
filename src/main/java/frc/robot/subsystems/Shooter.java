@@ -87,23 +87,23 @@ public class Shooter extends SubsystemBase {
     // 18.5
     shooterHubMap.put(5.6388, 3260.0);
     // 17
-    shooterHubMap.put(5.1816, 3060.0);
+    shooterHubMap.put(5.1816, 3160.0);
     // 16
-    shooterHubMap.put(4.8786, 3060.0);
+    shooterHubMap.put(4.8786, 3160.0);
     // 15
     shooterHubMap.put(4.572, 3060.0);
     // 14
-    shooterHubMap.put(4.2672, 2810.0);
+    shooterHubMap.put(4.2672, 2910.0);
     // 13
     shooterHubMap.put(3.9624, 2810.0);
     // 12
-    shooterHubMap.put(3.6576, 2560.0);
+    shooterHubMap.put(3.6576, 2760.0);
     // 11
-    shooterHubMap.put(3.3528, 2560.0);
+    shooterHubMap.put(3.3528, 2660.0);
     // 10
     shooterHubMap.put(3.048, 2560.0);
     // 9
-    shooterHubMap.put(2.7432, 2310.0);
+    shooterHubMap.put(2.7432, 2410.0);
     // 8
     shooterHubMap.put(2.4384, 2310.0);
     // 7
@@ -265,7 +265,7 @@ public class Shooter extends SubsystemBase {
 
   public BooleanSupplier isAtSpeed() {
     return () -> shooterLead.getVelocity()
-        .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 1;
+        .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
     // return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter /
     // 60.0 - 3;
   }

@@ -8,9 +8,14 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 public final class Constants {
+
+  public static final String COMP_SERIAL_NUM = "";
+  public static final boolean COMPBOT = RobotController.getSerialNumber().equals(COMP_SERIAL_NUM);
 
   public static class Controllers {
     public static final GenericHID TRANSLATION_CONTROLLER = new GenericHID(0);
@@ -21,7 +26,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final double MAX_SPEED = PracticeTunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static final double MAX_SPEED = (Constants.COMPBOT) ? CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) : PracticeTunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(1.25).in(RadiansPerSecond);
   }
 

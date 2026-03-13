@@ -210,7 +210,7 @@ public class Vision extends SubsystemBase {
     public static double getAdjustedTurretAngle() {
         double adjustedAngle;
 
-        if (speed < 0.01) {
+        if (speed < 0.001) {
             adjustedAngle = realAngle - turretRotation;
         } else {
             adjustedAngle = phantomAngle - turretRotation;
@@ -228,7 +228,7 @@ public class Vision extends SubsystemBase {
     public static double getAdjustedDistance() {
         double adjustedDistance;
 
-        if (speed < 0.01) {
+        if (speed < 0.001) {
             adjustedDistance = realDistance;
         } else {
             adjustedDistance = phantomDistance;
@@ -333,19 +333,19 @@ public class Vision extends SubsystemBase {
 
                 filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
 
-                double distanceJump = rawRobotPose2d.getTranslation().getDistance(filteredPose.getTranslation());
-
-                SmartDashboard.putNumber("QuestNav/Jump Distance", distanceJump);
-                SmartDashboard.putNumber("Quest Battery", questNav.getBatteryPercent().getAsInt());
             } else {
                 filteredPose = s_Swerve.getState().Pose;
             }
         }
 
-        turretPose = filteredPose.transformBy(ROBOT_TO_TURRET);
+        turretPose = rawRobotPose2d.transformBy(ROBOT_TO_TURRET);
         turretPoseX = turretPose.getX();
         turretPoseY = turretPose.getY();
         turretRotation = turretPose.getRotation().getDegrees();
+
+        double[] turretCoordinates = {turretPoseX, turretPoseY};
+
+        turretPoint.set(turretCoordinates);
 
         robotRelativeSpeeds.vxMetersPerSecond = s_Swerve.getState().Speeds.vxMetersPerSecond;
         robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
