@@ -56,6 +56,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
     NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
