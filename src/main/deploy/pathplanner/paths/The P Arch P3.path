@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.6120827389443653,
+        "y": 7.496091298145506
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.612082738944365,
+        "y": 7.496091298145506
+      },
+      "isLocked": false,
+      "linkedName": "THE P ARCH 1 ALLIANCE SIDE"
+    },
+    {
+      "anchor": {
+        "x": 5.798716119828815,
+        "y": 7.224379457917262
+      },
+      "prevControl": {
+        "x": 5.589752038186549,
+        "y": 7.36161652500704
+      },
+      "nextControl": {
+        "x": 6.007680201471081,
+        "y": 7.087142390827484
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.798716119828815,
+        "y": 3.6015549215406564
+      },
+      "prevControl": {
+        "x": 5.880190719165133,
+        "y": 4.203175292426028
+      },
+      "nextControl": {
+        "x": 5.717241520492498,
+        "y": 2.9999345506552846
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.807,
+        "y": 5.0
+      },
+      "prevControl": {
+        "x": 5.762131199119669,
+        "y": 4.483675160489192
+      },
+      "nextControl": {
+        "x": 5.8518688008803315,
+        "y": 5.516324839510808
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.6120827389443653,
+        "y": 5.658801711840229
+      },
+      "prevControl": {
+        "x": 3.896733238231098,
+        "y": 5.490599144079885
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "THE P ARCH 2 ALLIANCE SIDE"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -88.40885972880564
+    },
+    {
+      "waypointRelativePos": 2.8486140724946853,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.172707889125765,
+      "rotationDegrees": -90.11411766359534
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -88.31531568210382
+  },
+  "reversed": false,
+  "folder": "P",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
