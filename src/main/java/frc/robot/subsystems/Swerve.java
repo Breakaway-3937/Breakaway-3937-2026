@@ -46,7 +46,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 			config = RobotConfig.fromGUISettings();
 
 			AutoBuilder.configure(
-					() -> getState().Pose,
+					() -> Vision.getRobotPose(),
 					this::resetPose,
 					() -> getState().Speeds,
 					(speeds, feedforwards) -> setControl(

@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -20,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -30,6 +29,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,6 +38,9 @@ import gg.questnav.questnav.PoseFrame;
 import gg.questnav.questnav.QuestNav;
 
 public class Vision extends SubsystemBase {
+
+    private final Field2d turretfield = new Field2d();
+    private final Field2d robotfield = new Field2d();
 
     private final Swerve s_Swerve;
     private final Shooter s_Shooter;
@@ -53,22 +56,19 @@ public class Vision extends SubsystemBase {
 
     private Pose2d rawRobotPose2d = new Pose2d();
 
-    private Pose2d filteredPose = new Pose2d();
+    private static Pose2d filteredPose = new Pose2d();
     private Rotation2d filteredRotation = new Rotation2d();
 
-    private Pose2d turretPose = new Pose2d();
-    private static Point turretPoint = new Point();
+    private static Pose2d turretPose = new Pose2d();
 
-    private static Point expandedTL = new Point();
-    private static Point expandedBR = new Point();
-    private static Rect expanded = new Rect();
+    private static Rectangle2d expanded = new Rectangle2d(new Translation2d(), new Translation2d());
 
-    private final static Rect trench1 = new Rect(new Point(3.7, 8.1), new Point(5.5, 6.7));
-    private final static Rect trench2 = new Rect(new Point(3.7, 1.4), new Point(5.5, 0));
-    private final static Rect trench3 = new Rect(new Point(11.1, 8.1), new Point(12.9, 6.7));
-    private final static Rect trench4 = new Rect(new Point(11.1, 1.4), new Point(12.9, 0));
-    //Added 0.3 to the trench zone
-    private final static Rect[] trenches = { trench1, trench2, trench3, trench4 };
+    private final static Rectangle2d trench1 = new Rectangle2d(new Translation2d(3.7, 8.1), new Translation2d(5.5, 6.7));
+    private final static Rectangle2d trench2 = new Rectangle2d(new Translation2d(3.7, 1.4), new Translation2d(5.5, 0));
+    private final static Rectangle2d trench3 = new Rectangle2d(new Translation2d(11.1, 8.1), new Translation2d(12.9, 6.7));
+    private final static Rectangle2d trench4 = new Rectangle2d(new Translation2d(11.1, 1.4), new Translation2d(12.9, 0));
+    // Added 0.3 to the trench zone
+    private final static Rectangle2d[] trenches = { trench1, trench2, trench3, trench4 };
 
     private final static double MAX_POSITIVE_TURRET_ANGLE = 180.0;
     private final static double MAX_NEGATIVE_TURRET_ANGLE = -180.0;
@@ -81,7 +81,7 @@ public class Vision extends SubsystemBase {
     private static double turretRotation;
 
     private static final double trenchLookAheadSeconds = 0.5;
-    private static final double trenchMinBuffer = 0.0; 
+    private static final double trenchMinBuffer = 0.0;
 
     private ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
@@ -109,6 +109,9 @@ public class Vision extends SubsystemBase {
     private Pose2d initialPose;
 
     public Vision(Swerve s_Swerve, Shooter s_Shooter) {
+        SmartDashboard.putData("robotField", robotfield);
+        SmartDashboard.putData("turretField", turretfield);
+
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
 
@@ -132,13 +135,16 @@ public class Vision extends SubsystemBase {
         leftEstimator = new PhotonPoseEstimator(layout, Constants.Vision.LEFT_CAMERA_TRANSFORM);
         rightEstimator = new PhotonPoseEstimator(layout, Constants.Vision.RIGHT_CAMERA_TRANSFORM);
 
-        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+        questNav.setPose(
+                new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
             System.out.print(e);
-        };
-        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+        }
+        ;
+        questNav.setPose(
+                new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
     }
 
     public void setPose(Pose2d pose) {
@@ -149,15 +155,19 @@ public class Vision extends SubsystemBase {
         return turretPose;
     }
 
+    public static Pose2d getRobotPose() {
+        return filteredPose;
+    }
+
     public static boolean isInHomeTerritory() {
         boolean isHome = false;
 
-        if(alliance == DriverStation.Alliance.Blue) {
-            if(turretPoseX <= 4.6) {
+        if (alliance == DriverStation.Alliance.Blue) {
+            if (turretPoseX <= 4.6) {
                 isHome = true;
             }
         } else {
-            if(turretPoseX >= 11.9) {
+            if (turretPoseX >= 11.9) {
                 isHome = true;
             }
         }
@@ -168,8 +178,8 @@ public class Vision extends SubsystemBase {
     public static boolean isUnderTrench() {
         boolean isUnder = false;
 
-        for (Rect trench : trenches) {
-            if(isDynamicTrenchHit(trench)) {
+        for (Rectangle2d trench : trenches) {
+            if (isDynamicTrenchHit(trench)) {
                 isUnder = true;
                 break;
             }
@@ -178,54 +188,49 @@ public class Vision extends SubsystemBase {
         return isUnder;
     }
 
-    private static boolean isDynamicTrenchHit(Rect trench) {
-        
+    private static boolean isDynamicTrenchHit(Rectangle2d trench) {
+
         double vx = fieldRelativeSpeeds.vxMetersPerSecond;
 
-        double bufferAway  = trenchMinBuffer + Math.max(0,  vx) * trenchLookAheadSeconds;
-        double bufferNear  = trenchMinBuffer + Math.max(0, -vx) * trenchLookAheadSeconds;
+        //double bufferAway = trenchMinBuffer + Math.max(0, -vx) * trenchLookAheadSeconds;
+        //double bufferNear = trenchMinBuffer + Math.max(0, vx) * trenchLookAheadSeconds;
+        double buffer = 2 * (Math.abs(vx) * trenchLookAheadSeconds);
 
-        double[] expandedTLPoints = {trench.tl().x - bufferNear,  trench.tl().y};
-        double[] expandedBRPoints = {trench.br().x + bufferAway, trench.br().y};
+        expanded = new Rectangle2d(trench.getCenter(), trench.getXWidth() + buffer, trench.getYWidth());;
 
-        expandedTL.set(expandedTLPoints);
-        expandedBR.set(expandedBRPoints);
-
-        expanded = new Rect(expandedTL, expandedBR);
-
-        return turretPoint.inside(expanded);
+        return expanded.contains(turretPose.getTranslation());
     }
 
     private static void setTarget() {
 
-        if(alliance == DriverStation.Alliance.Blue) {
-            if(isInHomeTerritory()) {
-                //Blue Hub
+        if (alliance == DriverStation.Alliance.Blue) {
+            if (isInHomeTerritory()) {
+                // Blue Hub
                 currentTargetX = 4.6;
                 currentTargetY = 4.035;
             } else {
-                if(turretPoseY >= 4.035) {
-                    //Blue High Lob
+                if (turretPoseY >= 4.035) {
+                    // Blue High Lob
                     currentTargetX = 2.0;
                     currentTargetY = 6.5;
                 } else {
-                    //Blue Low Lob
+                    // Blue Low Lob
                     currentTargetX = 2.0;
                     currentTargetY = 1.5;
                 }
             }
         } else {
-            if(isInHomeTerritory()) {
-                //Red Hub
+            if (isInHomeTerritory()) {
+                // Red Hub
                 currentTargetX = 11.9;
                 currentTargetY = 4.035;
             } else {
-                if(turretPoseY >= 4.035) {
-                    //Red High Lob
+                if (turretPoseY >= 4.035) {
+                    // Red High Lob
                     currentTargetX = 14.5;
                     currentTargetY = 6.5;
                 } else {
-                    //Red Low Lob
+                    // Red Low Lob
                     currentTargetX = 14.5;
                     currentTargetY = 1.5;
                 }
@@ -264,7 +269,8 @@ public class Vision extends SubsystemBase {
     }
 
     public BooleanSupplier isTurretSafe() {
-        return () -> s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET) && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
+        return () -> s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
+                && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
     }
 
     private boolean hasBadTags(EstimatedRobotPose result) {
@@ -338,12 +344,15 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        
+
         setTarget();
-        /*if (questNav.isConnected() && !waitToConnect) {
-            questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-            waitToConnect = true;
-        }*/
+        /*
+         * if (questNav.isConnected() && !waitToConnect) {
+         * questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new
+         * Rotation2d())).transformBy(ROBOT_TO_QUEST));
+         * waitToConnect = true;
+         * }
+         */
         questNav.commandPeriodic();
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 
@@ -369,10 +378,6 @@ public class Vision extends SubsystemBase {
         turretPoseY = turretPose.getY();
         turretRotation = turretPose.getRotation().getDegrees();
 
-        double[] turretCoordinates = {turretPoseX, turretPoseY};
-
-        turretPoint.set(turretCoordinates);
-
         robotRelativeSpeeds.vxMetersPerSecond = s_Swerve.getState().Speeds.vxMetersPerSecond;
         robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
         robotRelativeSpeeds.omegaRadiansPerSecond = s_Swerve.getState().Speeds.omegaRadiansPerSecond;
@@ -391,7 +396,12 @@ public class Vision extends SubsystemBase {
         double targetPhantomY = currentTargetY
                 - (fieldRelativeSpeeds.vyMetersPerSecond * timeOfFlightMap.get(realDistance));
 
-        phantomDistance = Math.sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
+        phantomDistance = Math
+                .sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
         phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - turretPoseY, targetPhantomX - turretPoseX));
+
+        SmartDashboard.putBoolean("Is Under Trench", isUnderTrench());
+        robotfield.setRobotPose(filteredPose);
+        turretfield.setRobotPose(turretPose);
     }
 }
