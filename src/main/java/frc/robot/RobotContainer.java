@@ -12,6 +12,7 @@ import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.util.Named;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -56,6 +57,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire().repeatedly());
+    NamedCommands.registerCommand("Combo", s_SuperSubsystem.combo().repeatedly());
     NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
     NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
