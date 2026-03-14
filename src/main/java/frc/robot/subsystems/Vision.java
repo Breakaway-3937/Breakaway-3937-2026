@@ -59,6 +59,10 @@ public class Vision extends SubsystemBase {
     private Pose2d turretPose = new Pose2d();
     private static Point turretPoint = new Point();
 
+    private static Point expandedTL = new Point();
+    private static Point expandedBR = new Point();
+    private static Rect expanded = new Rect();
+
     private final static Rect trench1 = new Rect(new Point(3.7, 8.1), new Point(5.5, 6.7));
     private final static Rect trench2 = new Rect(new Point(3.7, 1.4), new Point(5.5, 0));
     private final static Rect trench3 = new Rect(new Point(11.1, 8.1), new Point(12.9, 6.7));
@@ -76,8 +80,11 @@ public class Vision extends SubsystemBase {
     private static double turretPoseY;
     private static double turretRotation;
 
+    private static final double trenchLookAheadSeconds = 0.5;
+    private static final double trenchMinBuffer = 0.0; 
+
     private ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
-    private ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
+    private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
 
     private static double speed;
 
@@ -162,12 +169,31 @@ public class Vision extends SubsystemBase {
         boolean isUnder = false;
 
         for (Rect trench : trenches) {
-            if (turretPoint.inside(trench)) {
+            if(isDynamicTrenchHit(trench)) {
                 isUnder = true;
                 break;
             }
         }
+
         return isUnder;
+    }
+
+    private static boolean isDynamicTrenchHit(Rect trench) {
+        
+        double vx = fieldRelativeSpeeds.vxMetersPerSecond;
+
+        double bufferAway  = trenchMinBuffer + Math.max(0,  vx) * trenchLookAheadSeconds;
+        double bufferNear  = trenchMinBuffer + Math.max(0, -vx) * trenchLookAheadSeconds;
+
+        double[] expandedTLPoints = {trench.tl().x - bufferNear,  trench.tl().y};
+        double[] expandedBRPoints = {trench.br().x + bufferAway, trench.br().y};
+
+        expandedTL.set(expandedTLPoints);
+        expandedBR.set(expandedBRPoints);
+
+        expanded = new Rect(expandedTL, expandedBR);
+
+        return turretPoint.inside(expanded);
     }
 
     private static void setTarget() {
