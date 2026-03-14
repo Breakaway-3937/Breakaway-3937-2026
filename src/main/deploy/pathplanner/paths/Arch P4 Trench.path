@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.785777460770328,
+        "y": 3.9897146932952925
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.380955777460769,
+        "y": 5.839942938659058
+      },
+      "isLocked": false,
+      "linkedName": "Arch Trench Shallow"
+    },
+    {
+      "anchor": {
+        "x": 3.392125534950071,
+        "y": 5.4517831669044226
+      },
+      "prevControl": {
+        "x": 4.000242510699001,
+        "y": 5.425905848787448
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Bump Short "
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "Arch Trench",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}

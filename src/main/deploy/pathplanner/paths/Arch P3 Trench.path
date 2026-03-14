@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.637960057061339,
+        "x": 4.637960057061341,
         "y": 7.444336661911555
       },
       "isLocked": false,
@@ -16,38 +16,42 @@
     },
     {
       "anchor": {
-        "x": 7.687760342368046,
-        "y": 7.0820542082738935
+        "x": 5.953980028530669,
+        "y": 6.642139800285308
       },
       "prevControl": {
-        "x": 7.571312410841653,
-        "y": 7.638416547788873
+        "x": 5.953980028530669,
+        "y": 7.7419258202567764
       },
       "nextControl": {
-        "x": 7.82148054233332,
-        "y": 6.4431688084398155
+        "x": 5.953980028530669,
+        "y": 5.661102718450697
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.687760342368046,
-        "y": 4.571954350927247
+        "x": 5.785777460770328,
+        "y": 3.9897146932952925
       },
       "prevControl": {
-        "x": 7.687760342368046,
-        "y": 5.89169757489301
+        "x": 5.876348074179743,
+        "y": 5.011868758915835
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Arch Trench End"
+      "linkedName": "Arch Trench Shallow"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0191897654584219,
-      "rotationDegrees": -88.94960615861454
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.9552238805970116,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [],
@@ -63,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -89.13194855025458
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Arch Trench",

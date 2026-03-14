@@ -64,12 +64,13 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
-    autoChooser.addOption("Arch Trench", new PathPlannerAuto("Arch Trench", false).withName("ArchTrench"));
-    autoChooser.addOption("Arch Bump", new PathPlannerAuto("Arch Bump", false).withName("Arch Bump"));
-    autoChooser.addOption("Trench 2 Trench", new PathPlannerAuto("Trench 2 Trench", false).withName("Trench 2 Trench"));
     autoChooser.addOption("Arch P Left", new PathPlannerAuto("P Arch", false).withName("P Arch"));
     autoChooser.addOption("Arch P Right", new PathPlannerAuto("P Arch", true).withName("P Arch"));
     autoChooser.addOption("Arch Human Player", new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
+    autoChooser.addOption("Double Short Sweep Left", new PathPlannerAuto("Short Double Sweep", false).withName("Short Double Sweep"));
+    autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
+     autoChooser.addOption("Arch Depot", new PathPlannerAuto("Short Double Sweep", true).withName("Short Double Sweep"));
+
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
