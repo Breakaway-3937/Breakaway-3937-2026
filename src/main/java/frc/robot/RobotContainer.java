@@ -55,7 +55,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
+    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire().repeatedly());
     NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
     NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
     //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
@@ -67,6 +67,7 @@ public class RobotContainer {
     autoChooser.addOption("Trench 2 Trench", new PathPlannerAuto("Trench 2 Trench", false).withName("Trench 2 Trench"));
     autoChooser.addOption("Arch P Left", new PathPlannerAuto("P Arch", false).withName("P Arch"));
     autoChooser.addOption("Arch P Right", new PathPlannerAuto("P Arch", true).withName("P Arch"));
+    autoChooser.addOption("Arch Human Player", new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
