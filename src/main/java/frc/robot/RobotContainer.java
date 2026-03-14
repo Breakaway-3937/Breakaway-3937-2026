@@ -64,6 +64,8 @@ public class RobotContainer {
     autoChooser.addOption("Arch Trench", new PathPlannerAuto("Arch Trench", false).withName("ArchTrench"));
     autoChooser.addOption("Arch Bump", new PathPlannerAuto("Arch Bump", false).withName("Arch Bump"));
     autoChooser.addOption("Trench 2 Trench", new PathPlannerAuto("Trench 2 Trench", false).withName("Trench 2 Trench"));
+    autoChooser.addOption("Arch P Left", new PathPlannerAuto("P Arch", false).withName("P Arch"));
+    autoChooser.addOption("Arch P Right", new PathPlannerAuto("P Arch", true).withName("P Arch"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
