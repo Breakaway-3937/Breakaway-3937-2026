@@ -14,7 +14,7 @@ import frc.robot.generated.PracticeTunerConstants;
 
 public final class Constants {
 
-  public static final String COMP_SERIAL_NUM = "";
+  public static final String COMP_SERIAL_NUM = "03282B4C";
   public static final boolean COMPBOT = RobotController.getSerialNumber().equals(COMP_SERIAL_NUM);
 
   public static class Controllers {
