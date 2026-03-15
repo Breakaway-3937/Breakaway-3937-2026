@@ -69,7 +69,8 @@ public class RobotContainer {
     autoChooser.addOption("Arch Human Player", new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
     autoChooser.addOption("Double Short Sweep Left", new PathPlannerAuto("Short Double Sweep", false).withName("Short Double Sweep"));
     autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
-     autoChooser.addOption("Arch Depot Short", new PathPlannerAuto("Short Double Sweep", true).withName("Short Double Sweep"));
+     autoChooser.addOption("Arch Depot Short", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
+          autoChooser.addOption("Arch Depot Long", new PathPlannerAuto("Arch Depot Long", true).withName("Arch Depot Long"));
 
     SmartDashboard.putData("Auto Mode", autoChooser);
 
