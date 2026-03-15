@@ -1,0 +1,141 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.560328102710413,
+        "y": 7.366704707560627
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.560328102710414,
+        "y": 7.366704707560627
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.20530670470756,
+        "y": 6.991483594864479
+      },
+      "prevControl": {
+        "x": 7.63786733238231,
+        "y": 7.63518188302425
+      },
+      "nextControl": {
+        "x": 8.772746077032812,
+        "y": 6.347785306704708
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.20530670470756,
+        "y": 4.261426533523538
+      },
+      "prevControl": {
+        "x": 8.311468883737518,
+        "y": 4.5478965317403715
+      },
+      "nextControl": {
+        "x": 8.099144525677602,
+        "y": 3.9749565353067053
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.687760342368046,
+        "y": 5.956390870185448
+      },
+      "prevControl": {
+        "x": 8.16325808328625,
+        "y": 5.613533189385026
+      },
+      "nextControl": {
+        "x": 7.212262601449841,
+        "y": 6.29924855098587
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.944764621968615,
+        "y": 5.594108416547789
+      },
+      "prevControl": {
+        "x": 6.579229149006849,
+        "y": 5.168323539756316
+      },
+      "nextControl": {
+        "x": 3.4050641940085584,
+        "y": 5.995206847360913
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.72,
+        "y": 5.956390870185448
+      },
+      "prevControl": {
+        "x": 1.1340370898716117,
+        "y": 5.930513552068472
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1833688699360168,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.0383795309167674,
+      "rotationDegrees": 99.4158610485961
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.65,
+      "maxWaypointRelativePos": 4.305874409182963,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Arch Depot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}

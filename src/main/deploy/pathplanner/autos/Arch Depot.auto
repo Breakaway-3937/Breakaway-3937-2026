@@ -13,13 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Arch HP P1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Arch HP P2"
+            "pathName": "Arch Depot Long"
           }
         },
         {
@@ -29,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.5
+                  "waitTime": 5.0
                 }
               },
               {
