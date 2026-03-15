@@ -16,32 +16,48 @@
     },
     {
       "anchor": {
-        "x": 7.545435092724677,
-        "y": 6.965606276747503
+        "x": 8.20530670470756,
+        "y": 6.991483594864479
       },
       "prevControl": {
-        "x": 6.977995720399427,
-        "y": 7.609304564907275
+        "x": 7.63786733238231,
+        "y": 7.63518188302425
       },
       "nextControl": {
-        "x": 8.112874465049929,
-        "y": 6.321907988587732
+        "x": 8.772746077032812,
+        "y": 6.347785306704708
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.90771754636234,
-        "y": 4.403751783166904
+        "x": 8.20530670470756,
+        "y": 4.261426533523538
       },
       "prevControl": {
-        "x": 8.013879725392298,
-        "y": 4.6902217813837375
+        "x": 8.311468883737518,
+        "y": 4.5478965317403715
       },
       "nextControl": {
-        "x": 7.801555367332382,
-        "y": 4.117281784950071
+        "x": 8.099144525677602,
+        "y": 3.9749565353067053
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.687760342368046,
+        "y": 5.956390870185448
+      },
+      "prevControl": {
+        "x": 8.16325808328625,
+        "y": 5.613533189385026
+      },
+      "nextControl": {
+        "x": 7.212262601449841,
+        "y": 6.29924855098587
       },
       "isLocked": false,
       "linkedName": null
@@ -80,13 +96,17 @@
     {
       "waypointRelativePos": 1.1833688699360168,
       "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.0383795309167674,
+      "rotationDegrees": 99.4158610485961
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.819716407832515,
-      "maxWaypointRelativePos": 3.3058744091829633,
+      "minWaypointRelativePos": 3.65,
+      "maxWaypointRelativePos": 4.305874409182963,
       "constraints": {
         "maxVelocity": 3.0,
         "maxAcceleration": 3.0,
