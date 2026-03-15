@@ -198,22 +198,11 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    /*
-     * config.Slot0.kS = 0.0;
-     * config.Slot0.kV = 0.12;
-     * config.Slot0.kA = 0.00;
-     * config.Slot0.kP = 0.07;
-     * config.Slot0.kI = 0.0;
-     * config.Slot0.kD = 0.0;
-     */
-
-    // config.MotionMagic.MotionMagicAcceleration = 900;
-
     config.Slot0.kP = 999999.0;
     config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    config.TorqueCurrent.PeakReverseTorqueCurrent = -60;
     config.MotorOutput.PeakForwardDutyCycle = 1;
-    config.MotorOutput.PeakReverseDutyCycle = 0;
+    config.MotorOutput.PeakReverseDutyCycle = -1;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -264,10 +253,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity()
-        .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
-    // return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter /
-    // 60.0 - 3;
+    if(isTracking) {
+      return () -> shooterLead.getVelocity().getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
+    } else {
+      return () -> shooterLead.getVelocity().getValueAsDouble() > (33.3) - 0.8;
+    }
   }
 
   public double getTurretPosition() {

@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
     private final Shooter s_Shooter;
     private final QuestNav questNav = new QuestNav();
 
-    private final static Alliance alliance = DriverStation.getAlliance().orElse(null);
+    private static Alliance alliance;
 
     private final Transform3d ROBOT_TO_QUEST;
 
@@ -258,6 +258,10 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if(DriverStation.isDisabled()) {
+            alliance = DriverStation.getAlliance().orElse(null);
+        }
 
         setTarget();
         
