@@ -47,7 +47,6 @@ public class Intake extends SubsystemBase {
     config.Slot0.kP = 2.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
-    //FIXME
 
     config.MotionMagic.MotionMagicExpo_kV = 0.7;
     config.MotionMagic.MotionMagicExpo_kA = 0.01;

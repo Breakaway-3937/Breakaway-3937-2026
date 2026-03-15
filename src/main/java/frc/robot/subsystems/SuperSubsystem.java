@@ -37,16 +37,6 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Intake = s_Intake;
     this.s_Climber = s_Climber;
     this.s_Vision = s_Vision;
-
-    //shooterGood = () -> s_Vision.isTurretSafe();
-  }
-
-  private Command setIntakeOut() {
-    return /* s_Climber.setClimber().andThen( */s_Intake.setIntake();
-  }
-
-  private Command setIntakeIn() {
-    return s_Intake.setIntake()/* .andThen(s_Climber.setClimber()) */;
   }
 
   private ParallelCommandGroup runSubsystems() {
@@ -130,7 +120,7 @@ public class SuperSubsystem extends SubsystemBase {
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
 
   public Command idleWithIntakeDown() {
@@ -142,7 +132,7 @@ public class SuperSubsystem extends SubsystemBase {
   public Command unclog() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.UNCLOG))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
 
   public Command protectIntake() {
@@ -157,7 +147,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
   /*
    * public Command climbRungOne() {
