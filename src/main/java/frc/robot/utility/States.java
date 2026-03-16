@@ -6,8 +6,8 @@ public class States {
         STOW(400.0, 0.0),
         FIRE(212.0,20.0),
         IDLE(212.0, 0.0),
-        INTAKE(20.0, 20.0),
-        UNCLOG(20.0, -10.0);
+        INTAKE(0.5, 20.0),
+        UNCLOG(0.5, -10.0);
 
         private final double angle, power;
         private final double INTAKE_POWER_CONVERSION = 1.67;

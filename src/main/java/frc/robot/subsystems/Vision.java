@@ -168,7 +168,6 @@ public class Vision extends SubsystemBase {
         double bufferNear = trenchMinBuffer + Math.max(0, vx) * trenchLookAheadSeconds;
         //double buffer = 2 * (Math.abs(vx) * trenchLookAheadSeconds);
 
-        //expanded = new Rectangle2d(trench.getCenter(), trench.getXWidth() + buffer, trench.getYWidth());
         expanded = new Rectangle2d(new Pose2d(
                 trench.getCenter().getX() + (bufferAway - bufferNear) / 2, 
                 trench.getCenter().getY(), 
@@ -259,9 +258,7 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(DriverStation.isDisabled()) {
-            alliance = DriverStation.getAlliance().orElse(null);
-        }
+        alliance = DriverStation.getAlliance().orElse(null);
 
         setTarget();
         
@@ -304,9 +301,9 @@ public class Vision extends SubsystemBase {
         realAngle = Math.toDegrees(Math.atan2(currentTargetY - turretPoseY, currentTargetX - turretPoseX));
 
         double targetPhantomX = currentTargetX
-                - (fieldRelativeSpeeds.vxMetersPerSecond * timeOfFlightMap.get(realDistance));
+                - (fieldRelativeSpeeds.vxMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
         double targetPhantomY = currentTargetY
-                - (fieldRelativeSpeeds.vyMetersPerSecond * timeOfFlightMap.get(realDistance));
+                - (fieldRelativeSpeeds.vyMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
 
         phantomDistance = Math
                 .sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
