@@ -12,7 +12,6 @@ import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.fasterxml.jackson.databind.util.Named;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -94,9 +93,9 @@ public class RobotContainer {
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
-    xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
-    xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
-    xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
+    //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
+    //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
+    //xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
   }
 
   public static Command setMultipliers(double newMultiplier) {

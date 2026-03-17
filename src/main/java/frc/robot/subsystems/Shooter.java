@@ -13,11 +13,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.*;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
 
@@ -43,6 +41,8 @@ public class Shooter extends SubsystemBase {
       MotorAlignmentValue.Opposed);
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
+
+  public static boolean isInHomeTerritory = false;
 
   public Shooter() {
 
@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
     // 6
     hoodHubMap.put(1.8288, 1.60);
 
-    //I added 1 RPS to the points
+    // I added 1 RPS to the points
     // 18.5
     shooterHubMap.put(5.6388, 3260.0);
     // 17
@@ -198,25 +198,21 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    /*
-     * config.Slot0.kS = 0.0;
-     * config.Slot0.kV = 0.12;
-     * config.Slot0.kA = 0.00;
-     * config.Slot0.kP = 0.07;
-     * config.Slot0.kI = 0.0;
-     * config.Slot0.kD = 0.0;
-     */
+    config.Slot0.kP = 5.742;
+    config.Slot0.kS = 9.0;
+    config.Slot0.kV = 0.143;
 
-    // config.MotionMagic.MotionMagicAcceleration = 900;
+    // config.Slot0.kP = 6.0;
+    // config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    // config.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+    // config.MotorOutput.PeakForwardDutyCycle = 1;
+    // config.MotorOutput.PeakReverseDutyCycle = -1;
 
-    config.Slot0.kP = 999999.0;
-    config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
-    config.MotorOutput.PeakForwardDutyCycle = 1;
-    config.MotorOutput.PeakReverseDutyCycle = 0;
+    // config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    // config.CurrentLimits.SupplyCurrentLimit = 40;
 
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 40;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = 75;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
@@ -238,21 +234,32 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command runShooter() {
-    Command cmd = new InstantCommand();
 
-    if(isTracking) {
-      if (Vision.isInHomeTerritory()) {
-        cmd = runOnce(() -> shooterLead.setControl(
-            shooterRequest.withVelocity((shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter))));
+    return runOnce(() -> {
+
+      double velocity;
+      double currentDistance = Vision.getAdjustedDistance();
+
+      if (isTracking) {
+
+        if (isInHomeTerritory) {
+
+          velocity = shooterHubMap.get(currentDistance) / 60.0 + shooterSetter;
+
+        } else {
+
+          velocity = shooterLobMap.get(currentDistance) / 60.0 + shooterSetter;
+
+        }
       } else {
-        cmd = runOnce(() -> shooterLead.setControl(
-            shooterRequest.withVelocity((shooterLobMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter))));
-      }
-    } else {
-      cmd = runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(33.3)));
-    }
+      
+        velocity = 33.3;
 
-    return cmd;
+      }
+
+      shooterLead.setControl(shooterRequest.withVelocity(velocity));
+    });
+
   }
 
   public Command idleShooter() {
@@ -264,10 +271,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    return () -> shooterLead.getVelocity()
-        .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
-    // return () -> shooterLead.getVelocity().getValueAsDouble() > shooterSetter /
-    // 60.0 - 3;
+    if (isTracking) {
+      return () -> shooterLead.getVelocity()
+          .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
+    } else {
+      return () -> shooterLead.getVelocity().getValueAsDouble() > (33.3) - 0.8;
+    }
   }
 
   public double getTurretPosition() {
@@ -276,7 +285,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    isInHomeTerritory = Vision.isInHomeTerritory();
     if (isTracking) {
 
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
@@ -295,12 +304,8 @@ public class Shooter extends SubsystemBase {
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
     }
 
-    /*SmartDashboard.putNumber("Distance", Vision.getAdjustedDistance());
-
-    SmartDashboard.putNumber("Hood Angle", hood.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble() * 60.0);
     SmartDashboard.putNumber("Shooter Setpoint", shooterHubMap.get(Vision.getAdjustedDistance()));
-    SmartDashboard.putNumber("Hood Setpoint", hoodHubMap.get(Vision.getAdjustedDistance()));*/
     shooterSetter = SmartDashboard.getNumber("Shooter Added Speed", 1400);
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
   }

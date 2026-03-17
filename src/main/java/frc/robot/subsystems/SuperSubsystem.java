@@ -7,13 +7,10 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -40,16 +37,6 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Intake = s_Intake;
     this.s_Climber = s_Climber;
     this.s_Vision = s_Vision;
-
-    //shooterGood = () -> s_Vision.isTurretSafe();
-  }
-
-  private Command setIntakeOut() {
-    return /* s_Climber.setClimber().andThen( */s_Intake.setIntake();
-  }
-
-  private Command setIntakeIn() {
-    return s_Intake.setIntake()/* .andThen(s_Climber.setClimber()) */;
   }
 
   private ParallelCommandGroup runSubsystems() {
@@ -133,7 +120,7 @@ public class SuperSubsystem extends SubsystemBase {
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
 
   public Command idleWithIntakeDown() {
@@ -145,7 +132,7 @@ public class SuperSubsystem extends SubsystemBase {
   public Command unclog() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.UNCLOG))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
 
   public Command protectIntake() {
@@ -160,7 +147,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.STOW))
         .andThen(runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE)))
         /* .andThen(runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))) */
-        .andThen(setIntakeOut());
+        .andThen(s_Intake.setIntake());
   }
   /*
    * public Command climbRungOne() {
@@ -179,7 +166,6 @@ public class SuperSubsystem extends SubsystemBase {
   public void periodic() {
     // System.out.println("Un-comment this to immediately spike the ram usage.");
 
-    //SmartDashboard.putString("Rio SN", RobotController.getSerialNumber());
     /*SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
     SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
     SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
