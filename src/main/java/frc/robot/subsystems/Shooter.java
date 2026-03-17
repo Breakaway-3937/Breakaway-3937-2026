@@ -42,8 +42,6 @@ public class Shooter extends SubsystemBase {
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
 
-  public static boolean isInHomeTerritory = false;
-
   public Shooter() {
 
     shooterLead = new TalonFX(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID);
@@ -56,6 +54,8 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
+    hoodHubMap.put(6.096, 6.46);
+    hoodHubMap.put(5.7912, 6.01);
     // 18.5
     hoodHubMap.put(5.6388, 5.79);
     // 17
@@ -83,7 +83,10 @@ public class Shooter extends SubsystemBase {
     // 6
     hoodHubMap.put(1.8288, 1.60);
 
-    // I added 1 RPS to the points
+    shooterHubMap.put(7.9248, 3860.0);
+    shooterHubMap.put(7.3152, 3700.0);
+    shooterHubMap.put(6.7056, 3540.0);
+    shooterHubMap.put(6.096, 3380.0);
     // 18.5
     shooterHubMap.put(5.6388, 3260.0);
     // 17
@@ -242,7 +245,7 @@ public class Shooter extends SubsystemBase {
 
       if (isTracking) {
 
-        if (isInHomeTerritory) {
+        if (Vision.isInHomeTerritory()) {
 
           velocity = shooterHubMap.get(currentDistance) / 60.0 + shooterSetter;
 
@@ -271,21 +274,31 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier isAtSpeed() {
-    if (isTracking) {
-      return () -> shooterLead.getVelocity()
-          .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 0.8;
-    } else {
-      return () -> shooterLead.getVelocity().getValueAsDouble() > (33.3) - 0.8;
-    }
+    return () -> {
+      if (isTracking) {
+        if(Vision.isInHomeTerritory()) {
+          return shooterLead.getVelocity()
+              .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 1;
+        } else {
+          return shooterLead.getVelocity()
+              .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 1;
+        }
+      } else {
+        return shooterLead.getVelocity().getValueAsDouble() > (33.3) - 1;
+      }
+    };
   }
 
   public double getTurretPosition() {
     return turret.getPosition().getValueAsDouble();
   }
 
+  public boolean isTracking() {
+    return isTracking;
+  }
+
   @Override
   public void periodic() {
-    isInHomeTerritory = Vision.isInHomeTerritory();
     if (isTracking) {
 
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
@@ -305,7 +318,8 @@ public class Shooter extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble() * 60.0);
-    SmartDashboard.putNumber("Shooter Setpoint", shooterHubMap.get(Vision.getAdjustedDistance()));
+    SmartDashboard.putNumber("Shooter Hub Setpoint", shooterHubMap.get(Vision.getAdjustedDistance()));
+    SmartDashboard.putNumber("Shooter Lob Setpoint", shooterLobMap.get(Vision.getAdjustedDistance()));
     shooterSetter = SmartDashboard.getNumber("Shooter Added Speed", 1400);
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
   }

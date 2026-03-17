@@ -28,6 +28,8 @@ import gg.questnav.questnav.QuestNav;
 
 public class Vision extends SubsystemBase {
 
+    private boolean initPoseFlag = false;
+
     private final Field2d turretfield = new Field2d();
     private final Field2d robotfield = new Field2d();
 
@@ -89,8 +91,6 @@ public class Vision extends SubsystemBase {
     private static double currentTargetX;
     private static double currentTargetY;
 
-    private Pose2d initialPose;
-
     public Vision(Swerve s_Swerve, Shooter s_Shooter) {
         SmartDashboard.putData("robotField", robotfield);
         SmartDashboard.putData("turretField", turretfield);
@@ -107,16 +107,6 @@ public class Vision extends SubsystemBase {
         timeOfFlightMap.put(3.53, 1.06);
         timeOfFlightMap.put(2.79, 1.002);
         timeOfFlightMap.put(1.57, 0.93);
-
-        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-        
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            System.out.print(e);
-        };
-
-        questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
     }
 
     public void setPose(Pose2d pose) {
@@ -247,18 +237,32 @@ public class Vision extends SubsystemBase {
     }
 
     public BooleanSupplier isTurretSafe() {
-        return () -> s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
-                && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
-    }
-
-    public boolean isInitPoseSet() {
-        return filteredPose.equals(initialPose);
+        return () -> {
+            if(s_Shooter.isTracking()) {
+                return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
+                    && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
+            } else {
+                return true;
+            }
+        };
     }
 
     @Override
     public void periodic() {
 
         alliance = DriverStation.getAlliance().orElse(null);
+
+        if(DriverStation.isDSAttached() && DriverStation.isDisabled() && !initPoseFlag) {
+            if(questNav.isConnected() && questNav.isTracking()) {
+                if(alliance == DriverStation.Alliance.Blue) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                } else {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                }
+
+                initPoseFlag = true;
+            }
+        }
 
         setTarget();
         
