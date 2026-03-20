@@ -13,13 +13,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Arch P1 Trench"
+            "pathName": "Too HP"
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Arch P2 Trench"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Combo"
+                }
+              }
+            ]
           }
         },
         {
@@ -31,7 +44,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
