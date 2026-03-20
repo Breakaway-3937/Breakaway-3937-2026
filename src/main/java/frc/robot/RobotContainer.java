@@ -63,6 +63,9 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
+    autoChooser.addOption("Just Depot", new PathPlannerAuto("Just Depot").withName("Just Depot"));
+    autoChooser.addOption("Just Human Player", new PathPlannerAuto("Just Human Player").withName("Just Human Player"));
+    autoChooser.addOption("Depot + Human Player", new PathPlannerAuto("Depot + Human Player").withName("Depot + Human Player"));
     autoChooser.addOption("Arch P Left", new PathPlannerAuto("P Arch", false).withName("P Arch"));
     autoChooser.addOption("Arch P Right", new PathPlannerAuto("P Arch", true).withName("P Arch"));
     autoChooser.addOption("Arch Human Player", new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
