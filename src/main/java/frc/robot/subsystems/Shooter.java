@@ -135,7 +135,7 @@ public class Shooter extends SubsystemBase {
     configShooter();
     configCANranges();
 
-    SmartDashboard.putNumber("Shooter Added Speed", 0);
+    SmartDashboard.putNumber("Shooter Added Speed", 1);
     SmartDashboard.putNumber("Hood Added Angle", 0);
   }
 
@@ -200,19 +200,10 @@ public class Shooter extends SubsystemBase {
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
+    //Values for 1.5/1 gar ratio
     config.Slot0.kP = 5.742;
     config.Slot0.kS = 9.0;
-    config.Slot0.kV = 0.143;
-
-    // config.Slot0.kP = 6.0;
-    // config.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    // config.TorqueCurrent.PeakReverseTorqueCurrent = -60;
-    // config.MotorOutput.PeakForwardDutyCycle = 1;
-    // config.MotorOutput.PeakReverseDutyCycle = -1;
-
-    // config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    // config.CurrentLimits.SupplyCurrentLimit = 40;
+    config.Slot0.kV = 0.3;
 
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 75;
@@ -247,16 +238,16 @@ public class Shooter extends SubsystemBase {
 
         if (Vision.isInHomeTerritory()) {
 
-          velocity = shooterHubMap.get(currentDistance) / 60.0 + shooterSetter;
+          velocity = shooterHubMap.get(currentDistance) / (60.0) + shooterSetter;
 
         } else {
 
-          velocity = shooterLobMap.get(currentDistance) / 60.0 + shooterSetter;
+          velocity = shooterLobMap.get(currentDistance) / (60.0) + shooterSetter;
 
         }
       } else {
       
-        velocity = 33.3;
+        velocity = 34.6;
 
       }
 
@@ -278,13 +269,13 @@ public class Shooter extends SubsystemBase {
       if (isTracking) {
         if(Vision.isInHomeTerritory()) {
           return shooterLead.getVelocity()
-              .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 1;
+              .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 1;
         } else {
           return shooterLead.getVelocity()
-              .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / 60.0 + shooterSetter) - 1;
+              .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 1;
         }
       } else {
-        return shooterLead.getVelocity().getValueAsDouble() > (33.3) - 1;
+        return shooterLead.getVelocity().getValueAsDouble() > (34.6) - 1;
       }
     };
   }
