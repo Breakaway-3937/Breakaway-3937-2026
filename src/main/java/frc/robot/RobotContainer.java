@@ -12,14 +12,20 @@ import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -29,7 +35,8 @@ public class RobotContainer {
   // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
-  //private final JoystickButton translationButton = new JoystickButton(translationController, Constants.Controllers.TRANSLATION_BUTTON);
+  private final Joystick buttons = new Joystick(Constants.Controllers.BUTTONS.getPort());
+  private final JoystickButton topButton = new JoystickButton(buttons, Constants.Controllers.TOP_BUTTON);
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
@@ -89,8 +96,6 @@ public class RobotContainer {
             .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
                 rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
-
-    //translationButton.whileTrue(setMultipliers(0.4)).whileFalse(setMultipliers(1.0));
     
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
@@ -99,6 +104,7 @@ public class RobotContainer {
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
+    topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true)); 
     //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     //xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());

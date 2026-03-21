@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
 import gg.questnav.questnav.PoseFrame;
@@ -156,15 +157,14 @@ public class Vision extends SubsystemBase {
 
         double bufferAway = trenchMinBuffer + Math.max(0, -vx) * trenchLookAheadSeconds;
         double bufferNear = trenchMinBuffer + Math.max(0, vx) * trenchLookAheadSeconds;
-        //double buffer = 2 * (Math.abs(vx) * trenchLookAheadSeconds);
+        // double buffer = 2 * (Math.abs(vx) * trenchLookAheadSeconds);
 
         expanded = new Rectangle2d(new Pose2d(
-                trench.getCenter().getX() + (bufferAway - bufferNear) / 2, 
-                trench.getCenter().getY(), 
-                new Rotation2d()
-            ), 
-            trench.getXWidth() + bufferNear + bufferAway, 
-            trench.getYWidth());
+                trench.getCenter().getX() + (bufferAway - bufferNear) / 2,
+                trench.getCenter().getY(),
+                new Rotation2d()),
+                trench.getXWidth() + bufferNear + bufferAway,
+                trench.getYWidth());
 
         return expanded.contains(turretPose.getTranslation());
     }
@@ -238,13 +238,34 @@ public class Vision extends SubsystemBase {
 
     public BooleanSupplier isTurretSafe() {
         return () -> {
-            if(s_Shooter.isTracking()) {
-                return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
-                    && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
+            if(isInHomeTerritory()) {
+                if (s_Shooter.isTracking()) {
+                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
+                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                if (s_Shooter.isTracking()) {
+                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 10 * DEGREE_TO_TURRET)
+                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 10 * DEGREE_TO_TURRET);
+                } else {
+                    return true;
+                }
             }
         };
+    }
+
+    public Command setInitPose() {
+        return runOnce(() -> {
+            if(DriverStation.isDisabled()) {
+                if(alliance == DriverStation.Alliance.Blue) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                } else {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                }
+            }
+        });
     }
 
     @Override
@@ -252,20 +273,25 @@ public class Vision extends SubsystemBase {
 
         alliance = DriverStation.getAlliance().orElse(null);
 
-        if(DriverStation.isDSAttached() && DriverStation.isDisabled() && !initPoseFlag) {
-            if(questNav.isConnected() && questNav.isTracking()) {
-                if(alliance == DriverStation.Alliance.Blue) {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                } else {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                }
-
-                initPoseFlag = true;
-            }
-        }
+        /*
+         * if(DriverStation.isDSAttached() && DriverStation.isDisabled() &&
+         * !initPoseFlag) {
+         * if(questNav.isConnected() && questNav.isTracking()) {
+         * if(alliance == DriverStation.Alliance.Blue) {
+         * questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new
+         * Rotation2d())).transformBy(ROBOT_TO_QUEST));
+         * } else {
+         * questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035),
+         * new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+         * }
+         * 
+         * initPoseFlag = true;
+         * }
+         * }
+         */
 
         setTarget();
-        
+
         questNav.commandPeriodic();
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 
