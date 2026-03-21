@@ -29,14 +29,12 @@ import gg.questnav.questnav.QuestNav;
 
 public class Vision extends SubsystemBase {
 
-    private boolean initPoseFlag = false;
-
     private final Field2d turretfield = new Field2d();
     private final Field2d robotfield = new Field2d();
 
     private final Swerve s_Swerve;
     private final Shooter s_Shooter;
-    private final QuestNav questNav = new QuestNav();
+    private static final QuestNav questNav = new QuestNav();
 
     private static Alliance alliance;
 
@@ -112,6 +110,10 @@ public class Vision extends SubsystemBase {
 
     public void setPose(Pose2d pose) {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
+    }
+
+    public static boolean isQuestTracking() {
+        return questNav.isTracking();
     }
 
     public Pose2d getTurretPose() {
@@ -311,6 +313,8 @@ public class Vision extends SubsystemBase {
                 filteredPose = s_Swerve.getState().Pose;
             }
         }
+
+        //SwerveDriveState swerveState = s_Swerve.getStateCopy();
 
         turretPose = filteredPose.transformBy(ROBOT_TO_TURRET);
         turretPoseX = turretPose.getX();

@@ -83,16 +83,16 @@ public class Shooter extends SubsystemBase {
     // 6
     hoodHubMap.put(1.8288, 1.60);
 
-    shooterHubMap.put(7.9248, 3860.0);
-    shooterHubMap.put(7.3152, 3700.0);
-    shooterHubMap.put(6.7056, 3540.0);
-    shooterHubMap.put(6.096, 3380.0);
+    shooterHubMap.put(7.9248, 3785.0);
+    shooterHubMap.put(7.3152, 3625.0);
+    shooterHubMap.put(6.7056, 3465.0);
+    shooterHubMap.put(6.096, 3305.0);
     // 18.5
-    shooterHubMap.put(5.6388, 3260.0);
+    shooterHubMap.put(5.6388, 3185.0);
     // 17
-    shooterHubMap.put(5.1816, 3160.0);
+    shooterHubMap.put(5.1816, 3175.0);
     // 16
-    shooterHubMap.put(4.8786, 3160.0);
+    shooterHubMap.put(4.8786, 3175.0);
     // 15
     shooterHubMap.put(4.572, 3060.0);
     // 14
@@ -135,7 +135,7 @@ public class Shooter extends SubsystemBase {
     configShooter();
     configCANranges();
 
-    SmartDashboard.putNumber("Shooter Added Speed", 1);
+    SmartDashboard.putNumber("Shooter Added Speed", 0.5);
     SmartDashboard.putNumber("Hood Added Angle", 0);
   }
 
@@ -247,7 +247,7 @@ public class Shooter extends SubsystemBase {
         }
       } else {
       
-        velocity = 34.6;
+        velocity = 35.6;
 
       }
 
@@ -275,7 +275,7 @@ public class Shooter extends SubsystemBase {
               .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 1;
         }
       } else {
-        return shooterLead.getVelocity().getValueAsDouble() > (34.6) - 1;
+        return shooterLead.getVelocity().getValueAsDouble() > (35.6) - 1;
       }
     };
   }
@@ -290,7 +290,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (isTracking) {
+    if (isTracking && Vision.isQuestTracking()) {
 
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
 

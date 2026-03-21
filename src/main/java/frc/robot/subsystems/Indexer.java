@@ -81,7 +81,7 @@ public class Indexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 40;
+    config.CurrentLimits.SupplyCurrentLimit = 30;
 
     kicker.getConfigurator().apply(config);
     diverter.getConfigurator().apply(config);
