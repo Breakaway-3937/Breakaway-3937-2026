@@ -29,7 +29,7 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(6.6, 400.0);
+        FIRE(7.0, 90.0);
 
         private final double SpinnerSpeed, KickerSpeed;
         private final double SPINNER_CONVERSION = 12.67;

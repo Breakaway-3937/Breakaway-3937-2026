@@ -148,15 +148,27 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.2;
-    config.Slot0.kV = 0.12;
+    //Old values
+    // config.Slot0.kS = 0.2;
+    // config.Slot0.kV = 0.12;
+    // config.Slot0.kA = 0.0;
+    // config.Slot0.kP = 6.0;
+    // config.Slot0.kI = 0.0;
+    // config.Slot0.kD = 0.0;
+
+    config.Slot0.kS = 0.3;
+    config.Slot0.kV = 0.08;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 6.0;
+    config.Slot0.kP = 3.5;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
+    //Old values
+    //config.MotionMagic.MotionMagicExpo_kV = 0.01;
+    //config.MotionMagic.MotionMagicExpo_kA = 0.05;
+
     config.MotionMagic.MotionMagicExpo_kV = 0.01;
-    config.MotionMagic.MotionMagicExpo_kA = 0.05;
+    config.MotionMagic.MotionMagicExpo_kA = 0.01;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -174,15 +186,26 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.2;
-    config.Slot0.kV = 0.12;
+    //Old values
+    // config.Slot0.kS = 0.2;
+    // config.Slot0.kV = 0.12;
+    // config.Slot0.kA = 0.0;
+    // config.Slot0.kP = 6.0;
+    // config.Slot0.kI = 0.0;
+    // config.Slot0.kD = 0.0;
+
+    // config.MotionMagic.MotionMagicExpo_kV = 0.01;
+    // config.MotionMagic.MotionMagicExpo_kA = 0.05;
+
+    config.Slot0.kS = 0.45;
+    config.Slot0.kV = 0.09;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 6.0;
+    config.Slot0.kP = 2.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.01;
-    config.MotionMagic.MotionMagicExpo_kA = 0.05;
+    config.MotionMagic.MotionMagicExpo_kV = 0.005;
+    config.MotionMagic.MotionMagicExpo_kA = 0.005;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -206,7 +229,7 @@ public class Shooter extends SubsystemBase {
     config.Slot0.kV = 0.3;
 
     config.CurrentLimits.StatorCurrentLimitEnable = true;
-    config.CurrentLimits.StatorCurrentLimit = 75;
+    config.CurrentLimits.StatorCurrentLimit = 120;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
@@ -257,7 +280,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command idleShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(0)));
   }
 
   public Command stopShooter() {
@@ -290,7 +313,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (isTracking && Vision.isQuestTracking()) {
+    if (isTracking && Vision.isQuestGood()) {
 
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
 
@@ -303,6 +326,7 @@ public class Shooter extends SubsystemBase {
       } else {
         hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       }
+
     } else {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));

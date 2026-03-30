@@ -77,8 +77,8 @@ public class RobotContainer {
     autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Short", new PathPlannerAuto("Arch Depot", false).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Long", new PathPlannerAuto("Arch Depot Long", false).withName("Arch Depot Long"));
-      autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));4
-          autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
+    autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
+    autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
 
 
     SmartDashboard.putData("Auto Mode", autoChooser);

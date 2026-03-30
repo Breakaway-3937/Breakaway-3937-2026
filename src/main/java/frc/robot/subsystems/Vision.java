@@ -95,8 +95,8 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putData("turretField", turretfield);
 
         ROBOT_TO_QUEST = (Constants.COMPBOT)
-                ? new Transform3d(-0.33, 0.0, 0.28, new Rotation3d(0, 0, Math.PI))
-                : new Transform3d(-0.33, 0.01, 0.23, new Rotation3d(0, 0, Math.PI));
+                ? new Transform3d(-0.29, -0.29, 0.22, new Rotation3d(0, 0, -2.356))
+                : new Transform3d(-0.29, -0.29, 0.22, new Rotation3d(0, 0, -2.356));
 
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
@@ -112,8 +112,8 @@ public class Vision extends SubsystemBase {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
     }
 
-    public static boolean isQuestTracking() {
-        return questNav.isTracking();
+    public static boolean isQuestGood() {
+        return questNav.isTracking() && questNav.isConnected();
     }
 
     public Pose2d getTurretPose() {
@@ -260,15 +260,14 @@ public class Vision extends SubsystemBase {
 
     public Command setInitPose() {
         return runOnce(() -> {
-            if(DriverStation.isDisabled()) {
                 if(alliance == DriverStation.Alliance.Blue) {
                     questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
                 } else {
                     questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
                 }
-            }
         });
-    }
+        };
+    
 
     @Override
     public void periodic() {
