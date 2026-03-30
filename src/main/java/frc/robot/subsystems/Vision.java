@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -37,6 +39,8 @@ public class Vision extends SubsystemBase {
     private static final QuestNav questNav = new QuestNav();
 
     private static Alliance alliance;
+
+    private static SwerveDriveState swerveState;
 
     private final Transform3d ROBOT_TO_QUEST;
 
@@ -274,24 +278,9 @@ public class Vision extends SubsystemBase {
 
         alliance = DriverStation.getAlliance().orElse(null);
 
-        /*
-         * if(DriverStation.isDSAttached() && DriverStation.isDisabled() &&
-         * !initPoseFlag) {
-         * if(questNav.isConnected() && questNav.isTracking()) {
-         * if(alliance == DriverStation.Alliance.Blue) {
-         * questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new
-         * Rotation2d())).transformBy(ROBOT_TO_QUEST));
-         * } else {
-         * questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035),
-         * new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-         * }
-         * 
-         * initPoseFlag = true;
-         * }
-         * }
-         */
-
         setTarget();
+
+        swerveState = s_Swerve.getStateCopy();
 
         questNav.commandPeriodic();
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
@@ -309,23 +298,21 @@ public class Vision extends SubsystemBase {
                 filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
 
             } else {
-                filteredPose = s_Swerve.getState().Pose;
+                filteredPose = swerveState.Pose;
             }
         }
-
-        //SwerveDriveState swerveState = s_Swerve.getStateCopy();
 
         turretPose = filteredPose.transformBy(ROBOT_TO_TURRET);
         turretPoseX = turretPose.getX();
         turretPoseY = turretPose.getY();
         turretRotation = turretPose.getRotation().getDegrees();
 
-        robotRelativeSpeeds.vxMetersPerSecond = s_Swerve.getState().Speeds.vxMetersPerSecond;
-        robotRelativeSpeeds.vyMetersPerSecond = s_Swerve.getState().Speeds.vyMetersPerSecond;
-        robotRelativeSpeeds.omegaRadiansPerSecond = s_Swerve.getState().Speeds.omegaRadiansPerSecond;
+        robotRelativeSpeeds.vxMetersPerSecond = swerveState.Speeds.vxMetersPerSecond;
+        robotRelativeSpeeds.vyMetersPerSecond = swerveState.Speeds.vyMetersPerSecond;
+        robotRelativeSpeeds.omegaRadiansPerSecond = swerveState.Speeds.omegaRadiansPerSecond;
 
         fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds,
-                s_Swerve.getState().Pose.getRotation());
+                swerveState.Pose.getRotation());
 
         speed = Math.sqrt(Math.pow(robotRelativeSpeeds.vxMetersPerSecond, 2)
                 + Math.pow(robotRelativeSpeeds.vyMetersPerSecond, 2));
