@@ -117,6 +117,7 @@ public class Vision extends SubsystemBase {
         timeOfFlightMap.put(6.7056, 1.65);
         timeOfFlightMap.put(7.3152, 1.72);
         timeOfFlightMap.put(7.9248, 1.8);
+        
     }
 
     public void setPose(Pose2d pose) {
