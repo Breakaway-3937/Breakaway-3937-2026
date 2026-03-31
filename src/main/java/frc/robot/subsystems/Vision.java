@@ -100,13 +100,23 @@ public class Vision extends SubsystemBase {
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
 
-        /*timeOfFlightMap.put(5.06, 1.0125);
-        timeOfFlightMap.put(4.17, 1.096);
-        timeOfFlightMap.put(3.53, 1.06);
-        timeOfFlightMap.put(2.79, 1.002);
-        timeOfFlightMap.put(1.57, 0.93);*/
+        /*timeOfFlightMap.put(5.06, 1.1125);
+        timeOfFlightMap.put(4.17, 1.196);
+        timeOfFlightMap.put(3.53, 1.16);
+        timeOfFlightMap.put(2.79, 1.102);
+        timeOfFlightMap.put(1.57, 1.03);*/
 
-        timeOfFlightMap.put(null, null);
+        timeOfFlightMap.put(1.384, 0.9);
+        timeOfFlightMap.put(2.41, 1.1);
+        timeOfFlightMap.put(3.065, 1.32);
+        timeOfFlightMap.put(3.6, 1.325);
+        timeOfFlightMap.put(4.25, 1.325);
+        timeOfFlightMap.put(4.852, 1.4);
+        timeOfFlightMap.put(5.412, 1.4);
+        timeOfFlightMap.put(6.013, 1.56);
+        timeOfFlightMap.put(6.7056, 1.65);
+        timeOfFlightMap.put(7.3152, 1.72);
+        timeOfFlightMap.put(7.9248, 1.8);
     }
 
     public void setPose(Pose2d pose) {
@@ -317,9 +327,9 @@ public class Vision extends SubsystemBase {
         realAngle = Math.toDegrees(Math.atan2(currentTargetY - turretPoseY, currentTargetX - turretPoseX));
 
         double targetPhantomX = currentTargetX
-                - (fieldRelativeSpeeds.vxMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
+                - (fieldRelativeSpeeds.vxMetersPerSecond * (timeOfFlightMap.get(realDistance)));
         double targetPhantomY = currentTargetY
-                - (fieldRelativeSpeeds.vyMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
+                - (fieldRelativeSpeeds.vyMetersPerSecond * (timeOfFlightMap.get(realDistance)));
 
         phantomDistance = Math
                 .sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
