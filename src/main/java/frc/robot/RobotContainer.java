@@ -80,7 +80,6 @@ public class RobotContainer {
     autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
     autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
 
-
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
