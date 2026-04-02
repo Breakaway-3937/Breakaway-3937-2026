@@ -76,7 +76,6 @@ public class RobotContainer {
       autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
           autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
 
-
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
@@ -97,7 +96,7 @@ public class RobotContainer {
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
     //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());

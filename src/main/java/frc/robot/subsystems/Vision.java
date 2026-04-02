@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utility.Constants;
 import gg.questnav.questnav.PoseFrame;
 import gg.questnav.questnav.QuestNav;
 
@@ -43,7 +42,7 @@ public class Vision extends SubsystemBase {
 
     private static SwerveDriveState swerveState;
 
-    private final Transform3d ROBOT_TO_QUEST;
+    private final Transform3d ROBOT_TO_QUEST = new Transform3d(-0.29, -0.285, 0.26, new Rotation3d(0, 0, -2.356));
 
     private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, 0.14, new Rotation2d());
 
@@ -64,7 +63,7 @@ public class Vision extends SubsystemBase {
             new Translation2d(12.9, 6.7));
     private final static Rectangle2d trench4 = new Rectangle2d(new Translation2d(11.1, 1.4),
             new Translation2d(12.9, 0));
-    // Added 0.3 to the trench zone
+    
     private final static Rectangle2d[] trenches = { trench1, trench2, trench3, trench4 };
 
     private final static double MAX_POSITIVE_TURRET_ANGLE = 180.0;
@@ -99,26 +98,42 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putData("robotField", robotfield);
         SmartDashboard.putData("turretField", turretfield);
 
+<<<<<<< HEAD
         ROBOT_TO_QUEST = (Constants.COMPBOT)
                 ? new Transform3d(-0.29, -0.29, 0.28, new Rotation3d(0, 0, 2.356))
                 : new Transform3d(-0.29, -0.29, 0.23, new Rotation3d(0, 0, 2.356));
 
+=======
+>>>>>>> b2c74bdc480aae447d67842744dc6274a03641ea
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
 
-        timeOfFlightMap.put(5.06, 1.0125);
-        timeOfFlightMap.put(4.17, 1.096);
-        timeOfFlightMap.put(3.53, 1.06);
-        timeOfFlightMap.put(2.79, 1.002);
-        timeOfFlightMap.put(1.57, 0.93);
+        /*timeOfFlightMap.put(5.06, 1.1125);
+        timeOfFlightMap.put(4.17, 1.196);
+        timeOfFlightMap.put(3.53, 1.16);
+        timeOfFlightMap.put(2.79, 1.102);
+        timeOfFlightMap.put(1.57, 1.03);*/
+
+        timeOfFlightMap.put(1.384, 0.9);
+        timeOfFlightMap.put(2.41, 1.1);
+        timeOfFlightMap.put(3.065, 1.32);
+        timeOfFlightMap.put(3.6, 1.325);
+        timeOfFlightMap.put(4.25, 1.325);
+        timeOfFlightMap.put(4.852, 1.4);
+        timeOfFlightMap.put(5.412, 1.4);
+        timeOfFlightMap.put(6.013, 1.56);
+        timeOfFlightMap.put(6.7056, 1.65);
+        timeOfFlightMap.put(7.3152, 1.72);
+        timeOfFlightMap.put(7.9248, 1.8);
+        
     }
 
     public void setPose(Pose2d pose) {
         questNav.setPose(new Pose3d(pose).transformBy(ROBOT_TO_QUEST));
     }
 
-    public static boolean isQuestTracking() {
-        return questNav.isTracking();
+    public static boolean isQuestGood() {
+        return questNav.isTracking() && questNav.isConnected();
     }
 
     public Pose2d getTurretPose() {
@@ -164,7 +179,6 @@ public class Vision extends SubsystemBase {
 
         double bufferAway = trenchMinBuffer + Math.max(0, -vx) * trenchLookAheadSeconds;
         double bufferNear = trenchMinBuffer + Math.max(0, vx) * trenchLookAheadSeconds;
-        // double buffer = 2 * (Math.abs(vx) * trenchLookAheadSeconds);
 
         expanded = new Rectangle2d(new Pose2d(
                 trench.getCenter().getX() + (bufferAway - bufferNear) / 2,
@@ -265,15 +279,14 @@ public class Vision extends SubsystemBase {
 
     public Command setInitPose() {
         return runOnce(() -> {
-            if(DriverStation.isDisabled()) {
                 if(alliance == DriverStation.Alliance.Blue) {
                     questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
                 } else {
                     questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
                 }
-            }
         });
-    }
+        };
+    
 
     @Override
     public void periodic() {
@@ -323,17 +336,16 @@ public class Vision extends SubsystemBase {
         realAngle = Math.toDegrees(Math.atan2(currentTargetY - turretPoseY, currentTargetX - turretPoseX));
 
         double targetPhantomX = currentTargetX
-                - (fieldRelativeSpeeds.vxMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
+                - (fieldRelativeSpeeds.vxMetersPerSecond * (timeOfFlightMap.get(realDistance)));
         double targetPhantomY = currentTargetY
-                - (fieldRelativeSpeeds.vyMetersPerSecond * (timeOfFlightMap.get(realDistance) + 0.1));
+                - (fieldRelativeSpeeds.vyMetersPerSecond * (timeOfFlightMap.get(realDistance)));
 
         phantomDistance = Math
                 .sqrt(Math.pow(targetPhantomX - turretPoseX, 2) + Math.pow(targetPhantomY - turretPoseY, 2));
         phantomAngle = Math.toDegrees(Math.atan2(targetPhantomY - turretPoseY, targetPhantomX - turretPoseX));
 
-        SmartDashboard.putBoolean("Is Under Trench", isUnderTrench());
         SmartDashboard.putNumber("Phantom Distance", phantomDistance);
-        SmartDashboard.putNumber("VX", fieldRelativeSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("Distance", realDistance);
         robotfield.setRobotPose(filteredPose);
         turretfield.setRobotPose(turretPose);
 

@@ -54,7 +54,8 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
-    hoodHubMap.put(6.096, 6.46);
+    /*hoodHubMap.put(6.096, 6.46);
+
     hoodHubMap.put(5.7912, 6.01);
     // 18.5
     hoodHubMap.put(5.6388, 5.79);
@@ -81,38 +82,97 @@ public class Shooter extends SubsystemBase {
     // 7
     hoodHubMap.put(2.1336, 1.60);
     // 6
+    hoodHubMap.put(1.8288, 1.60);*/
+
+    hoodHubMap.put(7.9248, 7.18);
+    
+    hoodHubMap.put(7.3152, 7.18);
+    
+    hoodHubMap.put(6.7056, 7.18);
+
+    hoodHubMap.put(6.013, 6.32);
+    
+    hoodHubMap.put(5.412, 5.82);
+    
+    hoodHubMap.put(4.852, 4.82);
+
+    hoodHubMap.put(4.25, 4.32);
+    // 12
+    hoodHubMap.put(3.6576, 3.79);
+    // 11
+    hoodHubMap.put(3.3528, 2.9);
+    // 10
+    hoodHubMap.put(3.048, 2.82);
+    // 9
+    hoodHubMap.put(2.7432, 2.81);
+    // 8
+    hoodHubMap.put(2.4384, 2.17);
+    // 7
+    hoodHubMap.put(2.1336, 1.60);
+    // 6
     hoodHubMap.put(1.8288, 1.60);
 
-    shooterHubMap.put(7.9248, 3785.0);
-    shooterHubMap.put(7.3152, 3625.0);
-    shooterHubMap.put(6.7056, 3465.0);
-    shooterHubMap.put(6.096, 3305.0);
+    /*shooterHubMap.put(7.9248, 3815.0);
+
+    shooterHubMap.put(7.3152, 3655.0);
+
+    shooterHubMap.put(6.7056, 3495.0);
+
+    shooterHubMap.put(6.096, 3335.0);
     // 18.5
-    shooterHubMap.put(5.6388, 3185.0);
+    shooterHubMap.put(5.6388, 3215.0);
     // 17
-    shooterHubMap.put(5.1816, 3175.0);
+    shooterHubMap.put(5.1816, 3205.0);
     // 16
-    shooterHubMap.put(4.8786, 3175.0);
+    shooterHubMap.put(4.8786, 3205.0);
     // 15
-    shooterHubMap.put(4.572, 3060.0);
+    shooterHubMap.put(4.572, 3090.0);
     // 14
-    shooterHubMap.put(4.2672, 2910.0);
+    shooterHubMap.put(4.2672, 2940.0);
     // 13
-    shooterHubMap.put(3.9624, 2810.0);
+    shooterHubMap.put(3.9624, 2840.0);
     // 12
-    shooterHubMap.put(3.6576, 2760.0);
+    shooterHubMap.put(3.6576, 2790.0);
     // 11
-    shooterHubMap.put(3.3528, 2660.0);
+    shooterHubMap.put(3.3528, 2690.0);
     // 10
-    shooterHubMap.put(3.048, 2560.0);
+    shooterHubMap.put(3.048, 2590.0);
     // 9
-    shooterHubMap.put(2.7432, 2410.0);
+    shooterHubMap.put(2.7432, 2440.0);
     // 8
-    shooterHubMap.put(2.4384, 2310.0);
+    shooterHubMap.put(2.4384, 2340.0);
     // 7
-    shooterHubMap.put(2.1336, 2310.0);
+    shooterHubMap.put(2.1336, 2340.0);
     // 6
-    shooterHubMap.put(1.8288, 2060.0);
+    shooterHubMap.put(1.8288, 2090.0);*/
+    
+    shooterHubMap.put(7.9248, 3812.0);
+    
+    shooterHubMap.put(7.3152, 3623.0);
+    
+    shooterHubMap.put(6.7056, 3433.0);
+
+    shooterHubMap.put(6.013, 3220.0);
+    
+    shooterHubMap.put(5.412, 3070.0);
+    
+    shooterHubMap.put(4.852, 2890.0);
+
+    shooterHubMap.put(4.25, 2800.0);
+    // 12
+    shooterHubMap.put(3.6576, 2790.0);
+    // 11
+    shooterHubMap.put(3.3528, 2690.0);
+    // 10
+    shooterHubMap.put(3.048, 2590.0);
+    // 9
+    shooterHubMap.put(2.7432, 2440.0);
+    // 8
+    shooterHubMap.put(2.4384, 2340.0);
+    // 7
+    shooterHubMap.put(2.1336, 2340.0);
+    // 6
+    shooterHubMap.put(1.8288, 2090.0);
 
     hoodLobMap.put(3.7846, 3.84);
     hoodLobMap.put(5.1816, 4.92);
@@ -135,7 +195,7 @@ public class Shooter extends SubsystemBase {
     configShooter();
     configCANranges();
 
-    SmartDashboard.putNumber("Shooter Added Speed", 0.5);
+    SmartDashboard.putNumber("Shooter Added Speed", 0);
     SmartDashboard.putNumber("Hood Added Angle", 0);
   }
 
@@ -148,15 +208,15 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.2;
-    config.Slot0.kV = 0.12;
+    config.Slot0.kS = 0.3;
+    config.Slot0.kV = 0.08;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 6.0;
+    config.Slot0.kP = 3.5;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
     config.MotionMagic.MotionMagicExpo_kV = 0.01;
-    config.MotionMagic.MotionMagicExpo_kA = 0.05;
+    config.MotionMagic.MotionMagicExpo_kA = 0.01;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -174,15 +234,15 @@ public class Shooter extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kS = 0.2;
-    config.Slot0.kV = 0.12;
+    config.Slot0.kS = 0.45;
+    config.Slot0.kV = 0.09;
     config.Slot0.kA = 0.0;
-    config.Slot0.kP = 6.0;
+    config.Slot0.kP = 2.0;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.MotionMagic.MotionMagicExpo_kV = 0.01;
-    config.MotionMagic.MotionMagicExpo_kA = 0.05;
+    config.MotionMagic.MotionMagicExpo_kV = 0.005;
+    config.MotionMagic.MotionMagicExpo_kA = 0.005;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -206,7 +266,7 @@ public class Shooter extends SubsystemBase {
     config.Slot0.kV = 0.3;
 
     config.CurrentLimits.StatorCurrentLimitEnable = true;
-    config.CurrentLimits.StatorCurrentLimit = 75;
+    config.CurrentLimits.StatorCurrentLimit = 120;
 
     shooterLead.getConfigurator().apply(config);
     shooterFollow.getConfigurator().apply(config);
@@ -257,7 +317,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command idleShooter() {
-    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(10)));
+    return runOnce(() -> shooterLead.setControl(shooterRequest.withVelocity(0)));
   }
 
   public Command stopShooter() {
@@ -290,7 +350,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (isTracking && Vision.isQuestTracking()) {
+    if (isTracking && Vision.isQuestGood()) {
 
       turret.setControl(turretRequest.withPosition(Vision.getAdjustedTurretAngle()));
 
@@ -303,6 +363,7 @@ public class Shooter extends SubsystemBase {
       } else {
         hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       }
+
     } else {
       hood.setControl(hoodRequest.withPosition(LOCKED_HOOD_ANGLE));
       turret.setControl(turretRequest.withPosition(LOCKED_TURRET_ANGLE));
@@ -310,7 +371,7 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter Speed RPS", shooterLead.getVelocity().getValueAsDouble() * 60.0);
     SmartDashboard.putNumber("Shooter Hub Setpoint", shooterHubMap.get(Vision.getAdjustedDistance()));
-    SmartDashboard.putNumber("Shooter Lob Setpoint", shooterLobMap.get(Vision.getAdjustedDistance()));
+    SmartDashboard.putNumber("Hood Hub Setpoint", hoodHubMap.get(Vision.getAdjustedDistance()));
     shooterSetter = SmartDashboard.getNumber("Shooter Added Speed", 1400);
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
   }
