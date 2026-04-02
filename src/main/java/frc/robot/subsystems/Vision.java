@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -97,6 +98,13 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putData("robotField", robotfield);
         SmartDashboard.putData("turretField", turretfield);
 
+<<<<<<< HEAD
+        ROBOT_TO_QUEST = (Constants.COMPBOT)
+                ? new Transform3d(-0.29, -0.29, 0.28, new Rotation3d(0, 0, 2.356))
+                : new Transform3d(-0.29, -0.29, 0.23, new Rotation3d(0, 0, 2.356));
+
+=======
+>>>>>>> b2c74bdc480aae447d67842744dc6274a03641ea
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
 
@@ -340,5 +348,12 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Distance", realDistance);
         robotfield.setRobotPose(filteredPose);
         turretfield.setRobotPose(turretPose);
+
+
+
+
+        Logger.recordOutput("Swerve/Pose", pose);
+        Logger.recordOutput("Swerve/Speed", velocities.getNorm());
+        Logger.recordOutput("Swerve/Swerve Mod States", state.ModuleStates);
     }
 }

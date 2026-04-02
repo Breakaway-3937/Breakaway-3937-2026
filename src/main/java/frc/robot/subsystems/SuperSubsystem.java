@@ -71,7 +71,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.FIRE)))
         .andThen(s_Shooter.runShooter()
-        .andThen(RobotContainer.setMultipliers(0.4))
+        .andThen(RobotContainer.setMultipliers(0.6))
         .andThen(waitForShooterSpeed())
         .andThen(runSubsystemsIfSafe()));
   }
@@ -87,7 +87,7 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
         .andThen(s_Shooter.runShooter())
-        .andThen(RobotContainer.setMultipliers(0.4))
+        .andThen(RobotContainer.setMultipliers(0.6))
         .andThen(waitForShooterSpeed())
         .andThen(runSubsystemsIfSafe());
   }
