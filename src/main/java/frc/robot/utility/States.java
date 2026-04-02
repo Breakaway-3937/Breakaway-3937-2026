@@ -4,9 +4,9 @@ public class States {
 
     public enum IntakeStates {
         STOW(400.0, 0.0),
-        FIRE(212.0,20.0),
+        FIRE(212.0,21.0),
         IDLE(212.0, 0.0),
-        INTAKE(0.5, 20.0),
+        INTAKE(0.5, 21.0),
         UNCLOG(0.5, -10.0);
 
         private final double angle, power;

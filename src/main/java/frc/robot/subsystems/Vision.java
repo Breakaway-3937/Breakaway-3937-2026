@@ -45,8 +45,8 @@ public class Vision extends SubsystemBase {
 
     private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, 0.14, new Rotation2d());
 
-    private final LinearFilter xFilter = LinearFilter.movingAverage(5);
-    private final LinearFilter yFilter = LinearFilter.movingAverage(5);
+    private final LinearFilter xFilter = LinearFilter.movingAverage(3);
+    private final LinearFilter yFilter = LinearFilter.movingAverage(3);
 
     private Pose2d rawRobotPose2d = new Pose2d();
 
