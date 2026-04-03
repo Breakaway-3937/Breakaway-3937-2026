@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,9 +23,6 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake s_Intake;
   private final Climber s_Climber;
   private final Vision s_Vision;
-
-  //BooleanSupplier shooterGood;
-  BooleanSupplier bool = () -> true;
 
   PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
 

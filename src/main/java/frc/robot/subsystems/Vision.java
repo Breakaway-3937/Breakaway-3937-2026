@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,8 +47,9 @@ public class Vision extends SubsystemBase {
 
     private final Transform2d ROBOT_TO_TURRET = new Transform2d(-0.15, 0.14, new Rotation2d());
 
-    private final LinearFilter xFilter = LinearFilter.movingAverage(3);
-    private final LinearFilter yFilter = LinearFilter.movingAverage(3);
+    //Comment out these lines for the filter
+    private final LinearFilter xFilter = LinearFilter.movingAverage(5);
+    private final LinearFilter yFilter = LinearFilter.movingAverage(5);
 
     private Pose2d rawRobotPose2d = new Pose2d();
 
@@ -98,13 +100,6 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putData("robotField", robotfield);
         SmartDashboard.putData("turretField", turretfield);
 
-<<<<<<< HEAD
-        ROBOT_TO_QUEST = (Constants.COMPBOT)
-                ? new Transform3d(-0.29, -0.29, 0.28, new Rotation3d(0, 0, 2.356))
-                : new Transform3d(-0.29, -0.29, 0.23, new Rotation3d(0, 0, 2.356));
-
-=======
->>>>>>> b2c74bdc480aae447d67842744dc6274a03641ea
         this.s_Swerve = s_Swerve;
         this.s_Shooter = s_Shooter;
 
@@ -268,8 +263,8 @@ public class Vision extends SubsystemBase {
                 }
             } else {
                 if (s_Shooter.isTracking()) {
-                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 10 * DEGREE_TO_TURRET)
-                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 10 * DEGREE_TO_TURRET);
+                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 20 * DEGREE_TO_TURRET)
+                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 20 * DEGREE_TO_TURRET);
                 } else {
                     return true;
                 }
@@ -279,13 +274,31 @@ public class Vision extends SubsystemBase {
 
     public Command setInitPose() {
         return runOnce(() -> {
-                if(alliance == DriverStation.Alliance.Blue) {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                } else {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                }
+            if(alliance == DriverStation.Alliance.Blue) {
+                questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+            } else {
+                questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+            }
         });
-        };
+    };
+
+    public Command setSpecialInitPose(boolean isLeft) {
+        return runOnce(() -> {
+            if(alliance == DriverStation.Alliance.Blue) {
+                if(isLeft) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 7.225), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                } else {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 0.881), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                }
+            } else {
+                if(isLeft) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 0.881), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                } else {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 7.225), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                }
+            }
+        });
+    }
     
 
     @Override
@@ -305,12 +318,23 @@ public class Vision extends SubsystemBase {
 
                 rawRobotPose2d = questFrame.questPose3d().transformBy(ROBOT_TO_QUEST.inverse()).toPose2d();
 
+                //Comment out these lines for the filter
                 double cleanX = xFilter.calculate(rawRobotPose2d.getX());
                 double cleanY = yFilter.calculate(rawRobotPose2d.getY());
 
                 filteredRotation = filteredRotation.interpolate(rawRobotPose2d.getRotation(), 0.2);
 
+                //filteredPose = rawRobotPose2d;
                 filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
+
+                double questLatency = (questFrame.appTimestamp() - questFrame.dataTimestamp()) * 1000;
+                double robotToQuestLatency = (Timer.getFPGATimestamp() - questFrame.dataTimestamp()) * 1000;
+
+                Logger.recordOutput("Quest/Quest Latency", questLatency);
+                Logger.recordOutput("Quest/Robot to Quest Latency", robotToQuestLatency);
+                Logger.recordOutput("Quest/Total Latency", questLatency + robotToQuestLatency);
+                
+                SmartDashboard.putNumber("Total Latency", questLatency + robotToQuestLatency);
 
             } else {
                 filteredPose = swerveState.Pose;
@@ -349,11 +373,7 @@ public class Vision extends SubsystemBase {
         robotfield.setRobotPose(filteredPose);
         turretfield.setRobotPose(turretPose);
 
-
-
-
-        Logger.recordOutput("Swerve/Pose", pose);
-        Logger.recordOutput("Swerve/Speed", velocities.getNorm());
-        Logger.recordOutput("Swerve/Swerve Mod States", state.ModuleStates);
+        Logger.recordOutput("Turret/Pose", turretPose);
+        Logger.recordOutput("Turret/Safe", isTurretSafe());
     }
 }

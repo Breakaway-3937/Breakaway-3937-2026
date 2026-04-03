@@ -12,6 +12,7 @@ import frc.robot.generated.CompTunerConstants;
 import frc.robot.generated.PracticeTunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -20,6 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -29,7 +32,10 @@ public class RobotContainer {
   // Driver Controllers
   private final Joystick translationController = new Joystick(Constants.Controllers.TRANSLATION_CONTROLLER.getPort());
   private final Joystick rotationController = new Joystick(Constants.Controllers.ROTATION_CONTROLLER.getPort());
-  //private final JoystickButton translationButton = new JoystickButton(translationController, Constants.Controllers.TRANSLATION_BUTTON);
+  private final Joystick buttons = new Joystick(Constants.Controllers.BUTTONS.getPort());
+  private final JoystickButton topButton = new JoystickButton(buttons, Constants.Controllers.TOP_BUTTON);
+  private final JoystickButton leftButton = new JoystickButton(buttons, 5);
+  private final JoystickButton rightButton = new JoystickButton(buttons, 8);
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
@@ -73,8 +79,8 @@ public class RobotContainer {
     autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Short", new PathPlannerAuto("Arch Depot", false).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Long", new PathPlannerAuto("Arch Depot Long", false).withName("Arch Depot Long"));
-      autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
-          autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
+    autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
+    autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
 
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -88,16 +94,17 @@ public class RobotContainer {
             .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
                 rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
-
-    //translationButton.whileTrue(setMultipliers(0.4)).whileFalse(setMultipliers(1.0));
     
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
+    topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true)); 
+    leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
+    rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
     //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     //xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());

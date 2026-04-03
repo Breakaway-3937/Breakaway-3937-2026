@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.8668,
-  "robotLength": 0.8668,
+  "robotWidth": 0.867,
+  "robotLength": 0.867,
   "holonomicMode": true,
   "pathFolders": [
     "ARCH HP",

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -374,6 +376,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Hood Hub Setpoint", hoodHubMap.get(Vision.getAdjustedDistance()));
     shooterSetter = SmartDashboard.getNumber("Shooter Added Speed", 1400);
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
+
+    Logger.recordOutput("Shooter/UpToSpeed", isAtSpeed());
   }
 
 }
