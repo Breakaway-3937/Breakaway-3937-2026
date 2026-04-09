@@ -4,7 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -15,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command autonomousCommand;
 
   private final RobotContainer robotContainer;
@@ -32,6 +35,15 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
   }
 
+  @Override
+  public void robotInit() {
+    Logger.recordMetadata("ProjectName", "MyProject");
+    if(isReal()) {
+      Logger.addDataReceiver(new WPILOGWriter());
+    }
+    Logger.start();
+  }
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
@@ -42,6 +54,7 @@ public class Robot extends TimedRobot {
    * and
    * SmartDashboard integrated updating.
    */
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -61,11 +74,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    /*if(!robotContainer.getVision().isInitPoseSet()) {
-      CommandScheduler.getInstance().schedule(robotContainer.getVision().setInitPose());
-    } else {
-      CommandScheduler.getInstance().cancel(robotContainer.getVision().setInitPose());
-    }*/
   }
 
   /**

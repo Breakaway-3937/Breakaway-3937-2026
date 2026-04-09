@@ -327,14 +327,15 @@ public class Vision extends SubsystemBase {
                 //filteredPose = rawRobotPose2d;
                 filteredPose = new Pose2d(cleanX, cleanY, filteredRotation);
 
-                double questLatency = (questFrame.appTimestamp() - questFrame.dataTimestamp()) * 1000;
+                /*double questLatency = (questFrame.appTimestamp() - questFrame.dataTimestamp()) * 1000;
                 double robotToQuestLatency = (Timer.getFPGATimestamp() - questFrame.dataTimestamp()) * 1000;
 
                 Logger.recordOutput("Quest/Quest Latency", questLatency);
                 Logger.recordOutput("Quest/Robot to Quest Latency", robotToQuestLatency);
+
                 Logger.recordOutput("Quest/Total Latency", questLatency + robotToQuestLatency);
-                
-                SmartDashboard.putNumber("Total Latency", questLatency + robotToQuestLatency);
+
+                SmartDashboard.putNumber("Total Latency", questLatency + robotToQuestLatency);*/
 
             } else {
                 filteredPose = swerveState.Pose;
@@ -370,8 +371,8 @@ public class Vision extends SubsystemBase {
 
         SmartDashboard.putNumber("Phantom Distance", phantomDistance);
         SmartDashboard.putNumber("Distance", realDistance);
-        robotfield.setRobotPose(filteredPose);
-        turretfield.setRobotPose(turretPose);
+        //robotfield.setRobotPose(filteredPose);
+        //turretfield.setRobotPose(turretPose);
 
         Logger.recordOutput("Turret/Pose", turretPose);
         Logger.recordOutput("Turret/Safe", isTurretSafe());
