@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utility.QuestNavADBWatcher;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
+  private final QuestNavADBWatcher questnavADB = new QuestNavADBWatcher();
 
   private final RobotContainer robotContainer;
 
@@ -37,11 +39,16 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    Logger.recordMetadata("ProjectName", "MyProject");
-    if(isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter());
+    questnavADB.start();
+    try {
+      Logger.recordMetadata("ProjectName", "MyProject");
+      if(isReal()) {
+        Logger.addDataReceiver(new WPILOGWriter());
+      }
+      Logger.start();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    Logger.start();
   }
 
   /**
