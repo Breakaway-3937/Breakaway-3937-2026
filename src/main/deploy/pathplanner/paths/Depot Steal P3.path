@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5383012048192777,
+        "y": 7.44444578313253
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.538301204819278,
+        "y": 7.44444578313253
+      },
+      "isLocked": false,
+      "linkedName": "Depot Steal Trench"
+    },
+    {
+      "anchor": {
+        "x": 7.920313253012047,
+        "y": 6.8434216867469875
+      },
+      "prevControl": {
+        "x": 7.229455481465737,
+        "y": 7.566412377900106
+      },
+      "nextControl": {
+        "x": 8.390204819277105,
+        "y": 6.35167469879518
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.275578313253012,
+        "y": 0.7894698795180717
+      },
+      "prevControl": {
+        "x": 8.980301204819277,
+        "y": 0.8987469879518073
+      },
+      "nextControl": {
+        "x": 5.073836059170176,
+        "y": 0.6483325555384016
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.4290240963855423,
+        "y": 0.6364819277108438
+      },
+      "prevControl": {
+        "x": 4.4999397590361445,
+        "y": 0.5709156626506025
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.3062240663900369,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -177.43622978853503
+  },
+  "reversed": false,
+  "folder": "Depot Steal",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -6.07245640720774
+  },
+  "useDefaultConstraints": false
+}

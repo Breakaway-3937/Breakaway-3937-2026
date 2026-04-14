@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.755,
-        "y": 6.0
+        "x": 0.753,
+        "y": 5.956390870185448
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2869638554216865,
-        "y": 6.133120481927712
+        "x": 1.7530000000000001,
+        "y": 5.956390870185448
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Steal Depot"
     },
     {
       "anchor": {
-        "x": 0.755,
-        "y": 0.604
+        "x": 3.5383012048192777,
+        "y": 7.44444578313253
       },
       "prevControl": {
-        "x": 2.9482048192771084,
-        "y": 2.2322289156626507
+        "x": 2.6094457831325304,
+        "y": 7.378879518072289
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Steal Trench"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.7546357332317
+    "rotation": -6.07245640720774
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Depot Steal",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.7199926797647
+    "rotation": 178.75867739940034
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

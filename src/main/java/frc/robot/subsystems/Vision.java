@@ -365,7 +365,6 @@ public class Vision extends SubsystemBase {
         questNav.commandPeriodic();
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 
-        // --- Process incoming pose frames ---
         for (PoseFrame questFrame : questFrames) {
             if (questFrame.isTracking()) {
 
