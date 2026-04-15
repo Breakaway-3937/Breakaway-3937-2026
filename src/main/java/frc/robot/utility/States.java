@@ -8,6 +8,7 @@ public class States {
         IDLE(212.0, 0.0),
         INTAKE(0.5, 21.0),
         UNCLOG(0.5, -21.0);
+        
 
         private final double angle, power;
         private final double INTAKE_POWER_CONVERSION = 1.67;
@@ -29,7 +30,8 @@ public class States {
 
     public enum IndexerStates {
         IDLE(0.0, 0.0),
-        FIRE(7.0, 90.0);
+        FIRE(7.0, 90.0),
+        SHUNCLOG(-7, 90);
 
         private final double SpinnerSpeed, KickerSpeed;
         private final double SPINNER_CONVERSION = 12.67;
