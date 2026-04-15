@@ -92,7 +92,7 @@ public class QuestNavADBWatcher {
     private static final int ADB_MAX_RETRIES = 5;
 
     /** How often (ms) the watcher thread polls the NT flag. */
-    private static final int POLL_INTERVAL_MS = 100;
+    private static final int POLL_INTERVAL_MS = 300;
 
     // -------------------------------------------------------------------------
     // Internal state — mirrors ui_updater.py's dtap_* fields
@@ -120,6 +120,7 @@ public class QuestNavADBWatcher {
      */
     public void start() {
         executor.schedule(this::connectADB, 0, TimeUnit.SECONDS); // connect to Quest first
+        executor.schedule(this::openPort, 0, TimeUnit.SECONDS); // ensure Quest is in TCP mode
         executor.scheduleAtFixedRate(this::poll, 0, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
         System.out.println("[QuestNavADBWatcher] Started. Watching " + Vision.NT_PASSTHROUGH_KEY);
     }
@@ -141,6 +142,26 @@ public class QuestNavADBWatcher {
      * Must run before any -s commands will work.
      * Requires {@code adb tcpip 5802} to have been run on the Quest via USB first.
      */
+
+    private void openPort() {
+        try {
+            File adbFile = new File(ADB_PATH);
+            if (!adbFile.exists()) {
+                System.err.println("[QuestNavADBWatcher] adb not found at: " + ADB_PATH
+                        + " — update ADB_PATH in QuestNavADBWatcher.java");
+                return;
+            }
+
+            Process p = new ProcessBuilder(ADB_PATH, "tcpip", "5802")
+                    .redirectErrorStream(true)
+                    .start();
+            p.waitFor(3, TimeUnit.SECONDS);
+            System.out.println("[QuestNavADBWatcher] ADB tcpip command executed on port 5802.");
+        } catch (Exception e) {
+            System.err.println("[QuestNavADBWatcher] ADB tcpip command failed: " + e.getMessage());
+        }
+    }
+
     private void connectADB() {
         try {
             File adbFile = new File(ADB_PATH);
@@ -241,12 +262,14 @@ public class QuestNavADBWatcher {
                 System.err.println("[QuestNavADBWatcher] adb not found at: " + ADB_PATH);
                 return;
             }
-            
+
             new ProcessBuilder(ADB_PATH, "-s", QUEST_ADB_ADDRESS,
                     "shell", "am", "start",
                     "-n", "gg.QuestNav.QuestNav/com.unity3d.player.UnityPlayerGameActivity")
                     .redirectErrorStream(true)
                     .start();
+
+            //new ProcessBuilder(ADB_PATH, "tcpip", "5802").redirectErrorStream(true).start();
 
             System.out.printf("[%.1f] QuestNavADBWatcher: ADB relaunch command sent to %s%n",
                     nowSeconds(), QUEST_ADB_ADDRESS);
