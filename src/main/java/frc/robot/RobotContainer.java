@@ -4,7 +4,6 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.utility.Constants;
 import frc.robot.utility.QuestNavADBWatcher;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -44,11 +43,10 @@ public class RobotContainer {
   private final Swerve s_Swerve = createSwerve();
   private final Shooter s_Shooter = new Shooter();
   private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
-  private final Climber s_Climber = new Climber();
   private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
   
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Climber, s_Vision);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Vision);
 
   // Misc
   private final SendableChooser<Command> autoChooser;

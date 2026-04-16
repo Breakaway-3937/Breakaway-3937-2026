@@ -15,10 +15,11 @@ import frc.robot.utility.States;
 
 public class Indexer extends SubsystemBase {
 
-  private final TalonFX spinner, kicker, diverter;
+  private final TalonFX spinner, kicker, diverter, upsy;
   
   private final MotionMagicVelocityVoltage spinnerRequest;
   private final MotionMagicVelocityVoltage kickerRequest;
+  private final MotionMagicVelocityVoltage upsyRequest;
 
   private final Follower diverterFollowerRequest = new Follower(Constants.Shootdexer.KICKER_CAN_ID,
       MotorAlignmentValue.Aligned);
@@ -30,12 +31,15 @@ public class Indexer extends SubsystemBase {
     kicker = new TalonFX(Constants.Shootdexer.KICKER_CAN_ID);
     diverter = new TalonFX(Constants.Shootdexer.DIVERTER_CAN_ID);
     spinner = new TalonFX(Constants.Shootdexer.SPINNER_CAN_ID);
+    upsy = new TalonFX(Constants.Shootdexer.UPSY_CAN_ID);
 
     spinnerRequest = new MotionMagicVelocityVoltage(0);
     kickerRequest = new MotionMagicVelocityVoltage(0);
+    upsyRequest = new MotionMagicVelocityVoltage(0);
 
     configSpinner();
     configKicker();
+    configUpsy();
   }
 
   public void configSpinner() {
@@ -69,7 +73,7 @@ public class Indexer extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
@@ -88,6 +92,32 @@ public class Indexer extends SubsystemBase {
     diverter.setControl(diverterFollowerRequest);
   }
 
+    public void configUpsy() {
+    upsy.getConfigurator().apply(new TalonFXConfiguration());
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.07;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    config.MotionMagic.MotionMagicAcceleration = 900;
+
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 30;
+
+    kicker.getConfigurator().apply(config);
+    diverter.getConfigurator().apply(config);
+    diverter.setControl(diverterFollowerRequest);
+  }
+
+
   public void setIndexerState(States.IndexerStates indexerStates) {
     this.indexerStates = indexerStates;
   }
@@ -95,11 +125,13 @@ public class Indexer extends SubsystemBase {
   public void setIndexerRequests() {
     spinner.setControl(spinnerRequest.withVelocity(indexerStates.getSpinnerSpeed()));
     kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()));
+    upsy.setControl(upsyRequest.withVelocity(indexerStates.getUpsySpeed()));
   }
 
   public void setIndexerRequestsStop() {
     spinner.setControl(spinnerRequest.withVelocity(0));
     kicker.setControl(kickerRequest.withVelocity(0));
+    upsy.setControl(kickerRequest.withVelocity(0));
   }
 
   public Command setIndexer() {

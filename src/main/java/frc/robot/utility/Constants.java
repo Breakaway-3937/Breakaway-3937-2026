@@ -43,6 +43,7 @@ public final class Constants {
     public static final int DIVERTER_CAN_ID = 14;
     public static final int SPINNER_CAN_ID = 4;
     public static final int EYE_OF_SAURON_CAN_ID = 0;
+    public static final int UPSY_CAN_ID = 7;
   }
 
   public static final class Intake {
@@ -51,9 +52,7 @@ public final class Constants {
 
   }
 
-  public static final class Climber {
-    public static final int CLIMBER_CAN_ID = 7;
-  }
+
 
   public static final class Vision {
     public static final String LEFT_CAMERA = "leftCamera";

@@ -21,16 +21,14 @@ public class SuperSubsystem extends SubsystemBase {
   private final Shooter s_Shooter;
   private final Indexer s_Indexer;
   private final Intake s_Intake;
-  private final Climber s_Climber;
   private final Vision s_Vision;
 
   PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
 
-  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Climber s_Climber, Vision s_Vision) {
+  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Vision s_Vision) {
     this.s_Shooter = s_Shooter;
     this.s_Indexer = s_Indexer;
     this.s_Intake = s_Intake;
-    this.s_Climber = s_Climber;
     this.s_Vision = s_Vision;
   }
 
@@ -96,21 +94,6 @@ public class SuperSubsystem extends SubsystemBase {
    * .andThen(setIntakeIn());
    * }
    */
-
-  public Command pullClimber() {
-    return runOnce(() -> s_Climber.setClimberState(ClimberStates.PULL))
-        .andThen(s_Climber.setClimber());
-  }
-
-  public Command raiseClimber() {
-    return runOnce(() -> s_Climber.setClimberState(ClimberStates.RUNG_ONE))
-        .andThen(s_Climber.setClimber());
-  }
-
-  public Command stowClimber() {
-    return runOnce(() -> s_Climber.setClimberState(ClimberStates.STOW))
-        .andThen(s_Climber.setClimber());
-  }
 
   public Command intake() {
     return runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE))
