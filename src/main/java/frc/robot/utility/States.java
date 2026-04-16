@@ -28,16 +28,17 @@ public class States {
     }
 
     public enum IndexerStates {
-        IDLE(0.0, 0.0, 0.0),
-        FIRE(7.0, 90.0, 90.0);
+        IDLE(0.0, 0.0, 0.0, 0.0),
+        FIRE(7.0, 90.0, 90.0, 90.0);
 
-        private final double SpinnerSpeed, KickerSpeed, UpsySpeed;
+        private final double SpinnerSpeed, KickerSpeed, UpsySpeed, DiverterSpeed;
         private final double SPINNER_CONVERSION = 12.67;
 
-        private IndexerStates(double SpinnerSpeed, double KickerSpeed, double UpsySpeed) {
+        private IndexerStates(double SpinnerSpeed, double KickerSpeed, double UpsySpeed, double DiverterSpeed) {
             this.SpinnerSpeed = SpinnerSpeed;
             this.KickerSpeed = KickerSpeed;
             this.UpsySpeed = UpsySpeed;
+            this.DiverterSpeed = DiverterSpeed;
         }
 
         public double getSpinnerSpeed() {
@@ -49,6 +50,9 @@ public class States {
 
         public double getKickerSpeed() {
             return KickerSpeed;
+        }
+        public double getDiverterSpeed() {
+            return DiverterSpeed;
         }
     }
 

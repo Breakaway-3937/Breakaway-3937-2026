@@ -16,13 +16,11 @@ import frc.robot.utility.States;
 public class Indexer extends SubsystemBase {
 
   private final TalonFX spinner, kicker, diverter, upsy;
-  
+
   private final MotionMagicVelocityVoltage spinnerRequest;
   private final MotionMagicVelocityVoltage kickerRequest;
   private final MotionMagicVelocityVoltage upsyRequest;
-
-  private final Follower diverterFollowerRequest = new Follower(Constants.Shootdexer.KICKER_CAN_ID,
-      MotorAlignmentValue.Aligned);
+  private final MotionMagicVelocityVoltage diverterRequest;
 
   private States.IndexerStates indexerStates = States.IndexerStates.IDLE;
 
@@ -36,6 +34,7 @@ public class Indexer extends SubsystemBase {
     spinnerRequest = new MotionMagicVelocityVoltage(0);
     kickerRequest = new MotionMagicVelocityVoltage(0);
     upsyRequest = new MotionMagicVelocityVoltage(0);
+    diverterRequest = new MotionMagicVelocityVoltage(0);
 
     configSpinner();
     configKicker();
@@ -89,10 +88,9 @@ public class Indexer extends SubsystemBase {
 
     kicker.getConfigurator().apply(config);
     diverter.getConfigurator().apply(config);
-    diverter.setControl(diverterFollowerRequest);
   }
 
-    public void configUpsy() {
+  public void configUpsy() {
     upsy.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -114,9 +112,7 @@ public class Indexer extends SubsystemBase {
 
     kicker.getConfigurator().apply(config);
     diverter.getConfigurator().apply(config);
-    diverter.setControl(diverterFollowerRequest);
   }
-
 
   public void setIndexerState(States.IndexerStates indexerStates) {
     this.indexerStates = indexerStates;
@@ -125,6 +121,7 @@ public class Indexer extends SubsystemBase {
   public void setIndexerRequests() {
     spinner.setControl(spinnerRequest.withVelocity(indexerStates.getSpinnerSpeed()));
     kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()));
+    diverter.setControl(diverterRequest.withVelocity(indexerStates.getKickerSpeed()));
     upsy.setControl(upsyRequest.withVelocity(indexerStates.getUpsySpeed()));
   }
 
@@ -132,6 +129,7 @@ public class Indexer extends SubsystemBase {
     spinner.setControl(spinnerRequest.withVelocity(0));
     kicker.setControl(kickerRequest.withVelocity(0));
     upsy.setControl(kickerRequest.withVelocity(0));
+    diverter.setControl(diverterRequest.withVelocity(0));
   }
 
   public Command setIndexer() {
@@ -143,6 +141,7 @@ public class Indexer extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
 }
