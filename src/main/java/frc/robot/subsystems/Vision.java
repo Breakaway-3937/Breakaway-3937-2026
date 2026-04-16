@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
-import com.ctre.phoenix6.Timestamp;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -21,12 +20,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.BooleanEntry;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,7 +63,7 @@ public class Vision extends SubsystemBase {
             new Translation2d(12.9, 6.7));
     private final static Rectangle2d trench4 = new Rectangle2d(new Translation2d(11.1, 1.4),
             new Translation2d(12.9, 0));
-    
+
     private final static Rectangle2d[] trenches = { trench1, trench2, trench3, trench4 };
 
     private final static double MAX_POSITIVE_TURRET_ANGLE = 180.0;
@@ -99,49 +94,13 @@ public class Vision extends SubsystemBase {
     private static double currentTargetX;
     private static double currentTargetY;
 
-    // -------------------------------------------------------------------------
-    // Double-tap / passthrough detection — translated from 2429's quest.py
-    //
-    // How it works:
-    //   1. We count consecutive periodic loops where QuestNav sends no new frames.
-    //   2. Once K_MAX_MISSED_FRAMES is exceeded (≈280 ms at 50 Hz) we assume the
-    //      Quest has been double-tapped into passthrough mode and publish the
-    //      quest_in_passthrough NetworkTables flag = true.
-    //   3. QuestNavADBWatcher (running as a background thread, ideally on the DS)
-    //      monitors that flag and fires an ADB command to bring QuestNav back to
-    //      the foreground.
-    //   4. Once frames start arriving again we clear the flag and log recovery time.
-    //
-    // NOTE: FRC 2429 intentionally ran the ADB recovery script on their DS laptop
-    //       rather than the roboRIO to avoid spawning processes on a real-time OS.
-    //       QuestNavADBWatcher.java therefore defaults to being started from the
-    //       Robot.java constructor, where you can choose to disable it if you
-    //       prefer a purely DS-side solution.  See QuestNavADBWatcher.java.
-    // -------------------------------------------------------------------------
+    private static boolean isInPassthrough = false;
 
-    /** Consecutive loops with no new pose frames before we declare a double-tap.
-     *  14 loops ≈ 280 ms at 50 Hz — enough to absorb normal NT4 batching delays. */
     private static final int K_MAX_MISSED_FRAMES = 14;
 
-    /** Consecutive loops without a connection before we log a hard disconnect. */
-    private static final int K_MAX_DISCONNECTED_COUNT = 50; // ≈1 s at 50 Hz
+    private int missedFrameCount = 0;
 
-    private int missedFrameCount     = 0;
-    private int disconnectedCount    = 0;
-    private int dtapCount            = 0;
-    private boolean wasTracking      = false;
-    private boolean wasConnected     = false;
-    private boolean questHasSynched  = false;
-    private double  passthroughStartTime = 0.0;
-
-    // NT entries — watched by QuestNavADBWatcher to trigger ADB recovery
-    private final BooleanEntry  questPassthroughEntry;
-    private final DoublePublisher dtapCountPublisher;
-
-    /** NT topic key for the passthrough flag (must match QuestNavADBWatcher). */
-    public static final String NT_PASSTHROUGH_KEY = "/QuestNav/quest_in_passthrough";
-    /** NT topic key for the double-tap counter (informational / logging). */
-    public static final String NT_DTAP_COUNT_KEY  = "/QuestNav/quest_dtap_count";
+    private boolean wasTracking = false;
 
     public Vision(Swerve s_Swerve, Shooter s_Shooter) {
         SmartDashboard.putData("robotField", robotfield);
@@ -161,15 +120,6 @@ public class Vision extends SubsystemBase {
         timeOfFlightMap.put(6.7056, 1.65);
         timeOfFlightMap.put(7.3152, 1.72);
         timeOfFlightMap.put(7.9248, 1.8);
-
-        // --- Passthrough / ADB recovery NT setup ---
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        questPassthroughEntry = inst.getBooleanTopic(NT_PASSTHROUGH_KEY).getEntry(false);
-        dtapCountPublisher    = inst.getDoubleTopic(NT_DTAP_COUNT_KEY).publish();
-
-        // Ensure flag starts cleared on robot boot
-        questPassthroughEntry.set(false);
-        dtapCountPublisher.set(0);
     }
 
     public void setPose(Pose2d pose) {
@@ -186,16 +136,6 @@ public class Vision extends SubsystemBase {
 
     public static Pose2d getRobotPose() {
         return filteredPose;
-    }
-
-    /** Returns true if the Quest is currently signaling a passthrough condition. */
-    public boolean isInPassthrough() {
-        return questPassthroughEntry.get();
-    }
-
-    /** Returns the total number of double-tap events detected this session. */
-    public int getDtapCount() {
-        return dtapCount;
     }
 
     public static boolean isInHomeTerritory() {
@@ -307,7 +247,7 @@ public class Vision extends SubsystemBase {
 
     public BooleanSupplier isTurretSafe() {
         return () -> {
-            if(isInHomeTerritory()) {
+            if (isInHomeTerritory()) {
                 if (s_Shooter.isTracking()) {
                     return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 5 * DEGREE_TO_TURRET)
                             && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 5 * DEGREE_TO_TURRET);
@@ -327,36 +267,48 @@ public class Vision extends SubsystemBase {
 
     public Command setInitPose() {
         return runOnce(() -> {
-                if(alliance == DriverStation.Alliance.Blue) {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                } else {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
-                }
+            if (alliance == DriverStation.Alliance.Blue) {
+                questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.4044, 4.035), new Rotation2d()))
+                        .transformBy(ROBOT_TO_QUEST));
+            } else {
+                questNav.setPose(new Pose3d(new Pose2d(new Translation2d(12.93288, 4.035), new Rotation2d()))
+                        .transformBy(ROBOT_TO_QUEST));
+            }
         });
     }
 
     public Command setSpecialInitPose(boolean isLeft) {
         return runOnce(() -> {
-            if(alliance == DriverStation.Alliance.Blue) {
-                if(isLeft) {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 7.225), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+            if (alliance == DriverStation.Alliance.Blue) {
+                if (isLeft) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 7.225), new Rotation2d()))
+                            .transformBy(ROBOT_TO_QUEST));
                 } else {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 0.881), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(3.59, 0.881), new Rotation2d()))
+                            .transformBy(ROBOT_TO_QUEST));
                 }
             } else {
-                if(isLeft) {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 0.881), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                if (isLeft) {
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 0.881), new Rotation2d()))
+                            .transformBy(ROBOT_TO_QUEST));
                 } else {
-                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 7.225), new Rotation2d())).transformBy(ROBOT_TO_QUEST));
+                    questNav.setPose(new Pose3d(new Pose2d(new Translation2d(13.0, 7.225), new Rotation2d()))
+                            .transformBy(ROBOT_TO_QUEST));
                 }
             }
         });
+    }
+
+    public static boolean getIsInPassthrough() {
+        return isInPassthrough;
     }
 
     @Override
     public void periodic() {
 
         alliance = DriverStation.getAlliance().orElse(null);
+
+        boolean isTracking = questNav.isTracking();
 
         setTarget();
 
@@ -366,7 +318,7 @@ public class Vision extends SubsystemBase {
         PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
 
         for (PoseFrame questFrame : questFrames) {
-            if (questFrame.isTracking()) {
+            if (isTracking) {
 
                 rawRobotPose2d = questFrame.questPose3d().transformBy(ROBOT_TO_QUEST.inverse()).toPose2d();
 
@@ -384,62 +336,20 @@ public class Vision extends SubsystemBase {
             }
         }
 
-        // -----------------------------------------------------------------------
-        // Double-tap / passthrough watchdog — translated from 2429's quest.py
-        // -----------------------------------------------------------------------
-        boolean isConnected = questNav.isConnected();
-        boolean isTracking  = questNav.isTracking();
-
-        // Track hard disconnects (NT link dropped entirely)
-        if (!isConnected) {
-            disconnectedCount++;
-            if (disconnectedCount > K_MAX_DISCONNECTED_COUNT && wasConnected) {
-                System.out.printf("*** QuestNav connection dropped for %.2fs at %.2fs ***%n",
-                        disconnectedCount / 50.0, Timer.getFPGATimestamp());
-            }
-        } else {
-            disconnectedCount = 0;
-        }
-
-        // Detect missed frames — these happen when the Quest is in passthrough.
-        // questFrames.length == 0 means no new frames arrived this loop.
-        // We only care when the Quest is otherwise connected (soft blackout, not hard disconnect).
         if (questFrames.length > 0 && isTracking) {
-            // Frames arrived — reset the watchdog
             missedFrameCount = 0;
 
-            // If we were in passthrough and just recovered, clear the flag
-            if (questPassthroughEntry.get()) {
-                questPassthroughEntry.set(false);
-                double recoveryTime = Timer.getFPGATimestamp() - passthroughStartTime;
-                System.out.printf("*** QuestNav recovered from passthrough in %.2fs ***%n", recoveryTime);
-            }
-
-            questHasSynched = true;
+            isInPassthrough = false;
 
         } else {
-            // No new frames this loop
             missedFrameCount++;
 
-            // After K_MAX_MISSED_FRAMES consecutive empty loops, declare passthrough
             if (missedFrameCount > K_MAX_MISSED_FRAMES && wasTracking) {
-                passthroughStartTime = Timer.getFPGATimestamp();
-                questPassthroughEntry.set(true);
-                dtapCount++;
-                dtapCountPublisher.set(dtapCount);
-                System.out.printf(
-                    "*** QuestNav double-tap detected (#%d) at %.2fs — signaling ADB recovery ***%n",
-                    dtapCount, passthroughStartTime);
+                isInPassthrough = true;
             }
         }
 
-        wasTracking   = isTracking;
-        wasConnected  = isConnected;
-
-        /*if(questPassthroughEntry.get() == true) {
-            s_Shooter.runServo();
-        }*/
-        // -----------------------------------------------------------------------
+        wasTracking = isTracking;
 
         turretPose = filteredPose.transformBy(ROBOT_TO_TURRET);
         turretPoseX = turretPose.getX();
@@ -470,8 +380,6 @@ public class Vision extends SubsystemBase {
 
         SmartDashboard.putNumber("Phantom Distance", phantomDistance);
         SmartDashboard.putNumber("Distance", realDistance);
-        SmartDashboard.putBoolean("Quest In Passthrough", questPassthroughEntry.get());
-        SmartDashboard.putNumber("Quest Dtap Count", dtapCount);
         robotfield.setRobotPose(filteredPose);
         turretfield.setRobotPose(turretPose);
     }
