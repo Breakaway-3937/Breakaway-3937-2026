@@ -67,6 +67,7 @@ public class RobotContainer {
     //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser.close();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
     autoChooser.addOption("Just Depot", new PathPlannerAuto("Just Depot").withName("Just Depot"));
     autoChooser.addOption("Just Human Player", new PathPlannerAuto("Just Human Player").withName("Just Human Player"));
