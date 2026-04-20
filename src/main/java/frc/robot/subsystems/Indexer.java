@@ -48,7 +48,7 @@ public class Indexer extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
@@ -96,7 +96,7 @@ public class Indexer extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.12;
@@ -110,8 +110,7 @@ public class Indexer extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = 30;
 
-    kicker.getConfigurator().apply(config);
-    diverter.getConfigurator().apply(config);
+    upsy.getConfigurator().apply(config);
   }
 
   public void setIndexerState(States.IndexerStates indexerStates) {
