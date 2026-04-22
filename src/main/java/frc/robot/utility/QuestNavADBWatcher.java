@@ -4,7 +4,9 @@
 
 package frc.robot.utility;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +43,36 @@ public class QuestNavADBWatcher {
 
     public void start() {
         
-        executor.schedule(this::openPort, 5, TimeUnit.SECONDS); //ensure Quest is in TCP mode on 5802 port
-        executor.schedule(this::connectADB, 10, TimeUnit.SECONDS); //ensure connection to Quest
-        executor.scheduleAtFixedRate(this::poll, 0, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
+        //executor.schedule(this::openPort, 5, TimeUnit.SECONDS); //ensure Quest is in TCP mode on 5802 port
+        //executor.schedule(this::connectADB, 5, TimeUnit.SECONDS); //ensure connection to Quest
+        //executor.scheduleAtFixedRate(this::poll, 10, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
+        executor.schedule(this::test, 5, TimeUnit.SECONDS);
         
+    }
+
+    private void test() {
+        try {
+            File adbFile = new File(ADB_PATH);
+            if (!adbFile.exists()) {
+                System.err.println("[QuestNavADBWatcher] adb not found at: " + ADB_PATH
+                        + " — update ADB_PATH in QuestNavADBWatcher.java");
+                return;
+            }
+
+            Process p = new ProcessBuilder("sudo", ADB_PATH, "devices").redirectErrorStream(true).start();
+
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(p.getInputStream())
+            );
+
+            String line;
+            while((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[QuestNavADBWatcher] ADB tcpip command failed: " + e.getMessage());
+        }
     }
 
     public void stop() {
@@ -154,7 +182,7 @@ public class QuestNavADBWatcher {
                     "-n", "gg.QuestNav.QuestNav/com.unity3d.player.UnityPlayerGameActivity")
                     .redirectErrorStream(true)
                     .start();
-            System.out.println(p.getInputStream());
+            System.out.println(p.getInputStream().toString());
 
         } catch (Exception e) {
             System.err.println("[QuestNavADBWatcher] Failed to execute ADB command: " + e.getMessage());

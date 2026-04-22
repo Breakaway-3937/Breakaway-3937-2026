@@ -256,8 +256,8 @@ public class Vision extends SubsystemBase {
                 }
             } else {
                 if (s_Shooter.isTracking()) {
-                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 10 * DEGREE_TO_TURRET)
-                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 10 * DEGREE_TO_TURRET);
+                    return s_Shooter.getTurretPosition() < (getAdjustedTurretAngle() - 15 * DEGREE_TO_TURRET)
+                            && s_Shooter.getTurretPosition() > (getAdjustedTurretAngle() + 15 * DEGREE_TO_TURRET);
                 } else {
                     return true;
                 }
