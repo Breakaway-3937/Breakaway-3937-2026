@@ -105,6 +105,7 @@ public class RobotContainer {
     topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true)); 
     leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
     rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     //xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());

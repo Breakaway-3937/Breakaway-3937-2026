@@ -69,6 +69,15 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(runSubsystemsIfSafe()));
   }
 
+    public Command shunClog() {
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.SHUNCLOG))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.UNCLOG)))
+        .andThen(s_Shooter.runShooter()
+        .andThen(RobotContainer.setMultipliers(0.4))
+        .andThen(waitForShooterSpeed())
+        .andThen(runSubsystemsIfSafe()));
+  }
+
   public Command idle() {
     return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.IDLE))
         .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.IDLE)))
