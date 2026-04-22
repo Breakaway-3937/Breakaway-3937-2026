@@ -41,8 +41,8 @@ public class QuestNavADBWatcher {
 
     public void start() {
         
-        executor.schedule(this::openPort, 0, TimeUnit.SECONDS); //ensure Quest is in TCP mode on 5802 port
-        executor.schedule(this::connectADB, 0, TimeUnit.SECONDS); //ensure connection to Quest
+        executor.schedule(this::openPort, 5, TimeUnit.SECONDS); //ensure Quest is in TCP mode on 5802 port
+        executor.schedule(this::connectADB, 10, TimeUnit.SECONDS); //ensure connection to Quest
         executor.scheduleAtFixedRate(this::poll, 0, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
         
     }
@@ -94,6 +94,8 @@ public class QuestNavADBWatcher {
             boolean isInPassthrough = Vision.getIsInPassthrough();
             double now = nowSeconds();
 
+            System.out.println("POLL");
+
             if (isInPassthrough) {
                 
                 if (passthroughStartTime < 0) {
@@ -106,6 +108,8 @@ public class QuestNavADBWatcher {
                 if (elapsedSinceTrigger > ADB_TRIGGER_DELAY_S) {
                     if (elapsedSinceLastFix > ADB_COOLDOWN_S) {
                         if (passthroughRetries < ADB_MAX_RETRIES) {
+
+                            System.out.println("FIREADB");
 
                             passthroughRetries++;
 
@@ -145,11 +149,12 @@ public class QuestNavADBWatcher {
                 return;
             }
 
-            new ProcessBuilder(ADB_PATH, "-s", QUEST_ADB_ADDRESS,
+            Process p = new ProcessBuilder(ADB_PATH, "-s", QUEST_ADB_ADDRESS,
                     "shell", "am", "start",
                     "-n", "gg.QuestNav.QuestNav/com.unity3d.player.UnityPlayerGameActivity")
                     .redirectErrorStream(true)
                     .start();
+            System.out.println(p.getInputStream());
 
         } catch (Exception e) {
             System.err.println("[QuestNavADBWatcher] Failed to execute ADB command: " + e.getMessage());

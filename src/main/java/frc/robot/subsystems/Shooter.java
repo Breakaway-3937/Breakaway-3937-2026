@@ -56,36 +56,6 @@ public class Shooter extends SubsystemBase {
     hoodRequest = new MotionMagicExpoVoltage(0);
     shooterRequest = new VelocityTorqueCurrentFOC(0);
 
-    /*hoodHubMap.put(6.096, 6.46);
-
-    hoodHubMap.put(5.7912, 6.01);
-    // 18.5
-    hoodHubMap.put(5.6388, 5.79);
-    // 17
-    hoodHubMap.put(5.1816, 5.29);
-    // 16
-    hoodHubMap.put(4.8786, 4.36);
-    // 15
-    hoodHubMap.put(4.572, 4.22);
-    // 14
-    hoodHubMap.put(4.2672, 4.43);
-    // 13
-    hoodHubMap.put(3.9624, 3.79);
-    // 12
-    hoodHubMap.put(3.6576, 3.79);
-    // 11
-    hoodHubMap.put(3.3528, 2.9);
-    // 10
-    hoodHubMap.put(3.048, 2.82);
-    // 9
-    hoodHubMap.put(2.7432, 2.81);
-    // 8
-    hoodHubMap.put(2.4384, 2.17);
-    // 7
-    hoodHubMap.put(2.1336, 1.60);
-    // 6
-    hoodHubMap.put(1.8288, 1.60);*/
-
     hoodHubMap.put(7.9248, 7.18);
     
     hoodHubMap.put(7.3152, 7.18);
@@ -113,40 +83,6 @@ public class Shooter extends SubsystemBase {
     hoodHubMap.put(2.1336, 1.60);
     // 6
     hoodHubMap.put(1.8288, 1.60);
-
-    /*shooterHubMap.put(7.9248, 3815.0);
-
-    shooterHubMap.put(7.3152, 3655.0);
-
-    shooterHubMap.put(6.7056, 3495.0);
-
-    shooterHubMap.put(6.096, 3335.0);
-    // 18.5
-    shooterHubMap.put(5.6388, 3215.0);
-    // 17
-    shooterHubMap.put(5.1816, 3205.0);
-    // 16
-    shooterHubMap.put(4.8786, 3205.0);
-    // 15
-    shooterHubMap.put(4.572, 3090.0);
-    // 14
-    shooterHubMap.put(4.2672, 2940.0);
-    // 13
-    shooterHubMap.put(3.9624, 2840.0);
-    // 12
-    shooterHubMap.put(3.6576, 2790.0);
-    // 11
-    shooterHubMap.put(3.3528, 2690.0);
-    // 10
-    shooterHubMap.put(3.048, 2590.0);
-    // 9
-    shooterHubMap.put(2.7432, 2440.0);
-    // 8
-    shooterHubMap.put(2.4384, 2340.0);
-    // 7
-    shooterHubMap.put(2.1336, 2340.0);
-    // 6
-    shooterHubMap.put(1.8288, 2090.0);*/
     
     shooterHubMap.put(7.9248, 3812.0);
     
