@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.687760342368046,
-        "y": 4.571954350927247
+        "y": 4.933392645314354
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.467803138370527,
-        "y": 5.5811697574942825
+        "y": 5.94260805188139
       },
       "isLocked": false,
       "linkedName": "Arch Trench End"
