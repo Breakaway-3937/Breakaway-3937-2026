@@ -142,7 +142,7 @@ public class QuestNavADBWatcher {
             boolean isInPassthrough = Vision.getIsInPassthrough();
             double now = nowSeconds();
 
-            System.out.println("POLL");
+            //System.out.println("POLL");
 
             if (isInPassthrough) {
                 

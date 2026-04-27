@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -52,8 +53,8 @@ public class SuperSubsystem extends SubsystemBase {
     return new ConditionalCommand(runSubsystems(), stopUnsafe(), s_Vision.isTurretSafe());
   }
 
-  private Command stopUnsafe() {
-    return s_Indexer.stopIndexer();
+  private ParallelCommandGroup stopUnsafe() {
+    return new ParallelCommandGroup(s_Indexer.stopIndexer(), new PrintCommand("UNSAFE!!!!"));
   }
 
   public Command autoTrack(boolean isTracking) {
