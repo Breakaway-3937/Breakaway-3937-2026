@@ -15,7 +15,7 @@ import frc.robot.subsystems.Vision;
 
 public class QuestNavADBWatcher {
 
-    private static final String QUEST_ADB_ADDRESS = "10.39.37.202:5802"; // IP and port for Quest ADB
+    private static final String QUEST_ADB_ADDRESS = "10.39.37.200:5802"; // IP and port for Quest ADB
 
     private static final String ADB_PATH = "/home/lvuser/adb"; //where the ADB executable is located on the rio
 

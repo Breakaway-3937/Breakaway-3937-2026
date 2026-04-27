@@ -60,7 +60,7 @@ public class Indexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 40;
+    config.CurrentLimits.SupplyCurrentLimit = 20;
 
     spinner.getConfigurator().apply(config);
   }
@@ -108,7 +108,7 @@ public class Indexer extends SubsystemBase {
     config.MotionMagic.MotionMagicAcceleration = 900;
 
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 30;
+    config.CurrentLimits.SupplyCurrentLimit = 20;
 
     upsy.getConfigurator().apply(config);
   }

@@ -59,7 +59,7 @@ public class CompTunerConstants {
         .withCurrentLimits(
             new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Amps.of(100))
-            .withSupplyCurrentLimit(Amps.of(60))
+            .withSupplyCurrentLimit(Amps.of(50))
             .withSupplyCurrentLimitEnable(true)
             .withStatorCurrentLimitEnable(true)
         );
