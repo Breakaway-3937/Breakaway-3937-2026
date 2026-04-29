@@ -86,27 +86,27 @@ public class Shooter extends SubsystemBase {
 
     hoodHubMap.put(1.2, 1.2);
     
-    shooterHubMap.put(7.9248, 3914.0);
+    shooterHubMap.put(7.9248, 3884.0);
     
-    shooterHubMap.put(7.3152, 3725.0);
+    shooterHubMap.put(7.3152, 3695.0);
     
-    shooterHubMap.put(6.7056, 3535.0);
+    shooterHubMap.put(6.7056, 3505.0);
 
-    shooterHubMap.put(6.013, 3322.0);
+    shooterHubMap.put(6.013, 3292.0);
     
-    shooterHubMap.put(5.412, 3172.0);
+    shooterHubMap.put(5.412, 3142.0);
     
-    shooterHubMap.put(4.852, 2992.0);
+    shooterHubMap.put(4.852, 2962.0);
 
-    shooterHubMap.put(4.25, 2902.0);
+    shooterHubMap.put(4.25, 2872.0);
     // 12
-    shooterHubMap.put(3.6576, 2892.0);
+    shooterHubMap.put(3.6576, 2862.0);
     // 11
-    shooterHubMap.put(3.3528, 2792.0);
+    shooterHubMap.put(3.3528, 2762.0);
     // 10
-    shooterHubMap.put(3.048, 2692.0);
+    shooterHubMap.put(3.048, 2662.0);
     // 9
-    shooterHubMap.put(2.7432, 2542.0);
+    shooterHubMap.put(2.7432, 2512.0);
     // 8
     shooterHubMap.put(2.4384, 2442.0);
     // 7

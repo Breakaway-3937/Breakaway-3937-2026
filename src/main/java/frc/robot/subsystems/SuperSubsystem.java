@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -53,8 +52,8 @@ public class SuperSubsystem extends SubsystemBase {
     return new ConditionalCommand(runSubsystems(), stopUnsafe(), s_Vision.isTurretSafe());
   }
 
-  private ParallelCommandGroup stopUnsafe() {
-    return new ParallelCommandGroup(s_Indexer.stopIndexer(), new PrintCommand("UNSAFE!!!!"));
+  private Command stopUnsafe() {
+    return s_Indexer.stopIndexer();
   }
 
   public Command autoTrack(boolean isTracking) {
@@ -92,6 +91,14 @@ public class SuperSubsystem extends SubsystemBase {
         .andThen(s_Shooter.runShooter())
         .andThen(RobotContainer.setMultipliers(0.4))
         .andThen(waitForShooterSpeed())
+        .andThen(runSubsystemsIfSafe());
+  }
+
+  public Command autoCombo() {
+    return runOnce(() -> s_Indexer.setIndexerState(IndexerStates.FIRE))
+        .andThen(runOnce(() -> s_Intake.setIntakeState(IntakeStates.INTAKE)))
+        .andThen(s_Shooter.runShooter())
+        .andThen(RobotContainer.setMultipliers(0.4))
         .andThen(runSubsystemsIfSafe());
   }
 

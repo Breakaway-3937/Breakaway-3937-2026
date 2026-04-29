@@ -97,12 +97,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Go Back"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [

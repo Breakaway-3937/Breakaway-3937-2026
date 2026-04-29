@@ -1,15 +1,15 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.utility.Constants;
 import frc.robot.utility.States;
 
@@ -139,8 +139,26 @@ public class Indexer extends SubsystemBase {
     return runOnce(() -> setIndexerRequestsStop());
   }
 
+  private void reverseDiverter() {
+    diverter.setControl(diverterRequest.withVelocity(-10));
+  }
+
+  private WaitUntilCommand waitForTime(double time) {
+    return new WaitUntilCommand(time);
+  }
+
+  private Command fixDiverterCommand() {
+    return runOnce(() -> reverseDiverter())
+      .andThen(waitForTime(0.25))
+      .andThen(setIndexer());
+  }
+
   @Override
   public void periodic() {
+   /*  SmartDashboard.putNumber("Diverter MotorVoltage", diverter.getSupplyCurrent().getValueAsDouble());
+    if(diverter.getSupplyCurrent().getValueAsDouble() > 20.0) {
+      fixDiverterCommand();
+    }*/
   }
 
 }

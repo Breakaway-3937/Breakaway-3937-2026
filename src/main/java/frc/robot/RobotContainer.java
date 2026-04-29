@@ -45,7 +45,7 @@ public class RobotContainer {
   private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
   private final Indexer s_Indexer = new Indexer();
   private final Intake s_Intake = new Intake();
-  
+
   private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Vision);
 
   // Misc
@@ -61,30 +61,39 @@ public class RobotContainer {
   public RobotContainer() {
 
     NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire().repeatedly());
-    NamedCommands.registerCommand("Combo", s_SuperSubsystem.combo().repeatedly());
+    NamedCommands.registerCommand("Combo", s_SuperSubsystem.autoCombo().repeatedly());
     NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
     NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
-    //NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
+    // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.close();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
     autoChooser.addOption("Just Depot", new PathPlannerAuto("Just Depot").withName("Just Depot"));
     autoChooser.addOption("Just Human Player", new PathPlannerAuto("Just Human Player").withName("Just Human Player"));
-    autoChooser.addOption("Depot + Human Player", new PathPlannerAuto("Depot + Human Player").withName("Depot + Human Player"));
+    autoChooser.addOption("Depot + Human Player",
+        new PathPlannerAuto("Depot + Human Player").withName("Depot + Human Player"));
     autoChooser.addOption("Arch P Left", new PathPlannerAuto("P Arch Long", false).withName("P Arch Long"));
     autoChooser.addOption("Arch P Right", new PathPlannerAuto("P Arch Long", true).withName("P Arch Long"));
-    autoChooser.addOption("Arch Human Player", new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
-   // autoChooser.addOption("Double Short Sweep Left", new PathPlannerAuto("Short Double Sweep", false).withName("Short Double Sweep"));
-   // autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch Depot", true).withName("Arch Depot"));
+    autoChooser.addOption("Arch Human Player",
+        new PathPlannerAuto("Arch Human Player", false).withName("Arch Human Player"));
+    // autoChooser.addOption("Double Short Sweep Left", new PathPlannerAuto("Short
+    // Double Sweep", false).withName("Short Double Sweep"));
+    // autoChooser.addOption("Double Short Sweep Right", new PathPlannerAuto("Arch
+    // Depot", true).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Short", new PathPlannerAuto("Arch Depot", false).withName("Arch Depot"));
     autoChooser.addOption("Arch Depot Long", new PathPlannerAuto("Arch Depot Long", false).withName("Arch Depot Long"));
-  //  autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream P", false).withName("Anti Scream P"));
-   // autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream P", true).withName("Anti Scream P"));
-    autoChooser.addOption("P Arch Bump Cross Left", new PathPlannerAuto("P Arch Bump Cross", false).withName("P Arch Bump Cross"));
-  autoChooser.addOption("P Arch Bump Cross Right", new PathPlannerAuto("P Arch Bump Cross", true).withName("P Arch Bump Cross"));
+    // autoChooser.addOption("Anti Scream P Left", new PathPlannerAuto("Anti Scream
+    // P", false).withName("Anti Scream P"));
+    // autoChooser.addOption("Anti Scream P Right", new PathPlannerAuto("Anti Scream
+    // P", true).withName("Anti Scream P"));
+    autoChooser.addOption("P Arch Bump Cross Left",
+        new PathPlannerAuto("P Arch Bump Cross", false).withName("P Arch Bump Cross"));
+    autoChooser.addOption("P Arch Bump Cross Right",
+        new PathPlannerAuto("P Arch Bump Cross", true).withName("P Arch Bump Cross"));
     autoChooser.addOption("Little P Left", new PathPlannerAuto("Little P Arch", false).withName("Little P Arch"));
-  autoChooser.addOption("Little P Right", new PathPlannerAuto("Little P Arch", true).withName("Little P Arch"));
+    autoChooser.addOption("Little P Right", new PathPlannerAuto("Little P Arch", true).withName("Little P Arch"));
+    autoChooser.addOption("Test Combo", new PathPlannerAuto("Test Combo").withName("Test Combo"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
@@ -97,7 +106,7 @@ public class RobotContainer {
             .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
                 rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
-    
+
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
@@ -105,13 +114,13 @@ public class RobotContainer {
     xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire().repeatedly()).onFalse(s_SuperSubsystem.idle());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo().repeatedly());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
-    topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true)); 
+    topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true));
     leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
     rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
     xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
-    //xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
-    //xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
-    //xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
+    // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
+    // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
+    // xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
   }
 
   public static Command setMultipliers(double newMultiplier) {
@@ -151,5 +160,5 @@ public class RobotContainer {
 
   private Swerve createSwerve() {
     return (Constants.COMPBOT) ? CompTunerConstants.createDrivetrain() : PracticeTunerConstants.createDrivetrain();
-  } 
+  }
 }
