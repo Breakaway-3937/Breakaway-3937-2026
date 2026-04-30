@@ -128,8 +128,8 @@ public class Shooter extends SubsystemBase {
     shooterLobMap.put(5.1816, 2700.0);
     shooterLobMap.put(6.096, 2850.0);
     shooterLobMap.put(7.0104, 3100.0);
-    shooterLobMap.put(8.2296, 3500.0);
-    shooterLobMap.put(9.7536, 3900.0);
+    shooterLobMap.put(8.2296, 3700.0);
+    shooterLobMap.put(9.7536, 4200.0);
     shooterLobMap.put(12.4968, 4600.0);
 
     configTurret();
