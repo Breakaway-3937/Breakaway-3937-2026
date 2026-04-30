@@ -93,7 +93,9 @@ public class RobotContainer {
         new PathPlannerAuto("P Arch Bump Cross", true).withName("P Arch Bump Cross"));
     autoChooser.addOption("Little P Left", new PathPlannerAuto("Little P Arch", false).withName("Little P Arch"));
     autoChooser.addOption("Little P Right", new PathPlannerAuto("Little P Arch", true).withName("Little P Arch"));
-    autoChooser.addOption("Test Combo", new PathPlannerAuto("Test Combo").withName("Test Combo"));
+    //autoChooser.addOption("Test Combo", new PathPlannerAuto("Test Combo").withName("Test Combo"));
+    autoChooser.addOption("Delayed P Left", new PathPlannerAuto("Delayed P", false).withName("Delayed P"));
+    autoChooser.addOption("Delayed P Right", new PathPlannerAuto("Delayed P", true).withName("Delayed P"));
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
