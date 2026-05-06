@@ -127,17 +127,17 @@ public class Shooter extends SubsystemBase {
     shooterLobMap.put(3.7846, 2500.0);
     shooterLobMap.put(5.1816, 2700.0);
     shooterLobMap.put(6.096, 2850.0);
-    shooterLobMap.put(7.0104, 3100.0);
-    shooterLobMap.put(8.2296, 3700.0);
-    shooterLobMap.put(9.7536, 4200.0);
-    shooterLobMap.put(12.4968, 4600.0);
+    shooterLobMap.put(7.0104, 3200.0);
+    shooterLobMap.put(8.2296, 3800.0);
+    shooterLobMap.put(9.7536, 4300.0);
+    shooterLobMap.put(12.4968, 4800.0);
 
     configTurret();
     configHood();
     configShooter();
     configCANranges();
 
-    SmartDashboard.putNumber("Shooter Added Speed", 0);
+    SmartDashboard.putNumber("Shooter Added Speed", 0.175);
     SmartDashboard.putNumber("Hood Added Angle", 0);
   }
 
@@ -274,7 +274,7 @@ public class Shooter extends SubsystemBase {
               .getValueAsDouble() > (shooterHubMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 1;
         } else {
           return shooterLead.getVelocity()
-              .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 1;
+              .getValueAsDouble() > (shooterLobMap.get(Vision.getAdjustedDistance()) / (60.0) + shooterSetter) - 2;
         }
       } else {
         return shooterLead.getVelocity().getValueAsDouble() > (35.6) - 1;
