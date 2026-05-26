@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
@@ -18,9 +19,9 @@ public class Intake extends SubsystemBase {
   private final TalonFX intake;
   private final MotionMagicExpoVoltage intakeWristRequest;
   private final MotionMagicVelocityVoltage intakeRequest;
-  //private IntakeStates intakeState = IntakeStates.INTAKE_IDLE;
-      private States.IntakeStates intakeState  = States.IntakeStates.INTAKE_IDLE;
-    private States.IntakeStates previousState = null;
+  // private IntakeStates intakeState = IntakeStates.INTAKE_IDLE;
+  private States.IntakeStates intakeState = States.IntakeStates.INTAKE_IDLE;
+  private States.IntakeStates previousState = null;
 
   public Intake() {
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
@@ -32,19 +33,22 @@ public class Intake extends SubsystemBase {
     intakeWristRequest = new MotionMagicExpoVoltage(0);
     intakeRequest = new MotionMagicVelocityVoltage(0);
 
-    //super.setDefaultCommand(setIntake());
+    // super.setDefaultCommand(setIntake());
   }
+
   public void setState(States.IntakeStates newState) {
     intakeState = newState;
   }
-   public States.IntakeStates getState() {
-        return intakeState;
-    }
 
-    private void applyFromStates(IntakeStates state) {
-        intakeWrist.setControl(intakeWristRequest.withPosition(state.getAngle()));
-        intake.setControl(intakeRequest.withVelocity(state.getPower()));
-    }
+  public States.IntakeStates getState() {
+    return intakeState;
+  }
+
+  private void applyFromStates(IntakeStates state) {
+    intakeWrist.setControl(intakeWristRequest.withPosition(state.getAngle()));
+    intake.setControl(intakeRequest.withVelocity(state.getPower()));
+  }
+
   public void configIntakeWrist() {
     intakeWrist.getConfigurator().apply(new TalonFXConfiguration());
 
@@ -94,36 +98,84 @@ public class Intake extends SubsystemBase {
     intake.getConfigurator().apply(config);
   }
 
-  public void setIntakeState(IntakeStates intakeState) {
-    this.intakeState = intakeState;
-  }
-
-  public Command setIntakeWrist() {
-    return runOnce(() -> intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle())));
-  }
-
-  public Command setIntakePower() {
-    return runOnce(() -> intake.setControl(intakeRequest.withVelocity(intakeState.getPower())));
-  }
-
-  public void setIntakeRequests() {
-    intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle()));
-    intake.setControl(intakeRequest.withVelocity(intakeState.getPower()));
-  }
-
-  public Command setIntake() {
-    return runOnce(() -> setIntakeRequests());
-  }
-
-  public Command stopWrist() {
-    return runOnce(() -> intakeWrist.stopMotor());
-  }
-
-  public Command stopIntake() {
-    return runOnce(() -> intake.stopMotor());
-  }
-
+  /*
+   * public void setIntakeState(IntakeStates intakeState) {
+   * this.intakeState = intakeState;
+   * }
+   * 
+   * public Command setIntakeWrist() {
+   * return runOnce(() ->
+   * intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle()
+   * )));
+   * }
+   * 
+   * public Command setIntakePower() {
+   * return runOnce(() ->
+   * intake.setControl(intakeRequest.withVelocity(intakeState.getPower())));
+   * }
+   * 
+   * public void setIntakeRequests() {
+   * intakeWrist.setControl(intakeWristRequest.withPosition(intakeState.getAngle()
+   * ));
+   * intake.setControl(intakeRequest.withVelocity(intakeState.getPower()));
+   * }
+   * 
+   * public Command setIntake() {
+   * return runOnce(() -> setIntakeRequests());
+   * }
+   * 
+   * public Command stopWrist() {
+   * return runOnce(() -> intakeWrist.stopMotor());
+   * }
+   * 
+   * public Command stopIntake() {
+   * return runOnce(() -> intake.stopMotor());
+   * }
+   */
   @Override
-  public void periodic() {}
+  public void periodic() {
+    boolean stateChanged = (intakeState != previousState);
+
+    switch (intakeState) {
+      case STOW:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.STOW);
+        }
+        break;
+
+      case IDLE:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.IDLE);
+        }
+        break;
+
+      case INTAKE:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.INTAKE);
+        }
+        break;
+
+      case INTAKE_IDLE:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.INTAKE_IDLE);
+        }
+        break;
+
+      case FIRE:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.FIRE);
+        }
+        break;
+
+      case UNCLOG:
+        if (stateChanged) {
+          applyFromStates(IntakeStates.UNCLOG);
+        }
+        break;
+    }
+    previousState = intakeState;
+
+    SmartDashboard.putString("Intake State", intakeState.toString());
+  }
 
 }
