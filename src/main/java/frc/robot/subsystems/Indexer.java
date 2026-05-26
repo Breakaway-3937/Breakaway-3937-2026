@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.utility.Constants;
 import frc.robot.utility.States;
+import frc.robot.utility.States.IndexerStates;
 
 public class Indexer extends SubsystemBase {
 
@@ -23,6 +24,7 @@ public class Indexer extends SubsystemBase {
   private final MotionMagicVelocityVoltage diverterRequest;
 
   private States.IndexerStates indexerStates = States.IndexerStates.IDLE;
+  private States.IndexerStates previousState = null;
 
   public Indexer() {
 
@@ -39,6 +41,32 @@ public class Indexer extends SubsystemBase {
     configSpinner();
     configKicker();
     configUpsy();
+  }
+
+  public void setState(States.IndexerStates newState) {
+    indexerStates = newState;
+  }
+
+  public States.IndexerStates getState() {
+    return indexerStates;
+  }
+
+  public boolean isFiring() {
+    return indexerStates == States.IndexerStates.FIRE || indexerStates == States.IndexerStates.SHUNCLOG;
+  }
+
+  private void applyFromStates(States.IndexerStates state) {
+    spinner.setControl(spinnerRequest.withVelocity(state.getSpinnerSpeed()));
+    kicker.setControl(kickerRequest.withVelocity(state.getKickerSpeed()));
+    diverter.setControl(diverterRequest.withVelocity(state.getDiverterSpeed()));
+    upsy.setControl(upsyRequest.withVelocity(state.getUpsySpeed()));
+  }
+
+  private void stopAll() {
+    spinner.setControl(spinnerRequest.withVelocity(0));
+    kicker.setControl(kickerRequest.withVelocity(0));
+    upsy.setControl(upsyRequest.withVelocity(0));
+    diverter.setControl(diverterRequest.withVelocity(0));
   }
 
   public void configSpinner() {
@@ -113,10 +141,13 @@ public class Indexer extends SubsystemBase {
     upsy.getConfigurator().apply(config);
   }
 
-  public void setIndexerState(States.IndexerStates indexerStates) {
-    this.indexerStates = indexerStates;
-  }
-
+  /*
+   * 
+   * public void setIndexerState(States.IndexerStates indexerStates) {
+   * this.indexerStates = indexerStates;
+   * }
+   */
+  /* 
   public void setIndexerRequests() {
     spinner.setControl(spinnerRequest.withVelocity(indexerStates.getSpinnerSpeed()));
     kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()));
@@ -149,16 +180,41 @@ public class Indexer extends SubsystemBase {
 
   private Command fixDiverterCommand() {
     return runOnce(() -> reverseDiverter())
-      .andThen(waitForTime(0.25))
-      .andThen(setIndexer());
+        .andThen(waitForTime(0.25))
+        .andThen(setIndexer());
   }
+        */
 
   @Override
   public void periodic() {
-   /*  SmartDashboard.putNumber("Diverter MotorVoltage", diverter.getSupplyCurrent().getValueAsDouble());
-    if(diverter.getSupplyCurrent().getValueAsDouble() > 20.0) {
-      fixDiverterCommand();
-    }*/
+boolean stateChanged = (indexerStates != previousState);
+
+        switch (indexerStates) {
+
+            case IDLE:
+                if (stateChanged) {
+                    stopAll();
+                }
+                break;
+
+            case FIRE:
+                if (stateChanged) {
+                    applyFromStates(IndexerStates.FIRE);
+                }
+                break;
+
+            case SHUNCLOG:
+                if (stateChanged) {
+                    applyFromStates(IndexerStates.SHUNCLOG);
+                }
+                break;
+        }
+
+        previousState = indexerStates;
+
+        SmartDashboard.putString("Indexer State", indexerStates.toString());
+        SmartDashboard.putNumber("Diverter Current",
+                diverter.getSupplyCurrent().getValueAsDouble());
   }
 
 }

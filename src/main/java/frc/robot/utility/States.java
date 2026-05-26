@@ -7,6 +7,7 @@ public class States {
         FIRE(212.0,21.0),
         IDLE(212.0, 0.0),
         INTAKE(0.5, 35.0),
+        INTAKE_IDLE(0.5,0),
         UNCLOG(0.5, -40.0);
 
 

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
+import frc.robot.utility.States;
 import frc.robot.utility.States.IntakeStates;
 
 public class Intake extends SubsystemBase {
@@ -17,7 +18,9 @@ public class Intake extends SubsystemBase {
   private final TalonFX intake;
   private final MotionMagicExpoVoltage intakeWristRequest;
   private final MotionMagicVelocityVoltage intakeRequest;
-  private IntakeStates intakeState = IntakeStates.STOW;
+  //private IntakeStates intakeState = IntakeStates.INTAKE_IDLE;
+      private States.IntakeStates intakeState  = States.IntakeStates.INTAKE_IDLE;
+    private States.IntakeStates previousState = null;
 
   public Intake() {
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
@@ -31,7 +34,17 @@ public class Intake extends SubsystemBase {
 
     //super.setDefaultCommand(setIntake());
   }
+  public void setState(States.IntakeStates newState) {
+    intakeState = newState;
+  }
+   public States.IntakeStates getState() {
+        return intakeState;
+    }
 
+    private void applyFromStates(IntakeStates state) {
+        intakeWrist.setControl(intakeWristRequest.withPosition(state.getAngle()));
+        intake.setControl(intakeRequest.withVelocity(state.getPower()));
+    }
   public void configIntakeWrist() {
     intakeWrist.getConfigurator().apply(new TalonFXConfiguration());
 
