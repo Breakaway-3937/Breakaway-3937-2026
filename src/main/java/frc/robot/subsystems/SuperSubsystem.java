@@ -156,12 +156,14 @@ public class SuperSubsystem extends SubsystemBase {
 
       case INTAKING:
         if (stateChanged) {
+          cancelShooter();
           s_Intake.setState(IntakeStates.INTAKE);
         }
         break;
 
       case UNCLOGGING:
         if (stateChanged) {
+          cancelShooter();
           s_Intake.setState(IntakeStates.UNCLOG);
         }
         break;
@@ -169,7 +171,6 @@ public class SuperSubsystem extends SubsystemBase {
       case SPINNING_UP:
         if (stateChanged) {
           s_Indexer.setState(IndexerStates.IDLE);
-          s_Intake.setState(IntakeStates.FIRE);
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
@@ -179,6 +180,7 @@ public class SuperSubsystem extends SubsystemBase {
 
       case FIRING:
         if (stateChanged) {
+          s_Intake.setState(IntakeStates.FIRE);
           s_Indexer.setState(IndexerStates.FIRE);
         }
         break;
