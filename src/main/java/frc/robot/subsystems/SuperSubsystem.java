@@ -26,6 +26,8 @@ public class SuperSubsystem extends SubsystemBase {
     UNCLOGGING,
     SPINNING_UP,
     FIRING,
+    COMBO_FIRING,
+    SHUNCLOG_FIRING,
     SHUNCLOG,
     COMBO,
     AUTO_COMBO,
@@ -129,7 +131,10 @@ public class SuperSubsystem extends SubsystemBase {
           || currentState == RobotState.FIRING
           || currentState == RobotState.SHUNCLOG
           || currentState == RobotState.COMBO
-          || currentState == RobotState.AUTO_COMBO;
+          || currentState == RobotState.AUTO_COMBO
+          || currentState == RobotState.COMBO_FIRING
+          || currentState == RobotState.SHUNCLOG_FIRING;
+
 
       RobotContainer.setMultipliers(isShootingState ? 0.3 : 1.0);
     }
@@ -184,15 +189,25 @@ public class SuperSubsystem extends SubsystemBase {
           s_Indexer.setState(IndexerStates.FIRE);
         }
         break;
+      case COMBO_FIRING:
+        if (stateChanged) {
+          s_Intake.setState(IntakeStates.INTAKE);
+          s_Indexer.setState(IndexerStates.FIRE);
+        }
+      case SHUNCLOG_FIRING:
+        if (stateChanged) {
+          s_Intake.setState(IntakeStates.UNCLOG);
+          s_Indexer.setState(IndexerStates.SHUNCLOG);
+        }
 
       case SHUNCLOG:
         if (stateChanged) {
-          s_Indexer.setState(IndexerStates.SHUNCLOG);
+          s_Indexer.setState(IndexerStates.IDLE);
           s_Intake.setState(IntakeStates.UNCLOG);
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.FIRING;
+          currentState = RobotState.SHUNCLOG_FIRING;
         }
         break;
 
@@ -203,7 +218,7 @@ public class SuperSubsystem extends SubsystemBase {
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.FIRING;
+          currentState = RobotState.COMBO_FIRING;
         }
         break;
 
