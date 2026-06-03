@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -37,20 +38,21 @@ public class SuperSubsystem extends SubsystemBase {
 
   private final Shooter s_Shooter;
   private final Indexer s_Indexer;
-  private final Intake  s_Intake;
-  private final Vision  s_Vision;
+  private final Intake s_Intake;
+  private final Vision s_Vision;
 
   PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
 
-  private RobotState currentState  = RobotState.IDLE;
+  private RobotState currentState = RobotState.IDLE;
   private RobotState previousState = null;
-  private Command shooterCommand   = null;
+  private Command shooterCommand = null;
+
 
   public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Vision s_Vision) {
     this.s_Shooter = s_Shooter;
     this.s_Indexer = s_Indexer;
-    this.s_Intake  = s_Intake;
-    this.s_Vision  = s_Vision;
+    this.s_Intake = s_Intake;
+    this.s_Vision = s_Vision;
   }
 
   public void setState(RobotState newState) {
@@ -60,7 +62,6 @@ public class SuperSubsystem extends SubsystemBase {
   public RobotState getState() {
     return currentState;
   }
-
 
   private void scheduleShooter() {
     cancelShooter();
@@ -75,6 +76,10 @@ public class SuperSubsystem extends SubsystemBase {
     }
   }
 
+  private void transitionTo(RobotState newState) {
+    currentState = newState;
+    previousState = null;
+  }
 
   public Command autoTrack(boolean isTracking) {
     return runOnce(() -> s_Shooter.setAutoTracking(isTracking));
@@ -88,13 +93,31 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> setState(RobotState.SHUNCLOG));
   }
 
-  public Command idle() {
-    return runOnce(() -> setState(RobotState.IDLE));
-  }
+  private boolean isShootingState(RobotState state) {
+    return state == RobotState.SPINNING_UP
+        || state == RobotState.FIRING
+        || state == RobotState.COMBO_FIRING
+        || state == RobotState.SHUNCLOG_FIRING
+        || state == RobotState.SHUNCLOG
+        || state == RobotState.COMBO
+        || state == RobotState.AUTO_COMBO;
+}
 
-  public Command idleWithIntakeDown() {
-    return runOnce(() -> setState(RobotState.IDLE_INTAKE_DOWN));
-  }
+public Command idle() {
+    return runOnce(() -> {
+        if (!isShootingState(currentState)) {
+            setState(RobotState.IDLE);
+        }
+    });
+}
+
+public Command idleWithIntakeDown() {
+    return runOnce(() -> {
+        if (!isShootingState(currentState)) {
+            setState(RobotState.IDLE_INTAKE_DOWN);
+        }
+    });
+}
 
   public Command intake() {
     return runOnce(() -> setState(RobotState.INTAKING));
@@ -120,24 +143,15 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> setState(RobotState.OVERRIDE_STOW));
   }
 
-
   @Override
   public void periodic() {
     boolean stateChanged = (currentState != previousState);
 
-
-    if (stateChanged) {
-      boolean isShootingState = currentState == RobotState.SPINNING_UP
-          || currentState == RobotState.FIRING
-          || currentState == RobotState.SHUNCLOG
-          || currentState == RobotState.COMBO
-          || currentState == RobotState.AUTO_COMBO
-          || currentState == RobotState.COMBO_FIRING
-          || currentState == RobotState.SHUNCLOG_FIRING;
+    
 
 
-      RobotContainer.setMultipliers(isShootingState ? 0.3 : 1.0);
-    }
+      RobotContainer.setMultipliers(isShootingState(currentState) ? 0.3 : 1.0);
+    
 
     switch (currentState) {
 
@@ -179,27 +193,27 @@ public class SuperSubsystem extends SubsystemBase {
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.FIRING;
+          transitionTo(RobotState.FIRING);
         }
         break;
 
       case FIRING:
-        if (stateChanged) {
-          s_Intake.setState(IntakeStates.FIRE);
-          s_Indexer.setState(IndexerStates.FIRE);
-        }
+
+        s_Intake.setState(IntakeStates.FIRE);
+        s_Indexer.setState(IndexerStates.FIRE);
+
         break;
       case COMBO_FIRING:
-        if (stateChanged) {
-          s_Intake.setState(IntakeStates.INTAKE);
-          s_Indexer.setState(IndexerStates.FIRE);
-        }
+
+        s_Intake.setState(IntakeStates.INTAKE);
+        s_Indexer.setState(IndexerStates.FIRE);
+
         break;
       case SHUNCLOG_FIRING:
-        if (stateChanged) {
-          s_Intake.setState(IntakeStates.UNCLOG);
-          s_Indexer.setState(IndexerStates.SHUNCLOG);
-        }
+
+        s_Intake.setState(IntakeStates.UNCLOG);
+        s_Indexer.setState(IndexerStates.SHUNCLOG);
+
         break;
 
       case SHUNCLOG:
@@ -209,29 +223,29 @@ public class SuperSubsystem extends SubsystemBase {
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.SHUNCLOG_FIRING;
+          transitionTo(RobotState.FIRING);
         }
         break;
 
       case COMBO:
-        if (stateChanged) {
-          s_Indexer.setState(IndexerStates.IDLE);
-          s_Intake.setState(IntakeStates.INTAKE);
-          scheduleShooter();
-        }
+
+        s_Indexer.setState(IndexerStates.IDLE);
+        s_Intake.setState(IntakeStates.INTAKE);
+        scheduleShooter();
+
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.COMBO_FIRING;
+          transitionTo(RobotState.COMBO_FIRING);
         }
         break;
 
       case AUTO_COMBO:
-        if (stateChanged) {
-          s_Indexer.setState(IndexerStates.IDLE);
-          s_Intake.setState(IntakeStates.INTAKE);
-          scheduleShooter();
-        }
+
+        s_Indexer.setState(IndexerStates.IDLE);
+        s_Intake.setState(IntakeStates.INTAKE);
+        scheduleShooter();
+
         if (s_Vision.isTurretSafe().getAsBoolean()) {
-          currentState = RobotState.FIRING;
+          transitionTo(RobotState.COMBO_FIRING);
         }
         break;
 
@@ -254,10 +268,18 @@ public class SuperSubsystem extends SubsystemBase {
 
     previousState = currentState;
 
-    /*SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
-    SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
-    SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
-    SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
-    SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));*/
+    /*
+     * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
+     * SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
+     * SmartDashboard.putNumber("Diverter Amps", pdp.getCurrent(14));
+     * SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
+     * SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));
+     */
+    SmartDashboard.putBoolean("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
+    SmartDashboard.putBoolean("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());
+    SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
+    SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
+    SmartDashboard.putString("Robot State", currentState.toString());
+
   }
 }

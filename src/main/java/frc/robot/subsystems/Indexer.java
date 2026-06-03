@@ -44,6 +44,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setState(States.IndexerStates newState) {
+    System.out.println("Indexer setState called with: " + newState.toString());
     indexerStates = newState;
   }
 
@@ -198,15 +199,15 @@ boolean stateChanged = (indexerStates != previousState);
                 break;
 
             case FIRE:
-                if (stateChanged) {
+                
                     applyFromStates(IndexerStates.FIRE);
-                }
+                
                 break;
 
             case SHUNCLOG:
-                if (stateChanged) {
+                
                     applyFromStates(IndexerStates.SHUNCLOG);
-                }
+                
                 break;
         }
 

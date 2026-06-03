@@ -162,9 +162,9 @@ public class Intake extends SubsystemBase {
         break;
 
       case FIRE:
-        if (stateChanged) {
-          applyFromStates(IntakeStates.FIRE);
-        }
+
+        applyFromStates(IntakeStates.FIRE);
+
         break;
 
       case UNCLOG:
