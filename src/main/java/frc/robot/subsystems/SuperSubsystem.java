@@ -194,11 +194,13 @@ public class SuperSubsystem extends SubsystemBase {
           s_Intake.setState(IntakeStates.INTAKE);
           s_Indexer.setState(IndexerStates.FIRE);
         }
+        break;
       case SHUNCLOG_FIRING:
         if (stateChanged) {
           s_Intake.setState(IntakeStates.UNCLOG);
           s_Indexer.setState(IndexerStates.SHUNCLOG);
         }
+        break;
 
       case SHUNCLOG:
         if (stateChanged) {
