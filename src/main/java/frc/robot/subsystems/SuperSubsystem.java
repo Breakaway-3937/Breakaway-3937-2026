@@ -1,20 +1,12 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.utility.States.ClimberStates;
 import frc.robot.utility.States.IndexerStates;
 import frc.robot.utility.States.IntakeStates;
 
@@ -38,21 +30,20 @@ public class SuperSubsystem extends SubsystemBase {
 
   private final Shooter s_Shooter;
   private final Indexer s_Indexer;
-  private final Intake s_Intake;
-  private final Vision s_Vision;
+  private final Intake  s_Intake;
+  private final Vision  s_Vision;
 
   PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
 
-  private RobotState currentState = RobotState.IDLE;
+  private RobotState currentState  = RobotState.IDLE;
   private RobotState previousState = null;
-  private Command shooterCommand = null;
-
+  private Command shooterCommand   = null;
 
   public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Vision s_Vision) {
     this.s_Shooter = s_Shooter;
     this.s_Indexer = s_Indexer;
-    this.s_Intake = s_Intake;
-    this.s_Vision = s_Vision;
+    this.s_Intake  = s_Intake;
+    this.s_Vision  = s_Vision;
   }
 
   public void setState(RobotState newState) {
@@ -81,6 +72,17 @@ public class SuperSubsystem extends SubsystemBase {
     previousState = null;
   }
 
+  private boolean isShootingState(RobotState state) {
+    return state == RobotState.SPINNING_UP
+        || state == RobotState.FIRING
+        || state == RobotState.COMBO_FIRING
+        || state == RobotState.SHUNCLOG_FIRING
+        || state == RobotState.SHUNCLOG
+        || state == RobotState.COMBO
+        || state == RobotState.AUTO_COMBO;
+  }
+
+
   public Command autoTrack(boolean isTracking) {
     return runOnce(() -> s_Shooter.setAutoTracking(isTracking));
   }
@@ -93,31 +95,13 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> setState(RobotState.SHUNCLOG));
   }
 
-  private boolean isShootingState(RobotState state) {
-    return state == RobotState.SPINNING_UP
-        || state == RobotState.FIRING
-        || state == RobotState.COMBO_FIRING
-        || state == RobotState.SHUNCLOG_FIRING
-        || state == RobotState.SHUNCLOG
-        || state == RobotState.COMBO
-        || state == RobotState.AUTO_COMBO;
-}
+  public Command idle() {
+    return runOnce(() -> setState(RobotState.IDLE));
+  }
 
-public Command idle() {
-    return runOnce(() -> {
-        if (!isShootingState(currentState)) {
-            setState(RobotState.IDLE);
-        }
-    });
-}
-
-public Command idleWithIntakeDown() {
-    return runOnce(() -> {
-        if (!isShootingState(currentState)) {
-            setState(RobotState.IDLE_INTAKE_DOWN);
-        }
-    });
-}
+  public Command idleWithIntakeDown() {
+    return runOnce(() -> setState(RobotState.IDLE_INTAKE_DOWN));
+  }
 
   public Command intake() {
     return runOnce(() -> setState(RobotState.INTAKING));
@@ -143,15 +127,14 @@ public Command idleWithIntakeDown() {
     return runOnce(() -> setState(RobotState.OVERRIDE_STOW));
   }
 
+
   @Override
   public void periodic() {
     boolean stateChanged = (currentState != previousState);
 
-    
-
-
-      RobotContainer.setMultipliers(isShootingState(currentState) ? 0.3 : 1.0);
-    
+    if (stateChanged) {
+      RobotContainer.applyMultipliers(isShootingState(currentState) ? 0.3 : 1.0);
+    }
 
     switch (currentState) {
 
@@ -190,6 +173,7 @@ public Command idleWithIntakeDown() {
       case SPINNING_UP:
         if (stateChanged) {
           s_Indexer.setState(IndexerStates.IDLE);
+          s_Intake.setState(IntakeStates.FIRE);
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
@@ -198,22 +182,8 @@ public Command idleWithIntakeDown() {
         break;
 
       case FIRING:
-
         s_Intake.setState(IntakeStates.FIRE);
         s_Indexer.setState(IndexerStates.FIRE);
-
-        break;
-      case COMBO_FIRING:
-
-        s_Intake.setState(IntakeStates.INTAKE);
-        s_Indexer.setState(IndexerStates.FIRE);
-
-        break;
-      case SHUNCLOG_FIRING:
-
-        s_Intake.setState(IntakeStates.UNCLOG);
-        s_Indexer.setState(IndexerStates.SHUNCLOG);
-
         break;
 
       case SHUNCLOG:
@@ -223,27 +193,37 @@ public Command idleWithIntakeDown() {
           scheduleShooter();
         }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
-          transitionTo(RobotState.FIRING);
+          transitionTo(RobotState.SHUNCLOG_FIRING);
         }
         break;
 
+      case SHUNCLOG_FIRING:
+        s_Intake.setState(IntakeStates.UNCLOG);
+        s_Indexer.setState(IndexerStates.SHUNCLOG);
+        break;
+
       case COMBO:
-
-        s_Indexer.setState(IndexerStates.IDLE);
-        s_Intake.setState(IntakeStates.INTAKE);
-        scheduleShooter();
-
+        if (stateChanged) {
+          s_Indexer.setState(IndexerStates.IDLE);
+          s_Intake.setState(IntakeStates.INTAKE);
+          scheduleShooter();
+        }
         if (s_Shooter.isAtSpeed().getAsBoolean() && s_Vision.isTurretSafe().getAsBoolean()) {
           transitionTo(RobotState.COMBO_FIRING);
         }
         break;
 
-      case AUTO_COMBO:
-
-        s_Indexer.setState(IndexerStates.IDLE);
+      case COMBO_FIRING:
         s_Intake.setState(IntakeStates.INTAKE);
-        scheduleShooter();
+        s_Indexer.setState(IndexerStates.FIRE);
+        break;
 
+      case AUTO_COMBO:
+        if (stateChanged) {
+          s_Indexer.setState(IndexerStates.IDLE);
+          s_Intake.setState(IntakeStates.INTAKE);
+          scheduleShooter();
+        }
         if (s_Vision.isTurretSafe().getAsBoolean()) {
           transitionTo(RobotState.COMBO_FIRING);
         }
@@ -268,6 +248,12 @@ public Command idleWithIntakeDown() {
 
     previousState = currentState;
 
+    SmartDashboard.putBoolean("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
+    SmartDashboard.putBoolean("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());
+    SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
+    SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
+    SmartDashboard.putString("Robot State", currentState.toString());
+
     /*
      * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
      * SmartDashboard.putNumber("Kicker Amps", pdp.getCurrent(13));
@@ -275,11 +261,5 @@ public Command idleWithIntakeDown() {
      * SmartDashboard.putNumber("Shooter Lead Amps", pdp.getCurrent(15));
      * SmartDashboard.putNumber("Spinner Amps", pdp.getCurrent(4));
      */
-    SmartDashboard.putBoolean("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
-    SmartDashboard.putBoolean("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());
-    SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
-    SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
-    SmartDashboard.putString("Robot State", currentState.toString());
-
   }
 }

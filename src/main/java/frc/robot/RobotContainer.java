@@ -93,7 +93,8 @@ public class RobotContainer {
         new PathPlannerAuto("P Arch Bump Cross", true).withName("P Arch Bump Cross"));
     autoChooser.addOption("Little P Left", new PathPlannerAuto("Little P Arch", false).withName("Little P Arch"));
     autoChooser.addOption("Little P Right", new PathPlannerAuto("Little P Arch", true).withName("Little P Arch"));
-    //autoChooser.addOption("Test Combo", new PathPlannerAuto("Test Combo").withName("Test Combo"));
+    // autoChooser.addOption("Test Combo", new PathPlannerAuto("Test
+    // Combo").withName("Test Combo"));
     autoChooser.addOption("Delayed P Left", new PathPlannerAuto("Delayed P", false).withName("Delayed P"));
     autoChooser.addOption("Delayed P Right", new PathPlannerAuto("Delayed P", true).withName("Delayed P"));
     SmartDashboard.putData("Auto Mode", autoChooser);
@@ -112,22 +113,23 @@ public class RobotContainer {
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).onTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
-    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).onTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
+    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
     topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true));
     leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
     rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
-    xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly())
+        .onFalse(s_SuperSubsystem.idleWithIntakeDown());
     // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     // xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
   }
 
-  public static Command setMultipliers(double newMultiplier) {
-    return Commands.runOnce(() -> translationMultiplier = newMultiplier);
-  }
+public static void applyMultipliers(double newMultiplier) {
+    translationMultiplier = newMultiplier;
+}
 
   public Command getAutonomousCommand() {
     SmartDashboard.putString("Current Auto", autoChooser.getSelected().getName());
