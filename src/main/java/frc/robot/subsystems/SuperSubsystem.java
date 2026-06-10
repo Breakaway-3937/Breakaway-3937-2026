@@ -87,45 +87,60 @@ public class SuperSubsystem extends SubsystemBase {
     return runOnce(() -> s_Shooter.setAutoTracking(isTracking));
   }
 
-  public Command fire() {
-    return runOnce(() -> setState(RobotState.SPINNING_UP));
-  }
+public Command fire() {
+    return startEnd(
+        () -> setState(RobotState.SPINNING_UP),
+        () -> setState(RobotState.IDLE)
+    );
+}
 
-  public Command shunClog() {
-    return runOnce(() -> setState(RobotState.SHUNCLOG));
-  }
+public Command shunClog() {
+    return startEnd(
+        () -> setState(RobotState.SHUNCLOG),
+        () -> setState(RobotState.IDLE_INTAKE_DOWN)
+    );
+}
 
-  public Command idle() {
+public Command idle() {
     return runOnce(() -> setState(RobotState.IDLE));
-  }
+}
 
-  public Command idleWithIntakeDown() {
+public Command idleWithIntakeDown() {
     return runOnce(() -> setState(RobotState.IDLE_INTAKE_DOWN));
-  }
+}
 
-  public Command intake() {
-    return runOnce(() -> setState(RobotState.INTAKING));
-  }
+public Command intake() {
+    return startEnd(
+        () -> setState(RobotState.INTAKING),
+        () -> setState(RobotState.IDLE_INTAKE_DOWN)
+    );
+}
 
-  public Command unclog() {
-    return runOnce(() -> setState(RobotState.UNCLOGGING));
-  }
+public Command unclog() {
+    return startEnd(
+        () -> setState(RobotState.UNCLOGGING),
+        () -> setState(RobotState.IDLE_INTAKE_DOWN)
+    );
+}
 
-  public Command combo() {
-    return runOnce(() -> setState(RobotState.COMBO));
-  }
+public Command combo() {
+    return startEnd(
+        () -> setState(RobotState.COMBO),
+        () -> setState(RobotState.IDLE)
+    );
+}
 
-  public Command autoCombo() {
+public Command autoCombo() {
     return runOnce(() -> setState(RobotState.AUTO_COMBO));
-  }
+}
 
-  public Command protectIntake() {
+public Command protectIntake() {
     return runOnce(() -> setState(RobotState.PROTECT_INTAKE));
-  }
+}
 
-  public Command overrideStow() {
+public Command overrideStow() {
     return runOnce(() -> setState(RobotState.OVERRIDE_STOW));
-  }
+}
 
 
   @Override
