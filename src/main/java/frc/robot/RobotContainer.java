@@ -1,19 +1,10 @@
 package frc.robot;
 
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
-import frc.robot.utility.Constants;
-import frc.robot.utility.QuestNavADBWatcher;
-import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SuperSubsystem;
-import frc.robot.generated.CompTunerConstants;
-import frc.robot.generated.PracticeTunerConstants;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,10 +13,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import frc.robot.generated.CompTunerConstants;
+import frc.robot.generated.PracticeTunerConstants;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SuperSubsystem;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
+import frc.robot.utility.Constants;
 
 public class RobotContainer {
 
@@ -113,23 +109,24 @@ public class RobotContainer {
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
     xboxController.leftBumper().onTrue(s_SuperSubsystem.unclog()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
-    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.intake()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
-    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.fire()).onFalse(s_SuperSubsystem.idle());
+    xboxController.leftBumper().whileTrue(s_SuperSubsystem.unclog());
+    xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.intake());
+    xboxController.rightTrigger(0.3).and(xboxController.leftTrigger(0.3).negate()).whileTrue(s_SuperSubsystem.fire());
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo());
+    xboxController.rightBumper().whileTrue(s_SuperSubsystem.shunClog());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
     topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true));
     leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
     rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
-    xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly())
-        .onFalse(s_SuperSubsystem.idleWithIntakeDown());
+    xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     // xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
   }
 
-public static void applyMultipliers(double newMultiplier) {
+  public static void applyMultipliers(double newMultiplier) {
     translationMultiplier = newMultiplier;
-}
+  }
 
   public Command getAutonomousCommand() {
     SmartDashboard.putString("Current Auto", autoChooser.getSelected().getName());
