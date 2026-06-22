@@ -7,7 +7,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants;
@@ -22,6 +25,9 @@ public class Intake extends SubsystemBase {
   // private IntakeStates intakeState = IntakeStates.INTAKE_IDLE;
   private States.IntakeStates intakeState = States.IntakeStates.INTAKE_IDLE;
   private States.IntakeStates previousState = null;
+  private static final int intakeWristPDH = 0;
+  private static final int intakePDH = 0;
+  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
   public Intake() {
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
@@ -96,6 +102,29 @@ public class Intake extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimit = 20;
 
     intake.getConfigurator().apply(config);
+  }
+
+  public void logMotors() {
+    double wristCurrentMotor = intakeWrist.getStatorCurrent().getValueAsDouble();
+    double intakeCurrentMotor = intake.getStatorCurrent().getValueAsDouble();
+
+    SmartDashboard.putNumber("Intake Power Motor Current", intakeCurrentMotor);
+    SmartDashboard.putNumber("Intake Wrist Motor Current", wristCurrentMotor);
+
+    Logger.recordOutput("Intake Power Motor Current", intakeCurrentMotor);
+    Logger.recordOutput("Intake Wrist Motor Current", wristCurrentMotor);
+  }
+
+  public void logPDH() {
+    double wristCurrentPDH = pdh.getCurrent(intakeWristPDH);
+    double intakeCurrentPDH = pdh.getCurrent(intakePDH);
+
+    SmartDashboard.putNumber("Intake Power PDH Current", intakeCurrentPDH);
+    SmartDashboard.putNumber("Intake Wrist PDH Current", wristCurrentPDH);
+
+    Logger.recordOutput("Intake Power PDH Current", intakeCurrentPDH);
+    Logger.recordOutput("Intake Wrist PDH Current", wristCurrentPDH);
+
   }
 
   /*
@@ -174,6 +203,8 @@ public class Intake extends SubsystemBase {
         break;
     }
     previousState = intakeState;
+    logMotors();
+    logPDH();
 
     SmartDashboard.putString("Intake State", intakeState.toString());
   }
