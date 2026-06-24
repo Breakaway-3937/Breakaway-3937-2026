@@ -16,6 +16,8 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,6 +45,11 @@ public class Shooter extends SubsystemBase {
       MotorAlignmentValue.Opposed);
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
+    private static final int shootLeadPDH = 0;
+  private static final int shootFollowPDH = 0;
+  private static final int turretPDH = 0;
+  private static final int hoodPDH = 0;
+  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
   public Shooter() {
 
@@ -289,6 +296,39 @@ public class Shooter extends SubsystemBase {
   public boolean isTracking() {
     return isTracking;
   }
+    public void logMotors() {
+    double shooterLeadCurrentMotor = shooterLead.getStatorCurrent().getValueAsDouble();
+    double shooterFollowCurrentMotor = shooterFollow.getStatorCurrent().getValueAsDouble();
+    double hoodCurrentMotor = hood.getStatorCurrent().getValueAsDouble();
+    double turretCurrentMotor = turret.getStatorCurrent().getValueAsDouble();
+
+    SmartDashboard.putNumber("Shooter Lead Motor Current", shooterLeadCurrentMotor);
+    SmartDashboard.putNumber("Shooter Follow Motor Current", shooterFollowCurrentMotor);
+    SmartDashboard.putNumber("Hood Motor Current", hoodCurrentMotor);
+    SmartDashboard.putNumber("Turret Motor Current", turretCurrentMotor);
+
+    Logger.recordOutput("Shooter Lead Motor Current", shooterLeadCurrentMotor);
+    Logger.recordOutput("Shooter Follow Motor Current", shooterFollowCurrentMotor);
+    Logger.recordOutput("Hood Motor Current", hoodCurrentMotor);
+    Logger.recordOutput("Turret Motor Current", turretCurrentMotor);
+  }
+
+  public void logPDH() {
+    double shooterLeadCurrentPDH = pdh.getCurrent(shootLeadPDH);
+    double shooterFollowCurrentPDH = pdh.getCurrent(shootFollowPDH);
+    double hoodCurrentPDH = pdh.getCurrent(hoodPDH);
+    double turretCurrentPDH = pdh.getCurrent(turretPDH);
+
+    SmartDashboard.putNumber("Shooter Lead PDH Current", shooterLeadCurrentPDH);
+    SmartDashboard.putNumber("Shooter Follow PDH Current", shooterFollowCurrentPDH);
+    SmartDashboard.putNumber("Hood PDH Current", hoodCurrentPDH);
+    SmartDashboard.putNumber("Turret PDH Current", turretCurrentPDH);
+
+    Logger.recordOutput("Shooter Lead PDH Current", shooterLeadCurrentPDH);
+    Logger.recordOutput("Shooter Follow PDH Current", shooterFollowCurrentPDH);
+    Logger.recordOutput("Hood PDH Current", hoodCurrentPDH);
+    Logger.recordOutput("Turret PDH Current", turretCurrentPDH);
+  }
 
   @Override
   public void periodic() {
@@ -318,6 +358,8 @@ public class Shooter extends SubsystemBase {
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
 
     Logger.recordOutput("Shooter/UpToSpeed", isAtSpeed());
+    logMotors();
+    logPDH();
   }
 
 }

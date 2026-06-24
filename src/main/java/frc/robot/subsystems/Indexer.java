@@ -1,11 +1,15 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +29,11 @@ public class Indexer extends SubsystemBase {
 
   private States.IndexerStates indexerStates = States.IndexerStates.IDLE;
   private States.IndexerStates previousState = null;
+  private final int kickerPDH = 0;
+  private final int diverterPDH = 0;
+  private final int spinnerPDH = 0;
+  private final int upsyPDH = 0;
+    private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
   public Indexer() {
 
@@ -142,80 +151,119 @@ public class Indexer extends SubsystemBase {
     upsy.getConfigurator().apply(config);
   }
 
+  public void logMotors() {
+    double kickerCurrentMotor = kicker.getStatorCurrent().getValueAsDouble();
+    double diverterCurrentMotor = diverter.getStatorCurrent().getValueAsDouble();
+    double spinnerCurrentMotor = spinner.getStatorCurrent().getValueAsDouble();
+    double upsyCurrentMotor = upsy.getStatorCurrent().getValueAsDouble();
+
+    SmartDashboard.putNumber("Kicker Motor Current", kickerCurrentMotor);
+    SmartDashboard.putNumber("Diverter Motor Current", diverterCurrentMotor);
+    SmartDashboard.putNumber("Spinner Motor Current", spinnerCurrentMotor);
+    SmartDashboard.putNumber("Upsy Motor Current", upsyCurrentMotor);
+
+    Logger.recordOutput("Kicker Motor Current", kickerCurrentMotor);
+    Logger.recordOutput("Diverter Motor Current", diverterCurrentMotor);
+    Logger.recordOutput("Spinner Motor Current", spinnerCurrentMotor);
+    Logger.recordOutput("Upsy Motor Current", upsyCurrentMotor);
+
+  }
+
+  public void logPDH() {
+    double kickerCurrentPDH = pdh.getCurrent(kickerPDH);
+    double diverterCurrentPDH = pdh.getCurrent(diverterPDH);
+    double spinnerCurrentPDH = pdh.getCurrent(spinnerPDH);
+    double upsyCurrentPDH = pdh.getCurrent(upsyPDH);
+
+    SmartDashboard.putNumber("Kicker PDH Current", kickerCurrentPDH);
+    SmartDashboard.putNumber("Diverter PDH Current", diverterCurrentPDH);
+    SmartDashboard.putNumber("Spinner PDH Current", spinnerCurrentPDH);
+    SmartDashboard.putNumber("Upsy PDH Current", upsyCurrentPDH);
+
+    Logger.recordOutput("Kicker PDH Current", kickerCurrentPDH);
+    Logger.recordOutput("Diverter PDH Current", diverterCurrentPDH);
+    Logger.recordOutput("Spinner PDH Current", spinnerCurrentPDH);
+    Logger.recordOutput("Upsy PDH Current", upsyCurrentPDH);
+  }
+
   /*
    * 
    * public void setIndexerState(States.IndexerStates indexerStates) {
    * this.indexerStates = indexerStates;
    * }
    */
-  /* 
-  public void setIndexerRequests() {
-    spinner.setControl(spinnerRequest.withVelocity(indexerStates.getSpinnerSpeed()));
-    kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()));
-    diverter.setControl(diverterRequest.withVelocity(indexerStates.getKickerSpeed()));
-    upsy.setControl(upsyRequest.withVelocity(indexerStates.getUpsySpeed()));
-  }
-
-  public void setIndexerRequestsStop() {
-    spinner.setControl(spinnerRequest.withVelocity(0));
-    kicker.setControl(kickerRequest.withVelocity(0));
-    upsy.setControl(kickerRequest.withVelocity(0));
-    diverter.setControl(diverterRequest.withVelocity(0));
-  }
-
-  public Command setIndexer() {
-    return runOnce(() -> setIndexerRequests());
-  }
-
-  public Command stopIndexer() {
-    return runOnce(() -> setIndexerRequestsStop());
-  }
-
-  private void reverseDiverter() {
-    diverter.setControl(diverterRequest.withVelocity(-10));
-  }
-
-  private WaitUntilCommand waitForTime(double time) {
-    return new WaitUntilCommand(time);
-  }
-
-  private Command fixDiverterCommand() {
-    return runOnce(() -> reverseDiverter())
-        .andThen(waitForTime(0.25))
-        .andThen(setIndexer());
-  }
-        */
+  /*
+   * public void setIndexerRequests() {
+   * spinner.setControl(spinnerRequest.withVelocity(indexerStates.getSpinnerSpeed(
+   * )));
+   * kicker.setControl(kickerRequest.withVelocity(indexerStates.getKickerSpeed()))
+   * ;
+   * diverter.setControl(diverterRequest.withVelocity(indexerStates.getKickerSpeed
+   * ()));
+   * upsy.setControl(upsyRequest.withVelocity(indexerStates.getUpsySpeed()));
+   * }
+   * 
+   * public void setIndexerRequestsStop() {
+   * spinner.setControl(spinnerRequest.withVelocity(0));
+   * kicker.setControl(kickerRequest.withVelocity(0));
+   * upsy.setControl(kickerRequest.withVelocity(0));
+   * diverter.setControl(diverterRequest.withVelocity(0));
+   * }
+   * 
+   * public Command setIndexer() {
+   * return runOnce(() -> setIndexerRequests());
+   * }
+   * 
+   * public Command stopIndexer() {
+   * return runOnce(() -> setIndexerRequestsStop());
+   * }
+   * 
+   * private void reverseDiverter() {
+   * diverter.setControl(diverterRequest.withVelocity(-10));
+   * }
+   * 
+   * private WaitUntilCommand waitForTime(double time) {
+   * return new WaitUntilCommand(time);
+   * }
+   * 
+   * private Command fixDiverterCommand() {
+   * return runOnce(() -> reverseDiverter())
+   * .andThen(waitForTime(0.25))
+   * .andThen(setIndexer());
+   * }
+   */
 
   @Override
   public void periodic() {
-boolean stateChanged = (indexerStates != previousState);
+    boolean stateChanged = (indexerStates != previousState);
 
-        switch (indexerStates) {
+    switch (indexerStates) {
 
-            case IDLE:
-                if (stateChanged) {
-                    stopAll();
-                }
-                break;
-
-            case FIRE:
-                
-                    applyFromStates(IndexerStates.FIRE);
-                
-                break;
-
-            case SHUNCLOG:
-                
-                    applyFromStates(IndexerStates.SHUNCLOG);
-                
-                break;
+      case IDLE:
+        if (stateChanged) {
+          stopAll();
         }
+        break;
 
-        previousState = indexerStates;
+      case FIRE:
 
-        SmartDashboard.putString("Indexer State", indexerStates.toString());
-        SmartDashboard.putNumber("Diverter Current",
-                diverter.getSupplyCurrent().getValueAsDouble());
+        applyFromStates(IndexerStates.FIRE);
+
+        break;
+
+      case SHUNCLOG:
+
+        applyFromStates(IndexerStates.SHUNCLOG);
+
+        break;
+    }
+
+    previousState = indexerStates;
+
+    SmartDashboard.putString("Indexer State", indexerStates.toString());
+    logMotors();
+    logPDH();
+
   }
 
 }

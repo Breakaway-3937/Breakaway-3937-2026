@@ -191,9 +191,7 @@ public class Intake extends SubsystemBase {
         break;
 
       case FIRE:
-
         applyFromStates(IntakeStates.FIRE);
-
         break;
 
       case UNCLOG:
