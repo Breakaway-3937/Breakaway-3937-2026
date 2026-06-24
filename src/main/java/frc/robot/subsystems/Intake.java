@@ -25,11 +25,13 @@ public class Intake extends SubsystemBase {
   // private IntakeStates intakeState = IntakeStates.INTAKE_IDLE;
   private States.IntakeStates intakeState = States.IntakeStates.INTAKE_IDLE;
   private States.IntakeStates previousState = null;
-  private static final int intakeWristPDH = 0;
-  private static final int intakePDH = 0;
-  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
+  private static final int intakeWristPDH = 3;
+  private static final int intakePDH = 5;
+  private final PowerDistribution pdh;
+  //private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
-  public Intake() {
+  public Intake(PowerDistribution pdh) {
+    this.pdh = pdh;
     intake = new TalonFX(Constants.Intake.INTAKE_CAN_ID);
     intakeWrist = new TalonFX(Constants.Intake.INTAKE_WRIST_CAN_ID);
 
@@ -106,12 +108,15 @@ public class Intake extends SubsystemBase {
 
   public void logMotors() {
     double wristCurrentMotor = intakeWrist.getStatorCurrent().getValueAsDouble();
-    double intakeCurrentMotor = intake.getStatorCurrent().getValueAsDouble();
+    double intakeStatorCurrentMotor = intake.getStatorCurrent().getValueAsDouble();
+    double intakeSupplyCurrentMotor = intake.getSupplyCurrent().getValueAsDouble();
 
-    SmartDashboard.putNumber("Intake Power Motor Current", intakeCurrentMotor);
+    SmartDashboard.putNumber("Intake Power Motor Stator Current", intakeStatorCurrentMotor);
+    SmartDashboard.putNumber("Intake Power Motor Supply Current", intakeSupplyCurrentMotor);
     SmartDashboard.putNumber("Intake Wrist Motor Current", wristCurrentMotor);
 
-    Logger.recordOutput("Intake Power Motor Current", intakeCurrentMotor);
+    Logger.recordOutput("Intake Power Motor Stator Current", intakeStatorCurrentMotor);
+    Logger.recordOutput("Intake Power Motor Supply Current", intakeSupplyCurrentMotor);
     Logger.recordOutput("Intake Wrist Motor Current", wristCurrentMotor);
   }
 

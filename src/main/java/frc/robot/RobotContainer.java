@@ -7,6 +7,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,11 +38,13 @@ public class RobotContainer {
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
+  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
+  
   private final Swerve s_Swerve = createSwerve();
-  private final Shooter s_Shooter = new Shooter();
+  private final Shooter s_Shooter = new Shooter(pdh);
   private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
-  private final Indexer s_Indexer = new Indexer();
-  private final Intake s_Intake = new Intake();
+  private final Indexer s_Indexer = new Indexer(pdh);
+  private final Intake s_Intake = new Intake(pdh);
 
   private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Vision);
 

@@ -33,7 +33,7 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake  s_Intake;
   private final Vision  s_Vision;
 
-  PowerDistribution pdp = new PowerDistribution(27, ModuleType.kRev);
+
 
   private RobotState currentState  = RobotState.IDLE;
   private RobotState previousState = null;

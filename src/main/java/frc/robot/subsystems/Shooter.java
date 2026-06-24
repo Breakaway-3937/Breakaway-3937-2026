@@ -45,13 +45,15 @@ public class Shooter extends SubsystemBase {
       MotorAlignmentValue.Opposed);
 
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
-    private static final int shootLeadPDH = 0;
-  private static final int shootFollowPDH = 0;
+    private static final int shootLeadPDH = 17;
+  private static final int shootFollowPDH = 13;
   private static final int turretPDH = 0;
   private static final int hoodPDH = 0;
-  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
+  private final PowerDistribution pdh;
+  //private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
-  public Shooter() {
+  public Shooter(PowerDistribution pdh) {
+    this.pdh = pdh;
 
     shooterLead = new TalonFX(Constants.Shootdexer.SHOOTER_LEAD_CAN_ID);
     shooterFollow = new TalonFX(Constants.Shootdexer.SHOOTER_FOLLOW_CAN_ID);

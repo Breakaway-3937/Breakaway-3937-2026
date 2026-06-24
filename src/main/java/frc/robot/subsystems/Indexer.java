@@ -29,14 +29,15 @@ public class Indexer extends SubsystemBase {
 
   private States.IndexerStates indexerStates = States.IndexerStates.IDLE;
   private States.IndexerStates previousState = null;
-  private final int kickerPDH = 0;
-  private final int diverterPDH = 0;
-  private final int spinnerPDH = 0;
-  private final int upsyPDH = 0;
-    private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
+  private final int kickerPDH = 16;
+  private final int diverterPDH = 14;
+  private final int spinnerPDH = 4;
+  private final int upsyPDH = 6;
+  private final PowerDistribution pdh;
+  //private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
-  public Indexer() {
-
+  public Indexer(PowerDistribution pdh) {
+    this.pdh = pdh;
     kicker = new TalonFX(Constants.Shootdexer.KICKER_CAN_ID);
     diverter = new TalonFX(Constants.Shootdexer.DIVERTER_CAN_ID);
     spinner = new TalonFX(Constants.Shootdexer.SPINNER_CAN_ID);
