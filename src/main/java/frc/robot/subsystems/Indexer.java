@@ -153,20 +153,35 @@ public class Indexer extends SubsystemBase {
   }
 
   public void logMotors() {
-    double kickerCurrentMotor = kicker.getStatorCurrent().getValueAsDouble();
-    double diverterCurrentMotor = diverter.getStatorCurrent().getValueAsDouble();
-    double spinnerCurrentMotor = spinner.getStatorCurrent().getValueAsDouble();
-    double upsyCurrentMotor = upsy.getStatorCurrent().getValueAsDouble();
+    double kickerStatorCurrentMotor = kicker.getStatorCurrent().getValueAsDouble();
+    double diverterStatorCurrentMotor = diverter.getStatorCurrent().getValueAsDouble();
+    double spinnerStatorCurrentMotor = spinner.getStatorCurrent().getValueAsDouble();
+    double upsyStatorCurrentMotor = upsy.getStatorCurrent().getValueAsDouble();
 
-    SmartDashboard.putNumber("Kicker Motor Current", kickerCurrentMotor);
-    SmartDashboard.putNumber("Diverter Motor Current", diverterCurrentMotor);
-    SmartDashboard.putNumber("Spinner Motor Current", spinnerCurrentMotor);
-    SmartDashboard.putNumber("Upsy Motor Current", upsyCurrentMotor);
+    double kickerSupplyCurrentMotor = kicker.getSupplyCurrent().getValueAsDouble();
+    double diverterSupplyCurrentMotor = diverter.getSupplyCurrent().getValueAsDouble();
+    double spinnerSupplyCurrentMotor = spinner.getSupplyCurrent().getValueAsDouble();
+    double upsySupplyCurrentMotor = upsy.getSupplyCurrent().getValueAsDouble();
 
-    Logger.recordOutput("Kicker Motor Current", kickerCurrentMotor);
-    Logger.recordOutput("Diverter Motor Current", diverterCurrentMotor);
-    Logger.recordOutput("Spinner Motor Current", spinnerCurrentMotor);
-    Logger.recordOutput("Upsy Motor Current", upsyCurrentMotor);
+    SmartDashboard.putNumber("Kicker Stator Motor Current", kickerStatorCurrentMotor);
+    SmartDashboard.putNumber("Diverter Stator Motor Current", diverterStatorCurrentMotor);
+    SmartDashboard.putNumber("Spinner Stator Motor Current", spinnerStatorCurrentMotor);
+    SmartDashboard.putNumber("Upsy Stator Motor Current", upsyStatorCurrentMotor);
+
+    SmartDashboard.putNumber("Kicker Supply Motor Current", kickerSupplyCurrentMotor);
+    SmartDashboard.putNumber("Diverter Supply Motor Current", diverterSupplyCurrentMotor);
+    SmartDashboard.putNumber("Spinner Supply Motor Current", spinnerSupplyCurrentMotor);
+    SmartDashboard.putNumber("Upsy Supply Motor Current", upsySupplyCurrentMotor);
+
+    Logger.recordOutput("Kicker Stator Motor Current", kickerStatorCurrentMotor);
+    Logger.recordOutput("Diverter Stator Motor Current", diverterStatorCurrentMotor);
+    Logger.recordOutput("Spinner Stator Motor Current", spinnerStatorCurrentMotor);
+    Logger.recordOutput("Upsy Stator Motor Current", upsyStatorCurrentMotor);
+
+    Logger.recordOutput("Kicker Supply Motor Current", kickerSupplyCurrentMotor);
+    Logger.recordOutput("Diverter Supply Motor Current", diverterSupplyCurrentMotor);
+    Logger.recordOutput("Spinner Supply Motor Current", spinnerSupplyCurrentMotor);
+    Logger.recordOutput("Upsy Supply Motor Current", upsySupplyCurrentMotor);
 
   }
 

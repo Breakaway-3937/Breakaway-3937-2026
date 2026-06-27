@@ -107,17 +107,20 @@ public class Intake extends SubsystemBase {
   }
 
   public void logMotors() {
-    double wristCurrentMotor = intakeWrist.getStatorCurrent().getValueAsDouble();
+    double wristStatorCurrentMotor = intakeWrist.getStatorCurrent().getValueAsDouble();
+    double wristSupplyCurrentMotor = intakeWrist.getSupplyCurrent().getValueAsDouble();
     double intakeStatorCurrentMotor = intake.getStatorCurrent().getValueAsDouble();
     double intakeSupplyCurrentMotor = intake.getSupplyCurrent().getValueAsDouble();
 
     SmartDashboard.putNumber("Intake Power Motor Stator Current", intakeStatorCurrentMotor);
     SmartDashboard.putNumber("Intake Power Motor Supply Current", intakeSupplyCurrentMotor);
-    SmartDashboard.putNumber("Intake Wrist Motor Current", wristCurrentMotor);
+    SmartDashboard.putNumber("Intake Wrist Motor Stator Current", wristStatorCurrentMotor);
+    SmartDashboard.putNumber("Intake Wrist Motor Supply Current", wristSupplyCurrentMotor);
 
     Logger.recordOutput("Intake Power Motor Stator Current", intakeStatorCurrentMotor);
     Logger.recordOutput("Intake Power Motor Supply Current", intakeSupplyCurrentMotor);
-    Logger.recordOutput("Intake Wrist Motor Current", wristCurrentMotor);
+    Logger.recordOutput("Intake Wrist Motor Stator Current", wristStatorCurrentMotor);
+    Logger.recordOutput("Intake Wrist Motor Supply Current", wristSupplyCurrentMotor);
   }
 
   public void logPDH() {

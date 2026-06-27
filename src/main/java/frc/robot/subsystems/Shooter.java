@@ -299,20 +299,32 @@ public class Shooter extends SubsystemBase {
     return isTracking;
   }
     public void logMotors() {
-    double shooterLeadCurrentMotor = shooterLead.getStatorCurrent().getValueAsDouble();
-    double shooterFollowCurrentMotor = shooterFollow.getStatorCurrent().getValueAsDouble();
-    double hoodCurrentMotor = hood.getStatorCurrent().getValueAsDouble();
-    double turretCurrentMotor = turret.getStatorCurrent().getValueAsDouble();
+    double shooterLeadStatorCurrentMotor = shooterLead.getStatorCurrent().getValueAsDouble();
+    double shooterLeadSupplyCurrentMotor = shooterLead.getSupplyCurrent().getValueAsDouble();
+    double shooterFollowStatorCurrentMotor = shooterFollow.getStatorCurrent().getValueAsDouble();
+    double shooterFollowSupplyCurrentMotor = shooterFollow.getSupplyCurrent().getValueAsDouble();
+    double hoodStatorCurrentMotor = hood.getStatorCurrent().getValueAsDouble();
+    double hoodSupplyCurrentMotor = hood.getSupplyCurrent().getValueAsDouble();
+    double turretStatorCurrentMotor = turret.getStatorCurrent().getValueAsDouble();
+    double turretSupplyCurrentMotor = turret.getSupplyCurrent().getValueAsDouble();
 
-    SmartDashboard.putNumber("Shooter Lead Motor Current", shooterLeadCurrentMotor);
-    SmartDashboard.putNumber("Shooter Follow Motor Current", shooterFollowCurrentMotor);
-    SmartDashboard.putNumber("Hood Motor Current", hoodCurrentMotor);
-    SmartDashboard.putNumber("Turret Motor Current", turretCurrentMotor);
+    SmartDashboard.putNumber("Shooter Lead Stator Motor Current", shooterLeadStatorCurrentMotor);
+    SmartDashboard.putNumber("Shooter Follow Stator Motor Current", shooterFollowStatorCurrentMotor);
+    SmartDashboard.putNumber("Hood Stator Motor Current", hoodStatorCurrentMotor);
+    SmartDashboard.putNumber("Turret Stator Motor Current", turretStatorCurrentMotor);
+    SmartDashboard.putNumber("Shooter Lead Supply Motor Current", shooterLeadSupplyCurrentMotor);
+    SmartDashboard.putNumber("Shooter Follow Supply Motor Current", shooterFollowSupplyCurrentMotor);
+    SmartDashboard.putNumber("Hood Supply Motor Current", hoodSupplyCurrentMotor);
+    SmartDashboard.putNumber("Turret Supply Motor Current", turretSupplyCurrentMotor);
 
-    Logger.recordOutput("Shooter Lead Motor Current", shooterLeadCurrentMotor);
-    Logger.recordOutput("Shooter Follow Motor Current", shooterFollowCurrentMotor);
-    Logger.recordOutput("Hood Motor Current", hoodCurrentMotor);
-    Logger.recordOutput("Turret Motor Current", turretCurrentMotor);
+    Logger.recordOutput("Shooter Lead Stator Motor Current", shooterLeadStatorCurrentMotor);
+    Logger.recordOutput("Shooter Follow Stator Motor Current", shooterFollowStatorCurrentMotor);
+    Logger.recordOutput("Hood Stator Motor Current", hoodStatorCurrentMotor);
+    Logger.recordOutput("Turret Stator Motor Current", turretStatorCurrentMotor);
+    Logger.recordOutput("Shooter Lead Supply Motor Current", shooterLeadSupplyCurrentMotor);
+    Logger.recordOutput("Shooter Follow Supply Motor Current", shooterFollowSupplyCurrentMotor);
+    Logger.recordOutput("Hood Supply Motor Current", hoodSupplyCurrentMotor);
+    Logger.recordOutput("Turret Supply Motor Current", turretSupplyCurrentMotor);
   }
 
   public void logPDH() {
