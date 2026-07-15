@@ -36,6 +36,7 @@ public class Shooter extends SubsystemBase {
 
   private final TalonFX shooterLead, shooterFollow, hood, turret;
   private final CANrange eyeOfSauron;
+  
 
   private final MotionMagicExpoVoltage turretRequest;
   private final MotionMagicExpoVoltage hoodRequest;
@@ -148,6 +149,8 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter Added Speed", 0);
     SmartDashboard.putNumber("Hood Added Angle", 0);
+
+  
   }
 
   public void configTurret() {
@@ -158,7 +161,7 @@ public class Shooter extends SubsystemBase {
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
+//shrek
     config.Slot0.kS = 0.3;
     config.Slot0.kV = 0.08;
     config.Slot0.kA = 0.0;
@@ -343,6 +346,28 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Hood PDH Current", hoodCurrentPDH);
     Logger.recordOutput("Turret PDH Current", turretCurrentPDH);
   }
+
+  public void logMotorTemps() {
+    double shooterLeadTemp_C  = shooterLead.getDeviceTemp().getValueAsDouble();
+    double shooterFollowTemp_C = shooterFollow.getDeviceTemp().getValueAsDouble();
+    double hoodTemp_C         = hood.getDeviceTemp().getValueAsDouble();
+    double turretTemp_C       = turret.getDeviceTemp().getValueAsDouble();
+
+    double shooterLeadTemp_F  = (shooterLeadTemp_C  * (9.0/5.0)) + 32;
+    double shooterFollowTemp_F = (shooterFollowTemp_C * (9.0/5.0)) + 32;
+    double hoodTemp_F         = (hoodTemp_C         * (9.0/5.0)) + 32;
+    double turretTemp_F       = (turretTemp_C       * (9.0/5.0)) + 32;
+
+    SmartDashboard.putNumber("Shooter Lead Temp F",   shooterLeadTemp_F);
+    SmartDashboard.putNumber("Shooter Follow Temp F", shooterFollowTemp_F);
+    SmartDashboard.putNumber("Hood Temp F",           hoodTemp_F);
+    SmartDashboard.putNumber("Turret Temp F",         turretTemp_F);
+
+    Logger.recordOutput("Shooter Lead Temp F",   shooterLeadTemp_F);
+    Logger.recordOutput("Shooter Follow Temp F", shooterFollowTemp_F);
+    Logger.recordOutput("Hood Temp F",           hoodTemp_F);
+    Logger.recordOutput("Turret Temp F",         turretTemp_F);
+}
 
   @Override
   public void periodic() {

@@ -163,6 +163,7 @@ public class Indexer extends SubsystemBase {
     double spinnerSupplyCurrentMotor = spinner.getSupplyCurrent().getValueAsDouble();
     double upsySupplyCurrentMotor = upsy.getSupplyCurrent().getValueAsDouble();
 
+    
     SmartDashboard.putNumber("Kicker Stator Motor Current", kickerStatorCurrentMotor);
     SmartDashboard.putNumber("Diverter Stator Motor Current", diverterStatorCurrentMotor);
     SmartDashboard.putNumber("Spinner Stator Motor Current", spinnerStatorCurrentMotor);
@@ -202,6 +203,29 @@ public class Indexer extends SubsystemBase {
     Logger.recordOutput("Upsy PDH Current", upsyCurrentPDH);
   }
 
+  public void logMotorTemps() {
+    double kickerTemp_C = kicker.getDeviceTemp().getValueAsDouble();
+    double diverterTemp_C = diverter.getDeviceTemp().getValueAsDouble();
+    double spinnerTemp_C = spinner.getDeviceTemp().getValueAsDouble();
+    double upsyTemp_C = upsy.getDeviceTemp().getValueAsDouble();
+
+    double kickerTemp_F = ((kickerTemp_C * (9.0/5.0)) +32);
+    double diverterTemp_F = ((diverterTemp_C * (9.0/5.0)) +32);
+    double spinnerTemp_F = ((spinnerTemp_C * (9.0/5.0)) +32);
+    double upsyTemp_F = ((upsyTemp_C * (9.0/5.0)) +32);
+
+    SmartDashboard.putNumber("Kicker Temp F", kickerTemp_F);
+    SmartDashboard.putNumber("Diverter Temp F", diverterTemp_F);
+    SmartDashboard.putNumber("Spinner Temp F", spinnerTemp_F);
+    SmartDashboard.putNumber("Upsy Temp F", upsyTemp_F);
+
+    Logger.recordOutput("Kicker Temp F", kickerTemp_F);
+    Logger.recordOutput("Diverter Temp F", diverterTemp_F);
+    Logger.recordOutput("Spinner Temp F", spinnerTemp_F);
+    Logger.recordOutput("Upsy Temp F", upsyTemp_F);
+
+
+  }
   /*
    * 
    * public void setIndexerState(States.IndexerStates indexerStates) {

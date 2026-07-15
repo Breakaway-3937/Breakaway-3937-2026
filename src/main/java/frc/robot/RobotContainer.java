@@ -1,10 +1,14 @@
 package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+
+
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -60,10 +64,10 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.fire());
-    NamedCommands.registerCommand("Combo", s_SuperSubsystem.autoCombo());
+    NamedCommands.registerCommand("Shoot", s_SuperSubsystem.auto_Fire());
+    NamedCommands.registerCommand("Combo", s_SuperSubsystem.auto_Combo());
     NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
-    NamedCommands.registerCommand("Intake", s_SuperSubsystem.intake());
+    NamedCommands.registerCommand("Intake", s_SuperSubsystem.auto_Intake());
     // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -126,6 +130,7 @@ public class RobotContainer {
     // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     // xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
+
   }
 
   public static void applyMultipliers(double newMultiplier) {
@@ -162,7 +167,21 @@ public class RobotContainer {
    * return s_Climber;
    * }
    */
+public void logFullPDH() {
+SmartDashboard.putNumber("Robot Total Current Amps", pdh.getTotalCurrent());
+//SmartDashboard.putNumber("Robot Total Power Watts", pdh.getTotalPower());
+//SmartDashboard.putNumber("Robot Total Energy Joules", pdh.getTotalEnergy());
+SmartDashboard.putNumber("Robot Input Voltage", pdh.getVoltage());
+SmartDashboard.putNumber("PDH Temp", pdh.getTemperature());
 
+Logger.recordOutput("Robot Total Current Amps", pdh.getTotalCurrent());
+//Logger.recordOutput("Robot Total Power Watts", pdh.getTotalPower());
+//Logger.recordOutput("Robot Total Energy Joules", pdh.getTotalEnergy());
+Logger.recordOutput("Robot Input Voltage", pdh.getVoltage());
+Logger.recordOutput("PDH Temp", pdh.getTemperature());
+
+
+}
   private Swerve createSwerve() {
     return (Constants.COMPBOT) ? CompTunerConstants.createDrivetrain() : PracticeTunerConstants.createDrivetrain();
   }

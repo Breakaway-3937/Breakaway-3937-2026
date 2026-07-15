@@ -130,8 +130,8 @@ public Command combo() {
     );
 }
 
-public Command autoCombo() {
-    return runOnce(() -> setState(RobotState.AUTO_COMBO));
+public Command auto_Combo() {
+    return runOnce(() -> setState(RobotState.COMBO));
 }
 
 public Command protectIntake() {
@@ -140,6 +140,14 @@ public Command protectIntake() {
 
 public Command overrideStow() {
     return runOnce(() -> setState(RobotState.OVERRIDE_STOW));
+}
+
+public Command auto_Intake() {
+  return runOnce(() -> setState(RobotState.INTAKING));
+}
+
+public Command auto_Fire() {
+  return runOnce(() -> setState(RobotState.SPINNING_UP));
 }
 
 

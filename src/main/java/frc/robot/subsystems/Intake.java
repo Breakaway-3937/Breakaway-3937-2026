@@ -135,6 +135,20 @@ public class Intake extends SubsystemBase {
 
   }
 
+  public void logMotorTemps() {
+    double intakeTemp_C      = intake.getDeviceTemp().getValueAsDouble();
+    double intakeWristTemp_C = intakeWrist.getDeviceTemp().getValueAsDouble();
+
+    double intakeTemp_F      = (intakeTemp_C      * (9.0/5.0)) + 32;
+    double intakeWristTemp_F = (intakeWristTemp_C * (9.0/5.0)) + 32;
+
+    SmartDashboard.putNumber("Intake Roller Temp F", intakeTemp_F);
+    SmartDashboard.putNumber("Intake Wrist Temp F",  intakeWristTemp_F);
+
+    Logger.recordOutput("Intake Roller Temp F", intakeTemp_F);
+    Logger.recordOutput("Intake Wrist Temp F",  intakeWristTemp_F);
+}
+
   /*
    * public void setIntakeState(IntakeStates intakeState) {
    * this.intakeState = intakeState;
