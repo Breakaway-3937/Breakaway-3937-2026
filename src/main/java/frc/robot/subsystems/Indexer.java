@@ -301,8 +301,10 @@ public class Indexer extends SubsystemBase {
     previousState = indexerStates;
 
     SmartDashboard.putString("Indexer State", indexerStates.toString());
+    Logger.recordOutput("Indexer State", indexerStates.toString());
     logMotors();
     logPDH();
+    logMotorTemps();
 
   }
 

@@ -225,8 +225,10 @@ public class Intake extends SubsystemBase {
     previousState = intakeState;
     logMotors();
     logPDH();
+    logMotorTemps();
 
     SmartDashboard.putString("Intake State", intakeState.toString());
+    Logger.recordOutput("Intake State", intakeState.toString());
   }
 
 }

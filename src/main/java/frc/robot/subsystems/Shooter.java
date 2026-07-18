@@ -48,8 +48,8 @@ public class Shooter extends SubsystemBase {
   private final double LOCKED_TURRET_ANGLE = 0.0, LOCKED_HOOD_ANGLE = 0.0;
     private static final int shootLeadPDH = 17;
   private static final int shootFollowPDH = 13;
-  private static final int turretPDH = 0;
-  private static final int hoodPDH = 0;
+  private static final int turretPDH = 12;
+  private static final int hoodPDH = 15;
   private final PowerDistribution pdh;
   //private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
 
@@ -149,6 +149,7 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter Added Speed", 0);
     SmartDashboard.putNumber("Hood Added Angle", 0);
+
 
   
   }
@@ -399,6 +400,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/UpToSpeed", isAtSpeed());
     logMotors();
     logPDH();
+    logMotorTemps();
   }
 
 }

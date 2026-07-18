@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
 import frc.robot.utility.States.IndexerStates;
 import frc.robot.utility.States.IntakeStates;
+import org.littletonrobotics.junction.Logger;
 
 public class SuperSubsystem extends SubsystemBase {
 
@@ -276,6 +277,11 @@ public Command auto_Fire() {
     SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
     SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
     SmartDashboard.putString("Robot State", currentState.toString());
+    Logger.recordOutput("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
+    Logger.recordOutput("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());    
+    Logger.recordOutput("Indexer State Raw", s_Indexer.getState().toString());
+    Logger.recordOutput("Intake State Raw", s_Intake.getState().toString());
+    Logger.recordOutput("Robot State", currentState.toString());
 
     /*
      * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));
