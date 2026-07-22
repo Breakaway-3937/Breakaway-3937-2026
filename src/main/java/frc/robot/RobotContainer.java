@@ -179,7 +179,72 @@ Logger.recordOutput("Robot Total Current Amps", pdh.getTotalCurrent());
 //Logger.recordOutput("Robot Total Energy Joules", pdh.getTotalEnergy());
 Logger.recordOutput("Robot Input Voltage", pdh.getVoltage());
 Logger.recordOutput("PDH Temp", pdh.getTemperature());
+}
 
+public void logPDHStickyFaults() {
+SmartDashboard.putBoolean("PDH Channel 0", pdh.getStickyFaults().Channel0BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 1", pdh.getStickyFaults().Channel1BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 2", pdh.getStickyFaults().Channel2BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 3", pdh.getStickyFaults().Channel3BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 4", pdh.getStickyFaults().Channel4BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 5", pdh.getStickyFaults().Channel5BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 6", pdh.getStickyFaults().Channel6BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 7", pdh.getStickyFaults().Channel7BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 8", pdh.getStickyFaults().Channel8BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 9", pdh.getStickyFaults().Channel9BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 10", pdh.getStickyFaults().Channel10BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 11", pdh.getStickyFaults().Channel11BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 12", pdh.getStickyFaults().Channel12BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 13", pdh.getStickyFaults().Channel13BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 14", pdh.getStickyFaults().Channel14BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 15", pdh.getStickyFaults().Channel15BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 16", pdh.getStickyFaults().Channel16BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 17", pdh.getStickyFaults().Channel17BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 18", pdh.getStickyFaults().Channel18BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 19", pdh.getStickyFaults().Channel19BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 20", pdh.getStickyFaults().Channel20BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 21", pdh.getStickyFaults().Channel21BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 22", pdh.getStickyFaults().Channel22BreakerFault);
+SmartDashboard.putBoolean("PDH Channel 23", pdh.getStickyFaults().Channel23BreakerFault);
+SmartDashboard.putBoolean("PDH Channel Hardware Fault", pdh.getStickyFaults().HardwareFault);
+SmartDashboard.putBoolean("PDH Channel Firmware Fault", pdh.getStickyFaults().FirmwareFault);
+SmartDashboard.putBoolean("PDH Brownout", pdh.getStickyFaults().Brownout);
+SmartDashboard.putBoolean("PDH CAN BUS Off", pdh.getStickyFaults().CanBusOff);
+SmartDashboard.putBoolean("PDH Can Error", pdh.getStickyFaults().CanWarning);
+SmartDashboard.putBoolean("PDH Has Reset", pdh.getStickyFaults().HasReset);
+
+
+
+Logger.recordOutput("PDH Channel 0", pdh.getStickyFaults().Channel0BreakerFault);
+Logger.recordOutput("PDH Channel 1", pdh.getStickyFaults().Channel1BreakerFault);
+Logger.recordOutput("PDH Channel 2", pdh.getStickyFaults().Channel2BreakerFault);
+Logger.recordOutput("PDH Channel 3", pdh.getStickyFaults().Channel3BreakerFault);
+Logger.recordOutput("PDH Channel 4", pdh.getStickyFaults().Channel4BreakerFault);
+Logger.recordOutput("PDH Channel 5", pdh.getStickyFaults().Channel5BreakerFault);
+Logger.recordOutput("PDH Channel 6", pdh.getStickyFaults().Channel6BreakerFault);
+Logger.recordOutput("PDH Channel 7", pdh.getStickyFaults().Channel7BreakerFault);
+Logger.recordOutput("PDH Channel 8", pdh.getStickyFaults().Channel8BreakerFault);
+Logger.recordOutput("PDH Channel 9", pdh.getStickyFaults().Channel9BreakerFault);
+Logger.recordOutput("PDH Channel 10", pdh.getStickyFaults().Channel10BreakerFault);
+Logger.recordOutput("PDH Channel 11", pdh.getStickyFaults().Channel11BreakerFault);
+Logger.recordOutput("PDH Channel 12", pdh.getStickyFaults().Channel12BreakerFault);
+Logger.recordOutput("PDH Channel 13", pdh.getStickyFaults().Channel13BreakerFault);
+Logger.recordOutput("PDH Channel 14", pdh.getStickyFaults().Channel14BreakerFault);
+Logger.recordOutput("PDH Channel 15", pdh.getStickyFaults().Channel15BreakerFault);
+Logger.recordOutput("PDH Channel 16", pdh.getStickyFaults().Channel16BreakerFault);
+Logger.recordOutput("PDH Channel 17", pdh.getStickyFaults().Channel17BreakerFault);
+Logger.recordOutput("PDH Channel 18", pdh.getStickyFaults().Channel18BreakerFault);
+Logger.recordOutput("PDH Channel 19", pdh.getStickyFaults().Channel19BreakerFault);
+Logger.recordOutput("PDH Channel 20", pdh.getStickyFaults().Channel20BreakerFault);
+Logger.recordOutput("PDH Channel 21", pdh.getStickyFaults().Channel21BreakerFault);
+Logger.recordOutput("PDH Channel 22", pdh.getStickyFaults().Channel22BreakerFault);
+Logger.recordOutput("PDH Channel 23", pdh.getStickyFaults().Channel23BreakerFault);
+Logger.recordOutput("PDH Channel Hardward", pdh.getStickyFaults().HardwareFault);
+Logger.recordOutput("PDH Channel Firmware Fault", pdh.getStickyFaults().FirmwareFault);
+Logger.recordOutput("PDH Brownout", pdh.getStickyFaults().Brownout);
+Logger.recordOutput("PDH CAN BUS Off", pdh.getStickyFaults().CanBusOff);
+Logger.recordOutput("PDH Can Error", pdh.getStickyFaults().CanWarning);
+Logger.recordOutput("PDH Has Reset", pdh.getStickyFaults().HasReset);
 
 }
   private Swerve createSwerve() {
