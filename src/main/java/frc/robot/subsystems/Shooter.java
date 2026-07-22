@@ -162,7 +162,7 @@ public class Shooter extends SubsystemBase {
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-//shrek
+
     config.Slot0.kS = 0.3;
     config.Slot0.kV = 0.08;
     config.Slot0.kA = 0.0;
@@ -215,7 +215,7 @@ public class Shooter extends SubsystemBase {
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    //Values for 1.5/1 gar ratio
+    //Values for 1.5/1 gear ratio
     config.Slot0.kP = 5.742;
     config.Slot0.kS = 9.0;
     config.Slot0.kV = 0.3;
