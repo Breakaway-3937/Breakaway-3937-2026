@@ -169,14 +169,14 @@ public class RobotContainer {
    */
 public void logFullPDH() {
 SmartDashboard.putNumber("Robot Total Current Amps", pdh.getTotalCurrent());
-//SmartDashboard.putNumber("Robot Total Power Watts", pdh.getTotalPower());
-//SmartDashboard.putNumber("Robot Total Energy Joules", pdh.getTotalEnergy());
+SmartDashboard.putNumber("Robot Total Power Watts", pdh.getTotalPower());
+SmartDashboard.putNumber("Robot Total Energy Joules", pdh.getTotalEnergy());
 SmartDashboard.putNumber("Robot Input Voltage", pdh.getVoltage());
 SmartDashboard.putNumber("PDH Temp", pdh.getTemperature());
 
 Logger.recordOutput("Robot Total Current Amps", pdh.getTotalCurrent());
-//Logger.recordOutput("Robot Total Power Watts", pdh.getTotalPower());
-//Logger.recordOutput("Robot Total Energy Joules", pdh.getTotalEnergy());
+Logger.recordOutput("Robot Total Power Watts", pdh.getTotalPower());
+Logger.recordOutput("Robot Total Energy Joules", pdh.getTotalEnergy());
 Logger.recordOutput("Robot Input Voltage", pdh.getVoltage());
 Logger.recordOutput("PDH Temp", pdh.getTemperature());
 }

@@ -398,6 +398,7 @@ public class Shooter extends SubsystemBase {
     hoodSetter = SmartDashboard.getNumber("Hood Added Angle", 1400);
 
     Logger.recordOutput("Shooter/UpToSpeed", isAtSpeed());
+
     logMotors();
     logPDH();
     logMotorTemps();
