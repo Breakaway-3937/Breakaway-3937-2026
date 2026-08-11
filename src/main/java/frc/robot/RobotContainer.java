@@ -42,7 +42,7 @@ public class RobotContainer {
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
   // Subsystems
-  private final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
+  public final PowerDistribution pdh = new PowerDistribution(27, ModuleType.kRev);
   
   private final Swerve s_Swerve = createSwerve();
   private final Shooter s_Shooter = new Shooter(pdh);
