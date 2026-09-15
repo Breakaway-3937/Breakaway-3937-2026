@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
-
+//REHEHEHEHEHEHEHEHEHE
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -183,6 +183,7 @@ public class Indexer extends SubsystemBase {
     Logger.recordOutput("Diverter Supply Motor Current", diverterSupplyCurrentMotor);
     Logger.recordOutput("Spinner Supply Motor Current", spinnerSupplyCurrentMotor);
     Logger.recordOutput("Upsy Supply Motor Current", upsySupplyCurrentMotor);
+    System.out.println("Wiggle");
 
   }
 
