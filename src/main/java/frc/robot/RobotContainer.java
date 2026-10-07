@@ -112,7 +112,7 @@ public class RobotContainer {
             .withVelocityX(translationController.getY() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withVelocityY(translationController.getX() * translationMultiplier * Constants.Swerve.MAX_SPEED)
             .withRotationalRate(
-                rotationController.getX() * rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
+                rotationController.getX() * -rotationMultiplier * Constants.Swerve.MAX_ANGULAR_RATE)));
 
     xboxController.a().onTrue(s_SuperSubsystem.autoTrack(true));
     xboxController.y().onTrue(s_SuperSubsystem.autoTrack(false));
@@ -123,9 +123,9 @@ public class RobotContainer {
     xboxController.leftTrigger(0.3).and(xboxController.rightTrigger(0.3)).whileTrue(s_SuperSubsystem.combo());
     xboxController.rightBumper().whileTrue(s_SuperSubsystem.shunClog());
     xboxController.rightStick().onTrue(s_SuperSubsystem.protectIntake());
-    topButton.onTrue(s_Vision.setInitPose().ignoringDisable(true));
-    leftButton.onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
-    rightButton.onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
+    xboxController.povUp().onTrue(s_Vision.setInitPose().ignoringDisable(true));
+    xboxController.povLeft().onTrue(s_Vision.setSpecialInitPose(true).ignoringDisable(true));
+    xboxController.povRight().onTrue(s_Vision.setSpecialInitPose(false).ignoringDisable(true));
     xboxController.rightBumper().onTrue(s_SuperSubsystem.shunClog().repeatedly()).onFalse(s_SuperSubsystem.idleWithIntakeDown());
     // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
