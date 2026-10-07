@@ -159,7 +159,7 @@ public Command auto_Fire() {
     boolean stateChanged = (currentState != previousState);
 
     if (stateChanged) {
-      RobotContainer.applyMultipliers(isShootingState(currentState) ? 0.3 : 1.0);
+      RobotContainer.applyMultipliers(isShootingState(currentState) ? 0.35 : 1.0);
     }
 
     switch (currentState) {
