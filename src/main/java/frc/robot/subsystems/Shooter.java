@@ -399,9 +399,9 @@ public class Shooter extends SubsystemBase {
 
     Logger.recordOutput("Shooter/UpToSpeed", isAtSpeed());
 
-    logMotors();
-    logPDH();
-    logMotorTemps();
+  //  logMotors();
+  //  logPDH();
+  //  logMotorTemps();
   }
 
 }
