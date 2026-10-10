@@ -68,10 +68,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Combo", s_SuperSubsystem.auto_Combo());
     NamedCommands.registerCommand("Idle", s_SuperSubsystem.idle());
     NamedCommands.registerCommand("Intake", s_SuperSubsystem.auto_Intake());
+    NamedCommands.registerCommand("Lock", s_SuperSubsystem.autoTrack(false));
     // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.close();
+    autoChooser.addOption("No Quest", new PathPlannerAuto("No Quest").withName("No Quest"));
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
     autoChooser.addOption("Just Depot", new PathPlannerAuto("Just Depot").withName("Just Depot"));
     autoChooser.addOption("Just Human Player", new PathPlannerAuto("Just Human Player").withName("Just Human Player"));
