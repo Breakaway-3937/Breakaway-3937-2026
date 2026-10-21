@@ -223,6 +223,8 @@ public class Intake extends SubsystemBase {
         break;
     }
     previousState = intakeState;
+    
+    
   //  logMotors();
    // logPDH();
    // logMotorTemps();

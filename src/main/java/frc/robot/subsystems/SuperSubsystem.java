@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,6 +46,7 @@ public class SuperSubsystem extends SubsystemBase {
     this.s_Indexer = s_Indexer;
     this.s_Intake  = s_Intake;
     this.s_Vision  = s_Vision;
+    
   }
 
   public void setState(RobotState newState) {
@@ -134,7 +136,21 @@ public Command combo() {
 public Command auto_Combo() {
     return runOnce(() -> setState(RobotState.COMBO));
 }
-
+public void setLogger() {
+  
+}
+public void logEssentials() {
+    SmartDashboard.putBoolean("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
+    SmartDashboard.putBoolean("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());
+    SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
+    SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
+    SmartDashboard.putString("Robot State", currentState.toString());
+    Logger.recordOutput("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
+    Logger.recordOutput("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());    
+    Logger.recordOutput("Indexer State Raw", s_Indexer.getState().toString());
+    Logger.recordOutput("Intake State Raw", s_Intake.getState().toString());
+    Logger.recordOutput("Robot State", currentState.toString());
+}
 
 
 public Command protectIntake() {
@@ -274,16 +290,7 @@ public Command auto_Fire() {
 
     previousState = currentState;
 
-    SmartDashboard.putBoolean("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
-    SmartDashboard.putBoolean("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());
-    SmartDashboard.putString("Indexer State Raw", s_Indexer.getState().toString());
-    SmartDashboard.putString("Intake State Raw", s_Intake.getState().toString());
-    SmartDashboard.putString("Robot State", currentState.toString());
-    Logger.recordOutput("isAtSpeed", s_Shooter.isAtSpeed().getAsBoolean());
-    Logger.recordOutput("isTurretSafe", s_Vision.isTurretSafe().getAsBoolean());    
-    Logger.recordOutput("Indexer State Raw", s_Indexer.getState().toString());
-    Logger.recordOutput("Intake State Raw", s_Intake.getState().toString());
-    Logger.recordOutput("Robot State", currentState.toString());
+
 
     /*
      * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));

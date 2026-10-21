@@ -54,7 +54,8 @@ public class RobotContainer {
 
   // Misc
   private final SendableChooser<Command> autoChooser;
-  private static double translationMultiplier = 1.0;
+private final SendableChooser<Integer> log_mode = new SendableChooser<>();  private static double translationMultiplier = 1.0;
+  private int log_mode_int = 1;
   private double rotationMultiplier = 1.0;
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -71,6 +72,11 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Climb", s_SuperSubsystem.climbRungOne());
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    // Configure your Log Mode Chooser
+    log_mode.setDefaultOption("In Match", 1);
+    log_mode.addOption("Shop", 2);
+    log_mode.addOption("Diagnose", 3);
+    SmartDashboard.putData("Log Mode", log_mode); // Puts the selector on the dashboard
     autoChooser.close();
     autoChooser.setDefaultOption("Papa Smurf Jeffords", Commands.none());
     autoChooser.addOption("Just Depot", new PathPlannerAuto("Just Depot").withName("Just Depot"));
@@ -135,6 +141,10 @@ public class RobotContainer {
 
   public static void applyMultipliers(double newMultiplier) {
     translationMultiplier = newMultiplier;
+  }
+
+  public void setLog_Mode(int log_mode_set) {
+    log_mode_int = log_mode_set;
   }
 
   public Command getAutonomousCommand() {
