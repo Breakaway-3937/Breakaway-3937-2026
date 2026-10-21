@@ -150,7 +150,7 @@ public Command auto_Intake() {
 }
 
 public Command auto_Fire() {
-  return runOnce(() -> setState(RobotState.FIRING));
+  return runOnce(() -> setState(RobotState.SPINNING_UP));
 }
 
 
