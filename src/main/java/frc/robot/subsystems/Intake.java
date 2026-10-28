@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.utility.Constants;
 import frc.robot.utility.States;
 import frc.robot.utility.States.IntakeStates;
@@ -225,9 +226,18 @@ public class Intake extends SubsystemBase {
     previousState = intakeState;
     
     
-  //  logMotors();
-   // logPDH();
-   // logMotorTemps();
+    switch(RobotContainer.getLog_Mode()){
+      case 1:
+        break;
+      case 2:
+        logMotors();
+        break;
+      case 3:
+        logMotorTemps();
+        logMotors();
+        logPDH();
+        break;
+    }
 
     SmartDashboard.putString("Intake State", intakeState.toString());
     Logger.recordOutput("Intake State", intakeState.toString());

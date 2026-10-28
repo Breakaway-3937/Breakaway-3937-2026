@@ -38,6 +38,9 @@ public class RobotContainer {
   private final JoystickButton topButton = new JoystickButton(buttons, Constants.Controllers.TOP_BUTTON);
   private final JoystickButton leftButton = new JoystickButton(buttons, 5);
   private final JoystickButton rightButton = new JoystickButton(buttons, 8);
+  private final JoystickButton matchButton = new JoystickButton(buttons, 1);
+  private final JoystickButton shopButton = new JoystickButton(buttons, 2);
+  private final JoystickButton diagnoseButton = new JoystickButton(buttons, 3);
   private final CommandXboxController xboxController = new CommandXboxController(
       Constants.Controllers.XBOX_CONTROLLER.getPort());
 
@@ -49,13 +52,14 @@ public class RobotContainer {
   private final Vision s_Vision = new Vision(s_Swerve, s_Shooter);
   private final Indexer s_Indexer = new Indexer(pdh);
   private final Intake s_Intake = new Intake(pdh);
+  private final RobotContainer f_RobotContainer = new RobotContainer();
 
-  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Vision);
+  private final SuperSubsystem s_SuperSubsystem = new SuperSubsystem(s_Shooter, s_Indexer, s_Intake, s_Vision, f_RobotContainer);
 
   // Misc
   private final SendableChooser<Command> autoChooser;
 private final SendableChooser<Integer> log_mode = new SendableChooser<>();  private static double translationMultiplier = 1.0;
-  private int log_mode_int = 1;
+  private static int log_mode_int = 1;
   private double rotationMultiplier = 1.0;
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -136,6 +140,9 @@ private final SendableChooser<Integer> log_mode = new SendableChooser<>();  priv
     // xboxController.povUp().onTrue(s_SuperSubsystem.raiseClimber());
     // xboxController.povLeft().onTrue(s_SuperSubsystem.stowClimber());
     // xboxController.povDown().onTrue(s_SuperSubsystem.pullClimber());
+    matchButton.onTrue(Commands.runOnce(() -> setLog_Mode(1)).ignoringDisable(true)); // In Match
+    shopButton.onTrue(Commands.runOnce(() -> setLog_Mode(2)).ignoringDisable(true)); // Shop
+    diagnoseButton.onTrue(Commands.runOnce(() -> setLog_Mode(3)).ignoringDisable(true)); // Diagnose
 
   }
 
@@ -143,10 +150,12 @@ private final SendableChooser<Integer> log_mode = new SendableChooser<>();  priv
     translationMultiplier = newMultiplier;
   }
 
-  public void setLog_Mode(int log_mode_set) {
-    log_mode_int = log_mode_set;
-  }
-
+public static void setLog_Mode(int log_mode_set) {
+  log_mode_int = log_mode_set;
+}
+public static int getLog_Mode() {
+  return log_mode_int;
+}
   public Command getAutonomousCommand() {
     SmartDashboard.putString("Current Auto", autoChooser.getSelected().getName());
     return autoChooser.getSelected();

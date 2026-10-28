@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotContainer;
 import frc.robot.utility.Constants;
 import frc.robot.utility.States;
 import frc.robot.utility.States.IndexerStates;
@@ -305,7 +306,18 @@ public class Indexer extends SubsystemBase {
    // logMotors();
     //logPDH();
     //logMotorTemps();
-
+    switch (RobotContainer.getLog_Mode()){
+      case 1:
+        break;
+      case 2:
+        logMotors();
+        break;
+      case 3:
+        logMotorTemps();
+        logMotors();
+        logPDH();
+      break;
+    }
   }
 
 }

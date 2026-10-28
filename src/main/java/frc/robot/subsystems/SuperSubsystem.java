@@ -35,17 +35,19 @@ public class SuperSubsystem extends SubsystemBase {
   private final Intake  s_Intake;
   private final Vision  s_Vision;
 
+  private final RobotContainer f_robotContainer;
 
 
   private RobotState currentState  = RobotState.IDLE;
   private RobotState previousState = null;
   private Command shooterCommand   = null;
 
-  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Vision s_Vision) {
+  public SuperSubsystem(Shooter s_Shooter, Indexer s_Indexer, Intake s_Intake, Vision s_Vision, RobotContainer f_robotContainer) {
     this.s_Shooter = s_Shooter;
     this.s_Indexer = s_Indexer;
     this.s_Intake  = s_Intake;
     this.s_Vision  = s_Vision;
+    this.f_robotContainer = f_robotContainer;
     
   }
 
@@ -291,6 +293,21 @@ public Command auto_Fire() {
     previousState = currentState;
 
 
+switch (RobotContainer.getLog_Mode()) {
+  case 1:
+    logEssentials();//Match
+    break;
+  case 2:
+    logEssentials(); //Shop
+    break;
+  case 3:
+    logEssentials();//Debug
+    f_robotContainer.logFullPDH();
+    f_robotContainer.logPDHStickyFaults();
+    break;
+  default:
+    break;
+}
 
     /*
      * SmartDashboard.putNumber("Turret Amps", pdp.getCurrent(12));

@@ -25,6 +25,7 @@ public final class Constants {
     public static final int TOP_BUTTON = 4;
     public static final GenericHID XBOX_CONTROLLER = new GenericHID(2);
     public static final double STICK_DEADBAND = 0.1;
+    public static final GenericHID KEYPAD = new GenericHID(4);
   }
 
   public static class Swerve {
